@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 
-var exerciseSchema = mongoose.Schema({
+var floorplanSchema = mongoose.Schema({
 	number: Number,
 	description: String,
-	image: 
+	image: { data: Buffer, contentType: String }
 });
 
 
-module.exports = mongoose.model('Exercise', exerciseSchema);
+module.exports = mongoose.model('Exercise', floorplanSchema);

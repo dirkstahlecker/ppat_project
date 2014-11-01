@@ -1,3 +1,5 @@
+// ======================================================================
+// dependencies
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,14 +7,18 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var mongoose = require('mongoose');
+
+// ======================================================================
+// configuration
+var configDB = require('./config/database.js');
+mongoose.connect(configDB.url); // connect to our database
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -22,8 +28,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+// ======================================================================
+// routes
+app.use('/', require('./routes/index'));
+
+// ======================================================================
+// error handling
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -31,8 +41,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace
@@ -55,6 +63,12 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
+//======================================================================
+// launch
+var port = process.env.PORT || 3000;
+app.listen(port);
+console.log('The magic happens on port ' + port);
 
 
 module.exports = app;
