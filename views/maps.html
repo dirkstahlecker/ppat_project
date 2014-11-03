@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<style type = "text/css">
+	  html body,
+      #map_canvas {
+        width: 1000px;
+        height: 800px;
+        background-color: #CCC;
+      }
+      #insideBuilding{
+      	width:900px;
+      	height:750px;
+      	position: (50,50), //TODO: MAKE IT POP UP IN A gOOD SPOT;
+      }
+    </style>
+    <script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"> 
+
+        </script>
+        <script type="text/javascript">
+      function initialize() {
+        var mapCanvas = document.getElementById('map_canvas');
+        var mapOptions = {
+        	// Boston College all-campus:
+          // center: new google.maps.LatLng(42.3352078, -71.1699536),
+           // zoom: 16,
+          	//Boston College Fulton Hall building:
+          	center: new google.maps.LatLng(42.334488, -71.1701876),
+          	zoom:19,
+
+         
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions)
+
+//Shape of Fulton Hall Building
+        var fultonShape = new google.maps.Polygon({
+        	map: map,
+        	paths: [
+        		new google.maps.LatLng(42.334553,-71.170432),
+        		new google.maps.LatLng(42.334319,-71.170346),
+        		new google.maps.LatLng(42.334309,-71.170389),
+        		new google.maps.LatLng(42.334247,-71.170368),
+        		new google.maps.LatLng(42.334245,-71.170335),
+        		new google.maps.LatLng(42.334223,-71.170319),
+        		new google.maps.LatLng(42.334220,-71.170290),
+        		new google.maps.LatLng(42.334247,-71.170193),
+        		new google.maps.LatLng(42.334336,-71.169791),
+        		new google.maps.LatLng(42.334323,-71.169751),
+        		new google.maps.LatLng(42.334348,-71.169673),
+        		new google.maps.LatLng(42.334374,-71.169649),
+        		new google.maps.LatLng(42.334444,-71.169670),
+        		new google.maps.LatLng(42.334444,-71.169713),
+        		new google.maps.LatLng(42.334672,-71.169812),
+        		new google.maps.LatLng(42.334668,-71.169845),
+        		new google.maps.LatLng(42.334800,-71.169898),
+        		new google.maps.LatLng(42.334791,-71.169981),
+        		new google.maps.LatLng(42.334749,-71.169971),
+        		new google.maps.LatLng(42.334749,-71.170016),
+        		new google.maps.LatLng(42.334707,-71.170011),
+        		new google.maps.LatLng(42.334656,-71.170263),
+        		new google.maps.LatLng(42.334685,-71.170282),
+        		new google.maps.LatLng(42.334685,-71.170325),
+        		new google.maps.LatLng(42.334713,-71.170346),
+        		new google.maps.LatLng(42.334695,-71.170432),
+        		new google.maps.LatLng(42.334570,-71.170402)
+        	],
+        	strokeColor: '#ff0000',
+        	strokeOpacity: 0.8,
+        	strokeWeight:2,
+        	fillOpacity: 0
+        });
+
+google.maps.event.addListener(fultonShape, 'click', showFloors);
+insideBuilding = new google.maps.InfoWindow();
+// var marker= new google.maps.Marker({
+// 	position: new google.maps.LatLng(42.334496, -71.170040),
+// 	map:map,
+
+// });
+
+function showFloors(event){
+	map: map
+	var contentString = 'HOPEFULLY FLOORPLANS AND STUFF GO HURRR';
+	insideBuilding.setContent(contentString);
+	insideBuilding.open(map);
+	insideBuilding.setOptions
+}
+
+google.maps.event.addListener(fultonShape, 'mouseover', function (event){
+	this.setOptions({
+		strokeColor: '#ff0000',
+		fillColor: '#ff0000',
+		fillOpacity: 0.5
+	});
+});
+
+google.maps.event.addListener(fultonShape, 'mouseout', function (event){
+	this.setOptions({
+		strokeColor: '#ff0000',
+		fillOpacity: 0
+	});
+});
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+  	<div id="map_canvas"></div>
+  </body>
+</html>
