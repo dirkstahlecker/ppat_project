@@ -8,11 +8,11 @@
         height: 800px;
         background-color: #CCC;
       }
-      #insideBuilding{
+     /* #insideBuilding{
       	width:900px;
       	height:750px;
       	position: (50,50), //TODO: MAKE IT POP UP IN A gOOD SPOT;
-      }
+      }*/
     </style>
     <script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"> 
 
@@ -73,18 +73,31 @@
 
 google.maps.event.addListener(fultonShape, 'click', showFloors);
 insideBuilding = new google.maps.InfoWindow();
-// var marker= new google.maps.Marker({
-// 	position: new google.maps.LatLng(42.334496, -71.170040),
-// 	map:map,
+  // var marker = new google.maps.Marker({
+  //     position: new google.maps.LatLng(42.334488, -71.1701876),
+  //     map: map,
+  //     title: 'BLAHBLAHBLAH'
+  // });
 
 // });
-
+var current;
+var windowUp = false;
 function showFloors(event){
+  windowUp = true;
 	map: map
-	var contentString = 'HOPEFULLY FLOORPLANS AND STUFF GO HURRR';
+	var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>FloorPlan</b>, lalalalalal <b>Testing stuff</b>' +
+      'wooooooo sample text!!!'+
+      '</div>'+
+      '</div>';
 	insideBuilding.setContent(contentString);
+  insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
 	insideBuilding.open(map);
-	insideBuilding.setOptions
+	// current = this;
 }
 
 google.maps.event.addListener(fultonShape, 'mouseover', function (event){
@@ -100,7 +113,19 @@ google.maps.event.addListener(fultonShape, 'mouseout', function (event){
 		strokeColor: '#ff0000',
 		fillOpacity: 0
 	});
+	//TEMP WAY TO EXIT OUT OF INFOWINDOW...should find event when click anywhere but the building..
+	
 });
+
+//if a window is open and click map, close the infowindow
+
+  google.maps.event.addListener(map, 'click', function (event){
+      if (windowUp == true){
+        insideBuilding.close();
+      }
+  });
+
+
 
       }
       google.maps.event.addDomListener(window, 'load', initialize);
