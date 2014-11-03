@@ -20,13 +20,12 @@ var Schema = mongoose.Schema;
 router.get('/:latr/:latl/:longb/:longt', function (req, res) {
     var Flags = models.Flags;
     //Look into function for flags
-    var flagsQuery = Flags.find({});
-    flagsQuery.exec(function (err, docs) {
+    var flags= Flag.inView(req.latl, req.latr, req.longb, req.longt), function(err, result){
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
             utils.sendSuccessResponse(res, {
-                documents: docs
+                documents: result
             });
         }
     });

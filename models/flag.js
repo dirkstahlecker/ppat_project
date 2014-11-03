@@ -9,6 +9,21 @@ var flagSchema = mongoose.Schema({
 	longitude: Number
 });
 
+flagSchema.statics.inView = function(latl, latr, longb, longt, callback) {
+    var inView = [];
+    this.find({}).sort({"end":-1}).exec(function(error, docs){
+        docs.forEach(function(doc){
+            var lat = doc.latitude;
+            var lon = doc.longitude;
+            if (latl < lat && latr > lat && longt>lon && longb<lon){
+                inView.push(doc);
+            }
+        });
+        callback(error, active);
+    });
+
+}
+
 //image example code taken from here: https://gist.github.com/aheckmann/2408370
 
 
