@@ -10,7 +10,6 @@
       }
     </style>
     <script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"> 
-
         </script>
         <script type="text/javascript">
       function initialize() {
@@ -115,9 +114,76 @@ google.maps.event.addListener(fultonShape, 'mouseout', function (event){
   google.maps.event.addListener(map, 'click', function (event){
       if (windowUp == true){
         insideBuilding.close();
+        doorWindow.close();
       }
   });
 
+//adding door symbol
+//DO I NEED TO ADD MORE INFO..?
+var wheelchairDoor = {
+  url: '../testImagePhoebe/wheelchair.jpg',
+  scaledSize: new google.maps.Size(25,25),
+  // origin: new google.maps.Point(0,0),
+  // anchor: new google.maps.Point(0,25) 
+};
+
+
+var doorMarker = new google.maps.Marker({
+    position: new google.maps.LatLng(42.334294,-71.169987),
+    map: map,
+    icon: wheelchairDoor,
+    draggable: false
+    // title: 'MARKER',
+    // zIndex: 1
+});
+// }
+//Can add markers with a for loop later; now just getting things to show up
+var doorMarker2 = new google.maps.Marker({
+    position: new google.maps.LatLng(42.334635,-71.169783),
+    map: map,
+    icon: wheelchairDoor,
+    draggable: false
+});
+
+google.maps.event.addListener(doorMarker, 'click', showDoor);
+google.maps.event.addListener(doorMarker2, 'click', showDoor2);
+
+doorWindow = new google.maps.InfoWindow;
+
+function showDoor(event){
+  
+  windowUp = true;
+  map: map
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Insert Picture of Door</b>, lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>';
+  doorWindow.setContent(contentString);
+  doorWindow.setPosition(new google.maps.LatLng(42.334294,-71.169987));
+  doorWindow.open(map);
+}
+
+//will clean up repetitive code later
+function showDoor2(event){
+  // doorWindow = new google.maps.InfoWindow;
+  windowUp = true;
+  map: map
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Insert Picture of Door</b>, lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>';
+  doorWindow.setContent(contentString);
+  doorWindow.setPosition(new google.maps.LatLng(42.334635,-71.169783));
+  doorWindow.open(map);
+}
 
 
       }
