@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var models = require('../mongoose/SimPoll-data-mongoose');
+var Flag = require('../models/flag.js');
 var utils = require('../utils/utils');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
@@ -18,15 +18,20 @@ var Schema = mongoose.Schema;
     - err: on error, an error message
 */
 router.get('/:latr/:latl/:longb/:longt', function (req, res) {
-    var Flags = models.Flags;
-    //Look into function for flags
-    var flags= Flag.inView(req.latl, req.latr, req.longb, req.longt), function(err, result){
+    console.log('in flags get route ----------------');
+
+    var flag = new Flag();
+
+    Flag.inView(req.params.latl, req.params.latr, req.params.longb, req.params.longt, function(err, result){
         if (err) {
+            console.log('error!');
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            utils.sendSuccessResponse(res, {
-                documents: result
-            });
+            console.log('sending success response'); 
+            //utils.sendSuccessResponse(res, {documents: result});
+            res.send({documents: result});
         }
     });
 });
+
+module.exports = router;
