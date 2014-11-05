@@ -22,21 +22,13 @@ flagSchema.statics.inView = function(latl, latr, longb, longt, callback) {
             var lat = parseFloat(doc.latitude);
             var lon = parseFloat(doc.longitude);
 
-            console.log('latl: ' + latl);
-            console.log('latr: ' + latr);
-            console.log('lat: ' + lat);
-
-            console.log('longb: ' + longb);
-            console.log('longt: ' + longt);
-            console.log('lon: ' + lon);
-
+            //need to make sure everything is actually a number for comparison
             latl = parseFloat(latl);
             latr = parseFloat(latr);
             longb = parseFloat(longb);
             longt = parseFloat(longt);
 
             if (latl <= lat && latr >= lat && longt >= lon && longb <= lon){
-                console.log('PUSHING');
                 inView.push(doc);
             }
         });

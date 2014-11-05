@@ -18,10 +18,6 @@ var Schema = mongoose.Schema;
     - err: on error, an error message
 */
 router.get('/:latr/:latl/:longb/:longt', function (req, res) {
-    console.log('in flags get route ----------------');
-
-    var flag = new Flag();
-
     Flag.inView(req.params.latl, req.params.latr, req.params.longb, req.params.longt, function(err, result){
         if (err) {
             console.log('error!');

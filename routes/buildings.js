@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var models = require('../mongoose/SimPoll-data-mongoose');
+var Building = require('../models/building');
 var utils = require('../utils/utils');
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
 /*
   Gets all buildings which are held in the system.
@@ -18,21 +17,19 @@ var Schema = mongoose.Schema;
     - err: on error, an error message
 */
 router.get('/:id', function (req, res) {
-    var Buildings = models.Buildings;
-    var buildingsQuery = Buildings.find({"_id" = req.id});
-    buildingsQuery.exec(function (err, docs) {
+    console.log('id: ' + req.params.id);
+    Building.findOne({ _id: req.params.id }, function(err, buildings) {
+        console.log(buildings);
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            utils.sendSuccessResponse(res, {
-                documents: docs
-            });
+            res.send({ documents: buildings });
         }
     });
 });
 
 /*
-  Gets all s particular floor of a building.
+  Gets all particular floors of a building.
 
   This API endpoint may only be called with an existing user being logged in.
 
@@ -44,15 +41,15 @@ router.get('/:id', function (req, res) {
     - err: on error, an error message
 */
 router.get('/:id/:floor', function (req, res) {
-    var Buildings = models.Buildings;
-    var buildingsQuery = Buildings.find({"_id" = req.id}).populate({path: 'floors', match: {number: req.floor}});
+    var buildingsQuery = Buildings.find({"_id": req.id}).populate({path: 'floors', match: {number: req.floor}});
     buildingsQuery.exec(function (err, docs) {
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            utils.sendSuccessResponse(res, {
-                documents: docs
-            });
+            utils.sendSuccessResponse(res, { documents: docs });
         }
     });
 });
+
+module.exports = router;
+
