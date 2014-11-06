@@ -12,19 +12,22 @@
     <script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"> 
         </script>
         <script type="text/javascript">
+
+// Boston College all-campus coordinates:
+          // center: new google.maps.LatLng(42.3352078, -71.1699536),
+           // zoom: 16,
+//center position: Fulton Hall
+      fultonCoords = new google.maps.LatLng(42.334488, -71.1701876);
       function initialize() {
         var mapCanvas = document.getElementById('map_canvas');
         var mapOptions = {
-        	// Boston College all-campus:
-          // center: new google.maps.LatLng(42.3352078, -71.1699536),
-           // zoom: 16,
-          	//Boston College Fulton Hall building:
-          	center: new google.maps.LatLng(42.334488, -71.1701876),
-          	zoom:19,
 
-         
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+
+          	center: fultonCoords,
+          	zoom:19,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
         }
+
         var map = new google.maps.Map(mapCanvas, mapOptions)
 
 //Shape of Fulton Hall Building
@@ -71,7 +74,7 @@ google.maps.event.addListener(fultonShape, 'click', showFloors);
 //pop up window when click building
 insideBuilding = new google.maps.InfoWindow();
 
-//boolean; if a window is up, clicking on the map gets rid of it
+//boolean: if a window is up, clicking on the map gets rid of it
 var windowUp = false;
 
 //loads contents of popup window; opens up the popup window 
@@ -88,7 +91,7 @@ function showFloors(event){
       '</div> <img src = "../testImagePhoebe/phoebePicTest.jpg" height = "500" width = "500">'
       +'</div>';
 	insideBuilding.setContent(contentString);
-  insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
+  insideBuilding.setPosition(fultonCoords);
 	insideBuilding.open(map);
 }
 
@@ -110,21 +113,20 @@ google.maps.event.addListener(fultonShape, 'mouseout', function (event){
 	
 });
 
-//if a window is open and click map, close the infowindow
+//if a window (either flag, or a building flag) is open and click map, close the infowindow
   google.maps.event.addListener(map, 'click', function (event){
       if (windowUp == true){
         insideBuilding.close();
-        doorWindow.close();
+        flagWindow.close();
       }
   });
 
+potholeLocations = [new google.maps.LatLng(42.334379,-71.169555)];
+doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
 //adding door symbol
-//DO I NEED TO ADD MORE INFO..?
 var wheelchairDoor = {
   url: '../testImagePhoebe/wheelchair.jpg',
   scaledSize: new google.maps.Size(25,25)
-  // origin: new google.maps.Point(0,0),
-  // anchor: new google.maps.Point(0,25) 
 };
 
 var potholeCaution = {
@@ -132,32 +134,32 @@ var potholeCaution = {
   scaledSize:new google.maps.Size(30,25)
 }
 
-var potholeMarker = new google.maps.Marker({
-  position: new google.maps.LatLng(42.334379,-71.169555),
-  map:map,
-  icon: potholeCaution,
-  draggable: false
-})
-var doorMarker = new google.maps.Marker({
-    position: new google.maps.LatLng(42.334294,-71.169987),
-    map: map,
-    icon: wheelchairDoor,
-    draggable: false
-});
-// }
-//Can add markers with a for loop later; now just getting things to show up
-var doorMarker2 = new google.maps.Marker({
-    position: new google.maps.LatLng(42.334635,-71.169783),
-    map: map,
-    icon: wheelchairDoor,
-    draggable: false
-});
+markerArray = [];
+function addMarkers(array, iconType){
+  for (i = 0; i < array.length; i++){
+    var marker = new google.maps.Marker({
+      position: array[i],
+      icon: iconType,
+      map: map,
+      draggable: false
+    })
+    markerArray.push(marker);
+  }
+}
 
-google.maps.event.addListener(doorMarker, 'click', showDoor);
-google.maps.event.addListener(doorMarker2, 'click', showDoor2);
-google.maps.event.addListener(potholeMarker, 'click', showPothole);
-doorWindow = new google.maps.InfoWindow;
+addMarkers(potholeLocations, potholeCaution);
+addMarkers(doorLocations, wheelchairDoor);
 
+
+//fix by using hash table between marker and function? or marker and contentString?
+//Boolean or array to determine which contentString to use
+google.maps.event.addListener(markerArray[1], 'click', showDoor);
+google.maps.event.addListener(markerArray[2], 'click', showDoor2);
+google.maps.event.addListener(markerArray[0], 'click', showPothole);
+flagWindow = new google.maps.InfoWindow;
+
+
+//WARNING: REPETITIVE CODE AHEAD
 function showDoor(event){
   windowUp = true;
   map: map
@@ -169,14 +171,12 @@ function showDoor(event){
       '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
-  doorWindow.setContent(contentString);
-  doorWindow.setPosition(new google.maps.LatLng(42.334294,-71.169987));
-  doorWindow.open(map);
+  flagWindow.setContent(contentString);
+  flagWindow.setPosition(doorLocations[0]);
+  flagWindow.open(map);
 }
 
-//will clean up repetitive code later
 function showDoor2(event){
-  // doorWindow = new google.maps.InfoWindow;
   windowUp = true;
   map: map
   var contentString = '<div id="content">'+
@@ -187,12 +187,11 @@ function showDoor2(event){
       '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
-  doorWindow.setContent(contentString);
-  doorWindow.setPosition(new google.maps.LatLng(42.334635,-71.169783));
-  doorWindow.open(map);
+  flagWindow.setContent(contentString);
+  flagWindow.setPosition(doorLocations[1]);
+  flagWindow.open(map);
 }
 
-//will fix repetitive code..
 function showPothole(event){
   windowUp = true;
   map: map
@@ -204,11 +203,11 @@ function showPothole(event){
       '<p><b><img src = "../testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
-  doorWindow.setContent(contentString);
-  doorWindow.setPosition(new google.maps.LatLng(42.334379,-71.169555));
-  doorWindow.open(map);
+  flagWindow.setContent(contentString);
+  flagWindow.setPosition(potholeLocations[0]);
+  flagWindow.open(map);
 }
-
+//END REPETITIVE CODE
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
