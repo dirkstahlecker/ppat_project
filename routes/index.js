@@ -16,11 +16,10 @@ router.get('/', function(req, res) {
 		if (err) {
 			throw 'error';
 		}
-		res.render('index', { title: 'Express', image: img.data });
+		res.render('index', { title: 'Express' });
 
 	});
 
-	
 });
 
 router.get('/getimage', function(req,res) {
