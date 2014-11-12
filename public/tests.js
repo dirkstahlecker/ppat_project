@@ -22,7 +22,7 @@ QUnit.asyncTest("testing flags", function(assert){
 });
 
 QUnit.asyncTest("testing buildings", function(assert){
-	var id = "545824c90b939c4f971a8aef";
+	var id = "5459a7d60b939c4f971a8af0";
 
 	$.ajax({
 		type: "GET",
@@ -38,12 +38,13 @@ QUnit.asyncTest("testing buildings", function(assert){
 	}); 
 });
 
-QUnit.asyncTest("testing buildings", function(assert){
-	var id = "545824c90b939c4f971a8aef";
+QUnit.asyncTest("testing buildings with floors", function(assert){
+	var id = "5459a7d60b939c4f971a8af0"; //building id
+	var floor = '1';
 
 	$.ajax({
 		type: "GET",
-		url: '/building/' + id,
+		url: '/building/' + id + '/' + floor,
 		data : {},
 		success: function(obj) {
 			var res = JSON.parse(obj);

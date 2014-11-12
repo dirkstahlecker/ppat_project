@@ -35,7 +35,7 @@ router.get('/getimage', function(req,res) {
 		//var img = new Buffer(imgRaw.data, 'binary');
 
 		res.writeHead(200, {'Content-Type': 'image/jpeg' });
-		res.end(buf, 'binary'); //TODO: change to base64 is possible
+		res.end(buf, 'binary'); //TODO: change to base64 if possible
 	});	
 });
 

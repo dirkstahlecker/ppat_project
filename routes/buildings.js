@@ -17,9 +17,8 @@ var mongoose = require('mongoose');
     - err: on error, an error message
 */
 router.get('/:id', function (req, res) {
-    console.log('id: ' + req.params.id);
+    //console.log('id: ' + req.params.id);
     Building.findOne({ _id: req.params.id }, function(err, buildings) {
-        console.log(buildings);
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
@@ -41,12 +40,14 @@ router.get('/:id', function (req, res) {
     - err: on error, an error message
 */
 router.get('/:id/:floor', function (req, res) {
-    var buildingsQuery = Buildings.find({"_id": req.id}).populate({path: 'floors', match: {number: req.floor}});
+    var buildingsQuery = Building.find({"_id": req.id}).populate({path: 'floors', match: {number: req.floor}});
+    console.log(buildingsQuery);
+
     buildingsQuery.exec(function (err, docs) {
         if (err) {
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            utils.sendSuccessResponse(res, { documents: docs });
+            res.send({ documents: docs });
         }
     });
 });
