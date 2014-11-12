@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<style type = "text/css">
+	  html body,
+      #map_canvas {
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        background-color: #CCC;
+        position: fixed;
+        margin: 0px;
+      }
+</style>
+
+    <script type = "text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"> 
+        </script>
+        <script type="text/javascript">
+      function initialize() {
+        var mapCanvas = document.getElementById('map_canvas');
+        var mapOptions = {
+        	// Boston College all-campus:
+          // center: new google.maps.LatLng(42.3352078, -71.1699536),
+           // zoom: 16,
+          	//Boston College Fulton Hall building:
+          	center: new google.maps.LatLng(42.334488, -71.1701876),
+          	zoom:19,
+
+         
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(mapCanvas, mapOptions)
+
+//Shape of Fulton Hall Building
+        var fultonShape = new google.maps.Polygon({
+        	map: map,
+        	paths: [
+        		new google.maps.LatLng(42.334553,-71.170432),
+        		new google.maps.LatLng(42.334319,-71.170346),
+        		new google.maps.LatLng(42.334309,-71.170389),
+        		new google.maps.LatLng(42.334247,-71.170368),
+        		new google.maps.LatLng(42.334245,-71.170335),
+        		new google.maps.LatLng(42.334223,-71.170319),
+        		new google.maps.LatLng(42.334220,-71.170290),
+        		new google.maps.LatLng(42.334247,-71.170193),
+        		new google.maps.LatLng(42.334336,-71.169791),
+        		new google.maps.LatLng(42.334323,-71.169751),
+        		new google.maps.LatLng(42.334348,-71.169673),
+        		new google.maps.LatLng(42.334374,-71.169649),
+        		new google.maps.LatLng(42.334444,-71.169670),
+        		new google.maps.LatLng(42.334444,-71.169713),
+        		new google.maps.LatLng(42.334672,-71.169812),
+        		new google.maps.LatLng(42.334668,-71.169845),
+        		new google.maps.LatLng(42.334800,-71.169898),
+        		new google.maps.LatLng(42.334791,-71.169981),
+        		new google.maps.LatLng(42.334749,-71.169971),
+        		new google.maps.LatLng(42.334749,-71.170016),
+        		new google.maps.LatLng(42.334707,-71.170011),
+        		new google.maps.LatLng(42.334656,-71.170263),
+        		new google.maps.LatLng(42.334685,-71.170282),
+        		new google.maps.LatLng(42.334685,-71.170325),
+        		new google.maps.LatLng(42.334713,-71.170346),
+        		new google.maps.LatLng(42.334695,-71.170432),
+        		new google.maps.LatLng(42.334570,-71.170402)
+        	],
+        	strokeColor: '#ff0000',
+        	strokeOpacity: 0.8,
+        	strokeWeight:2,
+        	fillOpacity: 0
+        });
+
+//event listener when click shape
+google.maps.event.addListener(fultonShape, 'click', showFloors);
+
+//pop up window when click building
+insideBuilding = new google.maps.InfoWindow();
+
+//pop up floor window when clicking building ###
+//floorPlans = new
+
+//boolean; if a window is up, clicking on the map gets rid of it
+var windowUp = false;
+
+//loads contents of popup window; opens up the popup window 
+function showFloors(event){
+  windowUp = true;
+	map: map
+  var contentString = '<div id="login-box" class="login-popup">'+
+'<a href="#" class="close">X</a>'+
+  '<form method="post" class="signin" action="#">'+
+        '<fieldset class="textbox">'+
+        '<label class="username">'+
+        '<span>Username or email</span>'+
+        '<input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">'+
+        '</label>'+
+        '<label class="password">'+
+        '<span>Password</span>'+
+        '<input id="password" name="password" value="" type="password" placeholder="Password">'+
+        '</label>'+
+        '<button class="submit button" type="button">Sign in</button>'+
+        '<p>'+
+        '<a class="forgot" href="#">Forgot your password?</a>'+
+        '</p>'+
+        '</fieldset>'+
+  '</form>'+
+'</div>';
+	insideBuilding.setContent(contentString);
+  //insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
+	insideBuilding.open(map);
+}
+
+//color changes when mousing over the building
+google.maps.event.addListener(fultonShape, 'mouseover', function (event){
+	this.setOptions({
+		strokeColor: '#ff0000',
+		fillColor: '#ff0000',
+		fillOpacity: 0.5
+	});
+});
+
+//removes color when mouse out of the building
+google.maps.event.addListener(fultonShape, 'mouseout', function (event){
+	this.setOptions({
+		strokeColor: '#ff0000',
+		fillOpacity: 0
+	});
+	
+});
+
+//if a window is open and click map, close the infowindow
+  google.maps.event.addListener(map, 'click', function (event){
+      if (windowUp == true){
+        insideBuilding.close();
+        doorWindow.close();
+      }
+  });
+
+//adding door symbol
+//DO I NEED TO ADD MORE INFO..?
+var wheelchairDoor = {
+  url: '../testImagePhoebe/wheelchair.jpg',
+  scaledSize: new google.maps.Size(25,25)
+  // origin: new google.maps.Point(0,0),
+  // anchor: new google.maps.Point(0,25) 
+};
+
+var potholeCaution = {
+  url: '../testImagePhoebe/caution.png',
+  scaledSize:new google.maps.Size(30,25)
+}
+
+var potholeMarker = new google.maps.Marker({
+  position: new google.maps.LatLng(42.334379,-71.169555),
+  map:map,
+  icon: potholeCaution,
+  draggable: false
+})
+var doorMarker = new google.maps.Marker({
+    position: new google.maps.LatLng(42.334294,-71.169987),
+    map: map,
+    icon: wheelchairDoor,
+    draggable: false
+});
+// }
+//Can add markers with a for loop later; now just getting things to show up
+var doorMarker2 = new google.maps.Marker({
+    position: new google.maps.LatLng(42.334635,-71.169783),
+    map: map,
+    icon: wheelchairDoor,
+    draggable: false
+});
+
+google.maps.event.addListener(doorMarker, 'click', showDoor);
+google.maps.event.addListener(doorMarker2, 'click', showDoor2);
+google.maps.event.addListener(potholeMarker, 'click', showPothole);
+doorWindow = new google.maps.InfoWindow;
+
+function showDoor(event){
+  windowUp = true;
+  map: map
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>';
+  doorWindow.setContent(contentString);
+  doorWindow.setPosition(new google.maps.LatLng(42.334294,-71.169987));
+  doorWindow.open(map);
+}
+
+//will clean up repetitive code later
+function showDoor2(event){
+  // doorWindow = new google.maps.InfoWindow;
+  windowUp = true;
+  map: map
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>';
+  doorWindow.setContent(contentString);
+  doorWindow.setPosition(new google.maps.LatLng(42.334635,-71.169783));
+  doorWindow.open(map);
+}
+
+//will fix repetitive code..
+function showPothole(event){
+  windowUp = true;
+  map: map
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Pothole</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>';
+  doorWindow.setContent(contentString);
+  doorWindow.setPosition(new google.maps.LatLng(42.334379,-71.169555));
+  doorWindow.open(map);
+}
+
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+  	<div id="map_canvas"></div>
+    <a href="#openModal">Open Modal</a>
+
+    <div id="openModal" class="modalDialog">
+      <div>
+        <a href="" title="Close" class="close">X</a>
+        <h2>Modal Box</h2>
+        <p>This is a sample modal box that can be created using the powers of CSS3.</p>
+        <p>You could do a lot of things here like have a pop-up ad that shows when your website loads, or create a login/register form for users.</p>
+      </div>
+    </div>
+
+  </body>
+</html>
