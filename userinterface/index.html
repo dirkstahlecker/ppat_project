@@ -61,7 +61,12 @@
         });
 
 //event listener when click shape
-google.maps.event.addListener(fultonShape, 'click', showFloors);
+google.maps.event.addListener(fultonShape, 'click', showFultonModal);
+
+//opens modal with Fulton Floor plans and details:
+function showFultonModal(event){
+  $('#myFultonModal').modal('toggle')
+}
 
 //pop up window when click building
 insideBuilding = new google.maps.InfoWindow();
@@ -73,32 +78,32 @@ insideBuilding = new google.maps.InfoWindow();
 var windowUp = false;
 
 //loads contents of popup window; opens up the popup window 
-function showFloors(event){
-  windowUp = true;
-	map: map
-  var contentString = '<div id="login-box" class="login-popup">'+
-'<a href="#" class="close">X</a>'+
-  '<form method="post" class="signin" action="#">'+
-        '<fieldset class="textbox">'+
-        '<label class="username">'+
-        '<span>Username or email</span>'+
-        '<input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">'+
-        '</label>'+
-        '<label class="password">'+
-        '<span>Password</span>'+
-        '<input id="password" name="password" value="" type="password" placeholder="Password">'+
-        '</label>'+
-        '<button class="submit button" type="button">Sign in</button>'+
-        '<p>'+
-        '<a class="forgot" href="#">Forgot your password?</a>'+
-        '</p>'+
-        '</fieldset>'+
-  '</form>'+
-'</div>';
-	insideBuilding.setContent(contentString);
-  //insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
-	insideBuilding.open(map);
-}
+// function showFloors(event){
+//   windowUp = true;
+// 	map: map
+//   var contentString = '<div id="login-box" class="login-popup">'+
+// '<a href="#" class="close">X</a>'+
+//   '<form method="post" class="signin" action="#">'+
+//         '<fieldset class="textbox">'+
+//         '<label class="username">'+
+//         '<span>Username or email</span>'+
+//         '<input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">'+
+//         '</label>'+
+//         '<label class="password">'+
+//         '<span>Password</span>'+
+//         '<input id="password" name="password" value="" type="password" placeholder="Password">'+
+//         '</label>'+
+//         '<button class="submit button" type="button">Sign in</button>'+
+//         '<p>'+
+//         '<a class="forgot" href="#">Forgot your password?</a>'+
+//         '</p>'+
+//         '</fieldset>'+
+//   '</form>'+
+// '</div>';
+// 	insideBuilding.setContent(contentString);
+//   //insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
+// 	insideBuilding.open(map);
+// }
 
 //color changes when mousing over the building
 google.maps.event.addListener(fultonShape, 'mouseover', function (event){
@@ -129,14 +134,14 @@ google.maps.event.addListener(fultonShape, 'mouseout', function (event){
 //adding door symbol
 //DO I NEED TO ADD MORE INFO..?
 var wheelchairDoor = {
-  url: '../testImagePhoebe/wheelchair.jpg',
+  url: '../userinterface/img/testImagePhoebe/wheelchair.jpg',
   scaledSize: new google.maps.Size(25,25)
   // origin: new google.maps.Point(0,0),
   // anchor: new google.maps.Point(0,25) 
 };
 
 var potholeCaution = {
-  url: '../testImagePhoebe/caution.png',
+  url: '../userinterface/img/testImagePhoebe/caution.png',
   scaledSize:new google.maps.Size(30,25)
 }
 
@@ -174,7 +179,7 @@ function showDoor(event){
       '</div>'+
       '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
       '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
+      '<p><b><img src = "../userinterface/img/testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
   doorWindow.setContent(contentString);
@@ -192,7 +197,7 @@ function showDoor2(event){
       '</div>'+
       '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
       '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      '<p><b><img src = "../userinterface/img/testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
   doorWindow.setContent(contentString);
@@ -209,7 +214,7 @@ function showPothole(event){
       '</div>'+
       '<h1 id="firstHeading" class="firstHeading">Pothole</h1>'+
       '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
+      '<p><b><img src = "../userinterface/img/testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
       '</div>';
   doorWindow.setContent(contentString);
@@ -276,6 +281,9 @@ function showPothole(event){
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
+
+
+      <!-- Navigation Bar -->
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="navbar-header">
 					 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Hot Wheels</a>
@@ -297,15 +305,38 @@ function showPothole(event){
 					</ul>
 				</div>
 			</nav>
-
-
-
-		
-	  	
 		</div>
+
+
+    <!-- Full Campus Map (Google Maps) -->
 		<div id="map_canvas" style="position:absolute"></div>
+
 
 	</div>
 </div>
+
+
+
+
+<!-- Fulton Modal -->
+<div class="modal fade" id="myFultonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>
