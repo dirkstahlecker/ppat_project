@@ -132,7 +132,7 @@ img {
 }
 
 img.floorplan{
-  width: 400px;
+  width: 100%;
 }
 
 svg:not(:root) {
@@ -6074,7 +6074,7 @@ button.close {
 
 @media screen and (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
+    width: 60%;
     padding-top: 30px;
     padding-bottom: 30px;
   }
