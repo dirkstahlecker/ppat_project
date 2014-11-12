@@ -68,6 +68,20 @@ function showFultonModal(event){
   $('#myFultonModal').modal('toggle')
 }
 
+
+
+//show specific floor details when tabs clicked on Floor Plans Modal:
+function showFloor(updateFloor){
+  $('.floorplan').class('hidden')
+  $('.floorsummary').class('hidden')
+  document.getElementById("fultonSouthFloor4").style.display="show";
+    
+}
+
+
+
+
+
 //pop up window when click building
 insideBuilding = new google.maps.InfoWindow();
 
@@ -308,19 +322,19 @@ function showPothole(event){
           <tr>
             <td>  <!-- Floor and Summary Nav Bar -->
               <ul class="nav nav-pills nav-stacked" role="tablist">
-                  <li role="presentation" class="active"><a href="#">Summary</a></li>
-                  <li role="presentation"><a href="#">Floor 1</a></li>
-                  <li role="presentation"><a href="#">Floor 2</a></li>
-                  <li role="presentation"><a href="#">Floor 3</a></li>
-                  <li role="presentation"><a href="#">Floor 4</a></li>
+                  <li role="presentation" class="active"><a href="#" onclick='showFloor("floorSummaries")'>Summary</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor1")'>Floor 1</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor2")'>Floor 2</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor3")'>Floor 3</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor4")'>Floor 4</a></li>
               </ul>
             </td>
             <td> <!-- Floor Plans -->
               <img id="fultonSouthFloorSummaries" src = "../userinterface/img/fultonhall/south_floorSummaries.png" class = "floorplan"> 
-              <img id="fultonSouthFloor1" src = "../userinterface/img/fultonhall/south_floor1.jpg" class = "floorplan"> 
-              <img id="fultonSouthFloor2" src = "../userinterface/img/fultonhall/south_floor2.jpg" class = "floorplan"> 
-              <img id="fultonSouthFloor3" src = "../userinterface/img/fultonhall/south_floor3.jpg" class = "floorplan"> 
-              <img id="fultonSouthFloor4" src = "../userinterface/img/fultonhall/south_floor4.jpg" class = "floorplan"> 
+              <img id="fultonSouthFloor1" src = "../userinterface/img/fultonhall/south_floor1.jpg" class = "floorplan, hidden"> 
+              <img id="fultonSouthFloor2" src = "../userinterface/img/fultonhall/south_floor2.jpg" class = "floorplan, hidden"> 
+              <img id="fultonSouthFloor3" src = "../userinterface/img/fultonhall/south_floor3.jpg" class = "floorplan, hidden"> 
+              <img id="fultonSouthFloor4" src = "../userinterface/img/fultonhall/south_floor4.jpg" class = "floorplan, hidden"> 
             </td>
           </tr>
         </tbody>
@@ -330,49 +344,59 @@ function showPothole(event){
 <!-- Detailed Descriptions of Floor Plans -->
     <table class="table">
         <tbody>
-          <tr id="fultonSouthFloorSummaries" >
+          <tr>
+          <div id="fultonSouthFloorSummaries" class="floorsummary, show">
             <h3>Summary</h3>
             <ul>
              <li>Staircase in far north end has 6 steps.</li>
              <li>Classroom doors are heavy.</li>
              <li>Elevators on south end take you to the second floor exit.</li>
-            </ul>  
+            </ul> 
+          </div> 
           </tr>
 
-          <tr id="fultonSouthFloor1" >
+          <tr>
+          <div id="fultonSouthFloor1" class="floorsummary, hidden">
             <h3>Floor 1</h3>
             <ul>
              <li>Staircase in far north end has 6 steps.</li>
              <li>Classroom doors are heavy.</li>
              <li>Elevators on south end take you to the second floor exit.</li>
             </ul>  
+          </div>
           </tr>
 
-          <tr id="fultonSouthFloor2" >
+          <tr>
+          <div id="fultonSouthFloor2" class="floorsummary, hidden">
             <h3>Floor 2</h3>
             <ul>
              <li>Staircase in far north end has 6 steps.</li>
              <li>Classroom doors are heavy.</li>
              <li>Lecture Room 234 has a slanted seating area.</li>
-            </ul>  
+            </ul> 
+          </div> 
           </tr>
 
-          <tr id="fultonSouthFloor3" >
+          <tr>
+          <div id="fultonSouthFloor3" class="floorsummary, hidden">
             <h3>Floor 3</h3>
             <ul>
              <li>Staircase in far north end has 6 steps.</li>
              <li>Classroom doors are heavy.</li>
              <li>Elevators on south end take you to the second floor exit.</li>
             </ul>  
+          </div>
           </tr>
 
-          <tr id="fultonSouthFloor4" >
+          <tr>
+          <div id="fultonSouthFloor4" class="floorsummary, hidden">
             <h3>Floor 4</h3>
             <ul>
              <li>Staircase in far north end has 6 steps.</li>
              <li>Classroom doors are heavy.</li>
              <li>Lecture Room 234 has a slanted seating area.</li>
             </ul>  
+          </div>
           </tr>
 
         </tbody>
