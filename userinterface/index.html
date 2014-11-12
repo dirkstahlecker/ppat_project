@@ -77,34 +77,6 @@ insideBuilding = new google.maps.InfoWindow();
 //boolean; if a window is up, clicking on the map gets rid of it
 var windowUp = false;
 
-//loads contents of popup window; opens up the popup window 
-// function showFloors(event){
-//   windowUp = true;
-// 	map: map
-//   var contentString = '<div id="login-box" class="login-popup">'+
-// '<a href="#" class="close">X</a>'+
-//   '<form method="post" class="signin" action="#">'+
-//         '<fieldset class="textbox">'+
-//         '<label class="username">'+
-//         '<span>Username or email</span>'+
-//         '<input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">'+
-//         '</label>'+
-//         '<label class="password">'+
-//         '<span>Password</span>'+
-//         '<input id="password" name="password" value="" type="password" placeholder="Password">'+
-//         '</label>'+
-//         '<button class="submit button" type="button">Sign in</button>'+
-//         '<p>'+
-//         '<a class="forgot" href="#">Forgot your password?</a>'+
-//         '</p>'+
-//         '</fieldset>'+
-//   '</form>'+
-// '</div>';
-// 	insideBuilding.setContent(contentString);
-//   //insideBuilding.setPosition(new google.maps.LatLng(42.334488, -71.1701876));
-// 	insideBuilding.open(map);
-// }
-
 //color changes when mousing over the building
 google.maps.event.addListener(fultonShape, 'mouseover', function (event){
 	this.setOptions({
