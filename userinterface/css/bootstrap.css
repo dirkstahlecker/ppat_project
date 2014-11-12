@@ -131,6 +131,10 @@ img {
   border: 0;
 }
 
+img.floorplan{
+  width: 400px;
+}
+
 svg:not(:root) {
   overflow: hidden;
 }
@@ -6004,7 +6008,7 @@ button.close {
 }
 
 .modal-backdrop.in {
-  opacity: 0.5;
+  opacity: 0.7;
   filter: alpha(opacity=50);
 }
 
@@ -6029,8 +6033,8 @@ button.close {
 }
 
 .modal-footer {
-  padding: 19px 20px 20px;
-  margin-top: 15px;
+  padding: 9px 10px 10px;
+  margin-top: 5px;
   text-align: right;
   border-top: 1px solid #e5e5e5;
 }
