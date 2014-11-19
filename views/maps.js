@@ -58,7 +58,6 @@
         var stokesShape = new google.maps.Polygon({
           map: map,
           paths: [
-            // new google.maps.LatLng(42.334268,-71.171634),
             new google.maps.LatLng(42.334324,-71.171325),
             new google.maps.LatLng(42.334348,-71.171325),
             new google.maps.LatLng(42.334376,-71.171207),
