@@ -1,11 +1,11 @@
 //************ ARTHI'S FUNCTIONS ************//
 
-function showFloors(updateFloor){
+function showFloor(updateFloor){
   newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
   document.getElementById("fultonFloorImage").src = newImageSource;
 
   //hide all text
-  hidealltext();
+  hideAllText();
 
   //show the relevant text
   newTextID = "#fultonFloorText_" + updateFloor;
@@ -13,7 +13,7 @@ function showFloors(updateFloor){
   $(newTextID).addClass('show');
 }
 
-function hidealltext(){
+function hideAllText(){
   textIDs = ['floorSummaries', 'floor1', 'floor2', 'floor3', 'floor4']
 
   for  (i=0; i<textIDs.length; i++) {
@@ -33,17 +33,6 @@ function hidealltext(){
 function showFultonModal(event){
   $('#myFultonModal').modal('toggle')
 }
-
-
-
-//show specific floor details when tabs clicked on Floor Plans Modal:
-function showFloor(updateFloor){
-  $('.floorplan').class('hidden')
-  $('.floorsummary').class('hidden')
-  document.getElementById("fultonSouthFloor4").style.display="show";
-    
-}
-
 
 
 //opens modal with Fulton Floor plans and details:
