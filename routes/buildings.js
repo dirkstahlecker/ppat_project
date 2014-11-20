@@ -7,6 +7,27 @@ var mongoose = require('mongoose');
 /*
   Gets all buildings which are held in the system.
 
+  GET /buildings/
+  Request body:
+    - No body
+  Response:
+    - success: building listings
+    - err: on error, an error message
+*/
+router.get('/', function (req, res) {
+    //console.log('id: ' + req.params.id);
+    Building.find({}, function(err, buildings) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            res.send({ documents: buildings });
+        }
+    });
+});
+
+/*
+  Gets a specified building by id
+
   This API endpoint may only be called with an existing user being logged in.
 
   GET /buildings/:id

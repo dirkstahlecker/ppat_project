@@ -19,6 +19,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.engine('ejs', require('ejs').renderFile);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -26,14 +27,16 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'userinterface')));
 
 // ======================================================================
 // routes
 app.use('/', require('./routes/index'));
 app.use('/testing', require('./routes/testing'));
 app.use('/flags', require('./routes/flags'));
-app.use('/building', require('./routes/buildings'));
+app.use('/buildings', require('./routes/buildings'));
+app.use('/templates', require('./routes/templates'));
 
 // ======================================================================
 // error handling
@@ -66,12 +69,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
-//======================================================================
-// launch
-var port = process.env.PORT || 3000;
-app.listen(port);
-console.log('The magic happens on port ' + port);
-
 
 module.exports = app;
