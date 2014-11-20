@@ -275,6 +275,7 @@ for (i = 0; i< markerArray.length; i++){
   addInfoWindow(markerArray[i],content[i]);
 }
 
+//POST MERGE CHANGES-> PHOEBE:::
 
 //on double click, creates a marker
 google.maps.event.addListener(map, 'dblclick', function(event) {
