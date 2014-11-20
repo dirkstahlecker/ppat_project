@@ -1,3 +1,35 @@
+//************ ARTHI'S FUNCTIONS ************//
+
+function showFloors(updateFloor){
+  newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
+  document.getElementById("fultonFloorImage").src = newImageSource;
+
+  //hide all text
+  hidealltext();
+
+  //show the relevant text
+  newTextID = "#fultonFloorText_" + updateFloor;
+  $(newTextID).removeClass('hidden');
+  $(newTextID).addClass('show');
+}
+
+function hidealltext(){
+  textIDs = ['floorSummaries', 'floor1', 'floor2', 'floor3', 'floor4']
+
+  for  (i=0; i<textIDs.length; i++) {
+    newID = "#fultonFloorText_" + textIDs[i];
+    $(newID).removeClass('show');
+    $(newID).addClass('hidden');
+  }
+}
+
+// $(".nav-tabs").find("a").click(function(){
+//     $(".nav-tabs").find("a").removeClass("active");
+//     $(this).addClass("active");
+// });
+
+
+//*********** PHOEBE'S FUNCTIONS ************//
 
 // Boston College all-campus coordinates:
           // center: new google.maps.LatLng(42.3352078, -71.1699536),
@@ -120,24 +152,24 @@ insideBuilding = new google.maps.InfoWindow();
 //boolean: if a window is up, clicking on the map gets rid of it
 var windowUp = false;
 
-//loads contents of popup window; opens up the popup window 
-function showFloors(event){
-  windowUp = true;
-  map: map
-  var contentString = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">First Floor</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b>Insert Floorplan here</b>, lalalalalal <p>Testing stuff</p>' +
-      'wooooooo sample text!!!'+
-      '</div> <img src = "../testImagePhoebe/phoebePicTest.jpg" height = "500" width = "500">'
-      +'</div>';
-  insideBuilding.setContent(contentString);
-  insideBuilding.setPosition(fultonCoords);
-  insideBuilding.open(map);
-  windows.push(insideBuilding);
-}
+// //loads contents of popup window; opens up the popup window 
+// function showFloors(event){
+//   windowUp = true;
+//   map: map
+//   var contentString = '<div id="content">'+
+//       '<div id="siteNotice">'+
+//       '</div>'+
+//       '<h1 id="firstHeading" class="firstHeading">First Floor</h1>'+
+//       '<div id="bodyContent">'+
+//       '<p><b>Insert Floorplan here</b>, lalalalalal <p>Testing stuff</p>' +
+//       'wooooooo sample text!!!'+
+//       '</div> <img src = "../testImagePhoebe/phoebePicTest.jpg" height = "500" width = "500">'
+//       +'</div>';
+//   insideBuilding.setContent(contentString);
+//   insideBuilding.setPosition(fultonCoords);
+//   insideBuilding.open(map);
+//   windows.push(insideBuilding);
+// }
 
 //color changes when mousing over the building
 google.maps.event.addListener(fultonShape, 'mouseover', function (event){

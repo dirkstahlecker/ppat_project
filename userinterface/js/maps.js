@@ -54,6 +54,7 @@ function showStokesModal(event){
            // zoom: 16,
 //center position: Stokes Hall
       stokesCoords = new google.maps.LatLng(42.334104, -71.171338);
+
       function initialize() {
         var mapCanvas = document.getElementById('map_canvas');
         var mapOptions = {
@@ -168,7 +169,6 @@ insideBuilding = new google.maps.InfoWindow();
 
 //boolean: if a window is up, clicking on the map gets rid of it
 var windowUp = false;
-
 //color changes when mousing over the building
 google.maps.event.addListener(fultonShape, 'mouseover', function (event){
   this.setOptions({
@@ -275,6 +275,7 @@ for (i = 0; i< markerArray.length; i++){
   addInfoWindow(markerArray[i],content[i]);
 }
 
+
 //on double click, creates a marker
 google.maps.event.addListener(map, 'dblclick', function(event) {
   var addPin = new google.maps.Marker({
@@ -306,4 +307,5 @@ google.maps.event.addListener(map, 'dblclick', function(event) {
 
 
 }
+
       google.maps.event.addDomListener(window, 'load', initialize);
