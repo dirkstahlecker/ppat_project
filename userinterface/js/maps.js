@@ -175,7 +175,6 @@ function makePaths(points) {
  */
 function addBuilding(building, map) {
 	console.log('in addBuilding');
-	console.log(building);
 
 	//var lat = building.latitude;
 	//var lon = building.longitude;
@@ -211,45 +210,24 @@ function addBuilding(building, map) {
 	});
 
 	var buildingID = building._id; //used to create unique id in DOM for building modal
-	console.log('buildingID: ' + buildingID);
 
-	var url = '/views/test.ejs';
-
-	/*
-	var html = getFirstPart();
-	html += building.name;
-	html += getSecondPart();
-	for (var i=0; i<building.floorplans.length; i++) {
-		html += '<li role="presentation"><a href="#" onclick="showFloor("floor';
-		html += building.floorplans.number[i];
-		html += '")">Floor';
-		html += building.floorplans.number[i];
-		html += '</a><li>';
-	}
-	html += '</ul></td><td><img id="floorImage" src="' + building.floorplans.image[0] + '" class="floorplan"';
-	html += '</tr></tbody></table>';
-
-
-
-	$('#modalsArea').html(html);
-	//create anonymous function to be the event listener
-	google.maps.event.addListener(buildingShape, 'click', function (event) { 
-		console.log("EVENT LISTENER WAS CALLED: " + building.name);
-		$('#' + buildingID).modal('toggle');
-	});*/
-
-	building.url = url;
-	
-	console.log('building');
-	console.log(building);
-	
 	$.ajax({
 		url: '/templates/render',
-		method: 'POST',
-		data: building,
+		type: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({
+			//name: building.name,
+			id: buildingID,
+			url: '/views/modal.ejs',
+			//floorplans: building.floorplans
+		}),
 		success: function(html) {
-			console.log(html);
-			$('#modalsArea').html(html);
+			console.log('returned html: ');
+			console.log(html.html);
+			var modalArea = document.getElementById('modals_area');
+			//console.log('inner html: ');
+			//console.log(modalArea.innerHTML);
+			modalArea.innerHTML += html.html;
 			//create anonymous function to be the event listener
 			google.maps.event.addListener(buildingShape, 'click', function (event) { 
 				console.log("EVENT LISTENER WAS CALLED: " + building.name);
@@ -260,7 +238,6 @@ function addBuilding(building, map) {
 			console.log('ERROR in rendering EJS template');
 		}
 	});
-	
 
 }
 
@@ -271,8 +248,11 @@ function addBuilding(building, map) {
 function buildGUI() {
 
 	console.log('in buildGUI');
-	var zoom = 19; //TODO: does this change between buildings?
+	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
+	console.log('mapCanvas:');
+	console.log(mapCanvas);
+
 	var mapOptions = {
         center: new google.maps.LatLng(42.334488, -71.1701876),
         zoom: zoom,
@@ -290,6 +270,8 @@ function buildGUI() {
 			//data contains all buildings
 			for (var i = 0; i < data.documents.length; i++) { //TODO: this is wrong
 				var building = data.documents[i];
+				console.log('building from client: ');
+				console.log(building);
 				addBuilding(building, map);
 			}
 		}
