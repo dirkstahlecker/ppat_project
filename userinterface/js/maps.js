@@ -305,6 +305,9 @@ for (i = 0; i< markerArray.length; i++){
 var key = document.getElementById('key');
 map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(key);
 
+//consider doing this so screen resizing issues go away???
+// map.controls[google.maps.ControlPosition.TOP].push(document.getElementById('topBar'));
+
 var div1 = document.createElement('div');
 div1.innerHTML = '<img src= "../testImagePhoebe/caution.png" height = "30" width = "30"> Caution';
 key.appendChild(div1);
