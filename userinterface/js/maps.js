@@ -62,10 +62,19 @@ function showStokesModal(event){
             disableDoubleClickZoom: true,
             center: stokesCoords,
             zoom:19,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
+            // mapTypeId: google.maps.MapTypeId.ROADMAP,
         }
 
         var map = new google.maps.Map(mapCanvas, mapOptions)
+
+        //FLOOR PLAN MAP TEST, PHOEBE:
+      var bounds = {
+            17: [[20969, 20970], [50657, 50658]],
+            18: [[41939, 41940], [101315, 101317]],
+            19: [[83878, 83881], [202631, 202634]],
+            20: [[167757, 167763], [405263, 405269]]
+      };
+
 
 //Shape of Fulton Hall Building
         var fultonShape = new google.maps.Polygon({
@@ -221,16 +230,29 @@ function addMarkers(array, iconType){
       icon: iconType,
       map: map,
       draggable: false
-    })
-    markerArray.push(marker);
+    });
+
+      markerArray.push(marker);
+    
   }
 }
-
 //index 0
 addMarkers(potholeLocations, potholeCaution);
 //indices 1-2
 addMarkers(doorLocations, wheelchairDoor);
 
+//AFTER MERGE FIX: ZOOM LISTENER TO DEAL WITH FLAG SIZES
+
+google.maps.event.addListener(map,'zoom_changed', function(){
+  var zoom = map.getZoom();
+  for (i = 0; i< markerArray.length; i++){
+    if (zoom <19 || zoom >20){
+      markerArray[i].setMap(null);
+    }else{
+      markerArray[i].setMap(map);
+    }
+}
+});
 
 //html content for each  marker popup
 content = ['<div id="content"> <div id="siteNotice"></div>'+
@@ -275,7 +297,23 @@ for (i = 0; i< markerArray.length; i++){
   addInfoWindow(markerArray[i],content[i]);
 }
 
-//POST MERGE CHANGES-> PHOEBE:::
+//POST MERGE CHANGES-> PHOEBE:::::::::::::::::::::::::::
+
+
+//MADE A KEY
+// //need to make dynamic..
+var key = document.getElementById('key');
+map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(key);
+
+var div1 = document.createElement('div');
+div1.innerHTML = '<img src= "../testImagePhoebe/caution.png" height = "30" width = "30"> Caution';
+key.appendChild(div1);
+var div2 = document.createElement('div');
+div2.innerHTML = '<img src= "../testImagePhoebe/wheelchair.jpg" height = "35" width = "35"> Accessible Entrance';
+key.appendChild(div2);
+
+
+
 
 //on double click, creates a marker
 google.maps.event.addListener(map, 'dblclick', function(event) {
