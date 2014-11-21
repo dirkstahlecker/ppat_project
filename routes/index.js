@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var ImageTesting = require('../models/imagetesting.js');
-/*
+
 router.get('/', function(req,res) {
-	console.log
-	res.sendFile('/userinterface/index.html');
-});*/
+	console.log('in GET / route');
+	res.render('main.ejs',{});
+});
 
 /* GET home page. 
 router.get('/', function(req, res) {

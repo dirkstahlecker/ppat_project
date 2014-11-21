@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>Successible Maps</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Google Map of Boston College Campus, with a better interface for finding details on different facilities on campus.">
+    <meta name="author" content="PPAT - Team Chris">
+
+
+    <!-- LINKS AND REFERENCES -->
+    <!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+    <!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+    <!--script src="js/less-1.3.3.min.js"></script-->
+    <!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="img/favicon.png">
+
+
+
+    <!-- SCRIPTS AND MAP REFERENCES -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"></script>
+    <script type="text/javascript" src = "js/maps.js"></script>
+
+    <!-- SCRIPTS AND BOOTSTRAP REFERENCES -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+
+    <!-- CSS AND REFERENCES -->
+    <style type = "text/css">
+    html body,
+      #map_canvas {
+        width: 100%;
+        height: 100%;
+        top: 50px;
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        background-color: #CCC;
+        margin: 0px;
+        z-index: -999;
+      }
+    </style>
+
+</head>
+  
+
+
+
+
+<body>
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+
+
+      <!-- Navigation Bar -->
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Successible Maps</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#">How To</a>
+            </li>
+            <li class="dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">About<strong class="caret"></strong></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#">Blog</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+
+    <!-- Full Campus Map (Google Maps) -->
+    <div id="map_canvas" style="position:absolute"></div>
+
+
+  </div>
+</div>
+
+
+<div id="modalsArea">
+
+</div>
+
+
+
+
+
+
+<!-- THE REST OF THIS WILL BE GONE -->
+
+<!-- Fulton Modal -->
+<div class="modal fade" id="myFultonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Fulton Hall</h4>
+      </div>
+      <div class="modal-body">
+
+
+
+
+    <table class="table">
+        <tbody>
+          <tr>
+            <td>  <!-- Floor and Summary Nav Bar -->
+              <ul class="nav nav-pills nav-stacked" role="tablist">
+                  <li role="presentation"><a href="#" onclick='showFloor("floorSummaries")'>Summary</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor1")'>Floor 1</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor2")'>Floor 2</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor3")'>Floor 3</a></li>
+                  <li role="presentation"><a onclick='showFloor("floor4")'>Floor 4</a></li>
+              </ul>
+            </td>
+            <td> <!-- Floor Plans -->
+              <img id="fultonFloorImage" src="" class="floorplan"><!--../userinterface/img/fultonhall/floorSummaries.jpg-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+<!-- Detailed Descriptions of Floor Plans -->
+    <table class="table">
+        <tbody>
+          <tr>
+          <div id="fultonFloorText_floorSummaries" class="floortext">
+            <h3>Summary</h3>
+            <ul>
+             <li>Staircase in far north end has 6 steps.</li>
+             <li>Classroom doors are heavy.</li>
+             <li>Elevators on south end take you to the second floor exit.</li>
+            </ul> 
+          </div> 
+          </tr>
+
+          <tr>
+          <div id="fultonFloorText_floor1" class="floortext, hidden">
+            <h3>Floor 1</h3>
+            <ul>
+             <li>Staircase in far north end has 6 steps.</li>
+             <li>Classroom doors are heavy.</li>
+             <li>Elevators on south end take you to the second floor exit.</li>
+            </ul>  
+          </div>
+          </tr>
+
+          <tr>
+          <div id="fultonFloorText_floor2" class="floortext, hidden">
+            <h3>Floor 2</h3>
+            <ul>
+             <li>Staircase in far north end has 6 steps.</li>
+             <li>Classroom doors are heavy.</li>
+             <li>Lecture Room 234 has a slanted seating area.</li>
+            </ul> 
+          </div> 
+          </tr>
+
+          <tr>
+          <div id="fultonFloorText_floor3" class="floortext, hidden">
+            <h3>Floor 3</h3>
+            <ul>
+             <li>Staircase in far north end has 6 steps.</li>
+             <li>Classroom doors are heavy.</li>
+             <li>Elevators on south end take you to the second floor exit.</li>
+            </ul>  
+          </div>
+          </tr>
+
+          <tr>
+          <div id="fultonFloorText_floor4" class="floortext, hidden">
+            <h3>Floor 4</h3>
+            <ul>
+             <li>Staircase in far north end has 6 steps.</li>
+             <li>Classroom doors are heavy.</li>
+             <li>Lecture Room 234 has a slanted seating area.</li>
+            </ul>  
+          </div>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

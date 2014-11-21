@@ -1,20 +1,33 @@
 var express = require('express');
 var router = express.Router();
 var utils = require('../utils/utils');
-//var EJS = require('ejs');
+var EJS = require('ejs');
+var fs = require('fs');
 
 
 function renderEJS(url, data) {
-	var html = {};
+	var html = "";
 	try {
-		html = new ejs({url:'/Users/Dirk/MIT/5th_Semester/6.811/repo/ppat_project/views/test.ejs'}).render();
-		//it thinks EJS is a functin
+		var templateString = null;
+		fs.readFile('test.ejs', 'utf-8', function(err, data) {
+		    if(!err) {
+		    	console.log('data after reading file');
+		    	console.log(data);
+		        templateString = data;
+		        html = EJS.render(templateString);
+		        return html;
+		    }
+		});
+		
+
+		//html = new EJS({url:'/Users/Dirk/MIT/5th_Semester/6.811/repo/ppat_project/views/test.ejs'}).render();
+		//it thinks EJS is a function
 	}
 	catch (err) {
 		console.log('err in renderEJS: ' + err);
 	}
 	
-	return html;
+	//return html;
 }
 
 
@@ -23,7 +36,7 @@ function renderEJS(url, data) {
 
   POST /templates/render
   Request body:
-    - data: an object to be passed into the ejs template
+    - building: an object to be passed into the ejs template
     - url: url to ejs template
   Response:
     - success: rendered html
@@ -31,6 +44,9 @@ function renderEJS(url, data) {
 */
 router.post('/render', function (req,res) {
 	var dir = __dirname.split('/routes');
+	console.log(req.body);
+
+	var building = req.body;
 
 	var url = dir[0] + req.body.url;
 	console.log(url);
@@ -38,14 +54,27 @@ router.post('/render', function (req,res) {
 	//var html = EJS.render(url,req.body.data);
 	try {
 		//var html = new EJS({url:'/Users/Dirk/MIT/5th_Semester/6.811/repo/ppat_project/views/test.ejs'}).render({building:req.body.data});
-		var html = renderEJS();
+		//var html = renderEJS();
+		var html = "";
+		var templateString = null;
+		fs.readFile(url, 'utf-8', function(err, template) {
+		    if(!err) {
+		        templateString = template;
+		        html = EJS.render(templateString, {building: building});
+		        res.send({html:html});
+		    }
+		    else {
+		    	console.log('Error in reading file: ' + err);
+		    }
+		});
+
 		console.log(html);
 	}
 	catch (err) {
 		console.log(err);
 	}
 
-	res.send({html: html});
+	//res.send({html: html});
 	
 });
 

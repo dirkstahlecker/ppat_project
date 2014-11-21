@@ -1,4 +1,5 @@
 
+
 //************ ARTHI'S FUNCTIONS ************//
 
 function showFloor(updateFloor){
@@ -210,22 +211,48 @@ function addBuilding(building, map) {
 	});
 
 	var buildingID = building._id; //used to create unique id in DOM for building modal
-
+	console.log('buildingID: ' + buildingID);
 
 	var url = '/views/test.ejs';
+
+	/*
+	var html = getFirstPart();
+	html += building.name;
+	html += getSecondPart();
+	for (var i=0; i<building.floorplans.length; i++) {
+		html += '<li role="presentation"><a href="#" onclick="showFloor("floor';
+		html += building.floorplans.number[i];
+		html += '")">Floor';
+		html += building.floorplans.number[i];
+		html += '</a><li>';
+	}
+	html += '</ul></td><td><img id="floorImage" src="' + building.floorplans.image[0] + '" class="floorplan"';
+	html += '</tr></tbody></table>';
+
+
+
+	$('#modalsArea').html(html);
+	//create anonymous function to be the event listener
+	google.maps.event.addListener(buildingShape, 'click', function (event) { 
+		console.log("EVENT LISTENER WAS CALLED: " + building.name);
+		$('#' + buildingID).modal('toggle');
+	});*/
+
+	building.url = url;
+	
+	console.log('building');
+	console.log(building);
 	
 	$.ajax({
 		url: '/templates/render',
 		method: 'POST',
-		data: {
-			'data': building,
-			'url': url
-		},
+		data: building,
 		success: function(html) {
 			console.log(html);
 			$('#modalsArea').html(html);
 			//create anonymous function to be the event listener
 			google.maps.event.addListener(buildingShape, 'click', function (event) { 
+				console.log("EVENT LISTENER WAS CALLED: " + building.name);
 				$('#' + buildingID).modal('toggle');
 			});
 		},
@@ -233,6 +260,7 @@ function addBuilding(building, map) {
 			console.log('ERROR in rendering EJS template');
 		}
 	});
+	
 
 }
 
