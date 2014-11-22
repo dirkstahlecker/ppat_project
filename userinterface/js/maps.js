@@ -43,26 +43,119 @@ function showStokesModal(event){
 }
 
 
+//***************************************************************************************************//
+//*************************************** DIRK ******************************************************//
+//***************************************************************************************************//
 
-//*********** DIRK ************//
 
 
+function addFlag(map, flag) {
+	console.log('in addFlag');
+	//console.log(flag);
+	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
+	var icon = {
+		url: flag.icon,
+		scaledSize: new google.maps.Size(25,25)
+	};
 
-function addAlerts() {
+	var marker = new google.maps.Marker({
+		position: loc,
+		icon: icon,
+		map: map,
+		draggable: false
+	});
 
+	$.ajax({
+		url: '/templates/render',
+		type: 'POST',
+		//contentType: "application/json",
+		data: {
+			title: flag.title,
+			image: flag.image,
+			url: '/views/flag.ejs',
+			description: flag.description
+		},
+		success: function(html) {
+			var content = html.html;
+			console.log('rendered html for alert:');
+			console.log(content);
+
+			function addInfoWindow(marker,contentString){
+				var flagWindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+				google.maps.event.addListener(marker, 'click', function(){
+					windowUp = true;
+					map: map
+					flagWindow.setPosition(event.latLng);
+					flagWindow.open(map,marker);
+				});
+			}
+
+			var flagWindow = new google.maps.InfoWindow({
+				content: content
+			});
+			google.maps.event.addListener(marker, 'click', function(){
+				windowUp = true;
+				map: map
+				flagWindow.setPosition(event.latLng);
+				flagWindow.open(map,marker);
+			});
+			addInfoWindow(loc,content);
+
+			windowUp = false;
+
+			//if a window (either flag, or a building flag) is open and click map, close the infowindow
+			google.maps.event.addListener(map, 'click', function (event){
+				if (windowUp == true){
+					flagWindow.close();
+				}
+			});
+		}
+	});
+
+}
+
+
+function addAlerts(map) {
 	console.log('in addAlerts');
-	//TODO: create alerts
-	potholeLocations = [new google.maps.LatLng(42.334379,-71.169555)];
-	doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
+	console.log(map.getBounds());
+
+	var bounds = map.getBounds();
+	sw = bounds.getSouthWest();
+	ne = bounds.getNorthEast();
+
+	var SWlat = sw.lat();
+	var SWlng = sw.lng();
+	var NElat = ne.lat();
+	var NElng = ne.lng();
+
+	$.ajax({
+		url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
+		method: 'GET',
+		data: {},
+		success: function(flags) {
+			console.log('flags returned: ');
+			console.log(flags);
+			for (var i = 0; i < flags.documents.length; i++) {
+				var flag = flags.documents[i];
+				addFlag(map, flag);
+			}
+		}
+	});
+}
+
+/*
+	//doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
 
 	//instantiating door symbol
 	var wheelchairDoor = {
-		url: '../testImagePhoebe/wheelchair.jpg',
+		url: 'img/testImagePhoebe/wheelchair.jpg',
 		scaledSize: new google.maps.Size(25,25)
 	};
 	//instantiating pothole caution symbol
 	var potholeCaution = {
-		url: '../testImagePhoebe/caution.png',
+		url: 'img/testImagePhoebe/caution.png',
 		scaledSize:new google.maps.Size(30,25)
 	}
 
@@ -85,6 +178,8 @@ function addAlerts() {
 	//indices 1-2
 	addMarkers(doorLocations, wheelchairDoor);
 
+	console.log('marker array: ');
+	console.log(markerArray);
 
 	//TODO: make this not ugly
 	//html content for each  marker popup
@@ -112,6 +207,8 @@ function addAlerts() {
 
 	//boolean: if a window is up, clicking on the map gets rid of it
 	var windowUp = false;
+	//all pop up windows
+	windows = [];
 
 	//makes sure each marker has different content and different click responses
 	function addInfoWindow(marker,contentString){
@@ -129,14 +226,16 @@ function addAlerts() {
 
 	//calls addInfoWindow for each marker
 	for (i = 0; i< markerArray.length; i++){
+
 		addInfoWindow(markerArray[i],content[i]);
 	}
+
+	console.log('windows: ');
+	console.log(windows);
 
 	//pop up window when click building
 	//var insideBuilding = new google.maps.InfoWindow(); //TODO: deleted this - should I have?
 
-	//all pop up windows
-	windows = [];
 	//if a window (either flag, or a building flag) is open and click map, close the infowindow
 	google.maps.event.addListener(map, 'click', function (event){
 		if (windowUp == true){
@@ -146,7 +245,7 @@ function addAlerts() {
 		}
 	});
 
-}
+}*/
 
 /* Converts the list of coordinates stored in the database
  * to an actual usable array
@@ -212,18 +311,16 @@ function addBuilding(building, map) {
 	var buildingID = building._id; //used to create unique id in DOM for building modal
 
 	$.ajax({
-		url: '/templates/render',
+		url: '/templates/renderbuilding',
 		type: 'POST',
 		contentType: "application/json",
 		data: JSON.stringify({
-			//name: building.name,
 			id: buildingID,
 			url: '/views/modal.ejs',
-			//floorplans: building.floorplans
 		}),
 		success: function(html) {
 			console.log('returned html: ');
-			console.log(html.html);
+			//console.log(html.html);
 			var modalArea = document.getElementById('modals_area');
 			//console.log('inner html: ');
 			//console.log(modalArea.innerHTML);
@@ -250,16 +347,20 @@ function buildGUI() {
 	console.log('in buildGUI');
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
-	console.log('mapCanvas:');
-	console.log(mapCanvas);
 
 	var mapOptions = {
-        center: new google.maps.LatLng(42.334488, -71.1701876),
-        zoom: zoom,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+		center: new google.maps.LatLng(42.334488, -71.1701876), //TODO: make this dynamic
+		zoom: zoom,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 	var map = new google.maps.Map(mapCanvas, mapOptions);
 	
+	//populate flags, whenever scrolling changes
+	google.maps.event.addListener(map, 'bounds_changed', function() {
+		addAlerts(map);
+	});
+
+	//addAlerts(map);
 	//addBuilding({latitude: 42.334488, longitude: -71.1701876}, mapCanvas);
 	
 	$.ajax({
@@ -296,7 +397,6 @@ function buildGUI() {
 
 
 
-
 //*********** PHOEBE'S FUNCTIONS ************//
 
 // Boston College all-campus coordinates:
@@ -309,7 +409,6 @@ function initialize() { //this is called on load
 	fultonCoords = new google.maps.LatLng(42.334488, -71.1701876);
         var mapCanvas = document.getElementById('map_canvas');
         var mapOptions = {
-
 
             center: fultonCoords,
             zoom:19,

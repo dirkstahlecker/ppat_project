@@ -17,7 +17,11 @@
               <ul class="nav nav-pills nav-stacked" role="tablist">
                   <% for (var i = 1; i <= building.floorplans.length; i++) { %> <!-- TODO: allow negative floors -->
                       <li role="presentation"><a href="#" onclick='showFloor("floor<%= i %>")'>
-                      	Floor <%= i %></a><li> 
+                      	<% if (i == 0) { %>
+                      		Summary
+                      	<% } else { %>
+                      		Floor <%= i %></a><li> 
+                      	<% } %>
                   <% } %>
               </ul>
             </td>

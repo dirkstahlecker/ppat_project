@@ -36,14 +36,14 @@ function renderEJS(url, data) {
 /*
   Renders an ejs template
 
-  POST /templates/render
+  POST /templates/renderbuilding
   Request body:
     - building: an object to be passed into the ejs template
   Response:
     - success: rendered html
     - err: an error message
 */
-router.post('/render', function (req,res) {
+router.post('/renderbuilding', function (req,res) {
 	var dir = __dirname.split('/routes');
 
 	var building = req.body;
@@ -78,6 +78,38 @@ router.post('/render', function (req,res) {
 	});
 
 });
+
+/*
+  Renders an ejs template
+
+  POST /templates/render
+  Request body:
+    - data: data to render
+  Response:
+    - success: rendered html
+    - err: an error message
+*/
+router.post('/render', function (req,res) {
+	console.log('in render: ');
+	console.log(req.body);
+
+	var data = req.body;
+
+	var dir = __dirname.split('/routes');
+	var url = dir[0] + req.body.url;
+	console.log(url);
+
+	var html = "";
+	var templateString = null;
+	fs.readFile(url, 'utf-8', function(err, template) {
+	    if(!err) {
+	        templateString = template;
+	        html = EJS.render(templateString, {data: data});
+	        res.send({html:html});
+	    }
+	});
+});
+
 
 
 module.exports = router;
