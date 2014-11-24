@@ -4,7 +4,7 @@ var fs = require('fs');
 var ImageTesting = require('../models/imagetesting.js');
 
 /* GET home page. */
-router.get('/', function(req, res) {
+/*router.get('/', function(req, res) {
 
 	var imgPath = '/users/dirk/downloads/jeffgordon.jpeg';
 	var img = new ImageTesting({name: 'test' });
@@ -20,7 +20,7 @@ router.get('/', function(req, res) {
 
 	});
 
-});
+});*/
 
 router.get('/getimage', function(req,res) {
 	console.log('in get image');

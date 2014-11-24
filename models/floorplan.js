@@ -7,4 +7,4 @@ var floorplanSchema = mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('Exercise', floorplanSchema);
+module.exports = mongoose.model('Floorplan', floorplanSchema);

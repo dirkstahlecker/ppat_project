@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/index'));
 app.use('/testing', require('./routes/testing'));
 app.use('/flags', require('./routes/flags'));
-app.use('/building', require('./routes/buildings'));
+app.use('/buildings', require('./routes/buildings'));
 
 // ======================================================================
 // error handling

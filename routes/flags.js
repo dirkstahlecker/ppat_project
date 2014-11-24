@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Flag = require('../models/flag.js');
 var utils = require('../utils/utils');
+var fs = require('fs');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -29,5 +30,42 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
         }
     });
 });
+
+router.post('/', function (req, res) {
+    var flag = new Flag({
+        "color": req.body.color,
+        "description": req.body.description,
+        "latitude": req.body.latitude,
+        "longitude": req.body.longitude
+    });
+
+    flag.icon.data = fs.readFileSync(req.body.icon);
+    flag.icon.contentType = 'image/jpeg';
+
+    flag.image.data = fs.readFileSync(req.body.image);
+    flag.image.contentType = 'image/jpeg';
+
+    flag.save(function (err, docs) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
+});
+
+router.delete('/:id', function (req, res) {
+    var Flags = models.Flags;
+    Flags.remove({
+        "_id": req.id
+    }).exec(function (err, doc) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
+});
+
 
 module.exports = router;
