@@ -385,32 +385,101 @@ key.appendChild(div3);
 
 //on double click, creates a marker
 google.maps.event.addListener(map, 'dblclick', function(event) {
-  var addPin = new google.maps.Marker({
-    map: map,
-    position: event.latLng,
-    draggable: true,
-    animation: google.maps.Animation.DROP,
-    title: "Alert",
-    icon: potholeCaution //change to specific picture? or should pin be added through a form??
+  console.log('DOUBLE CLICKED');
+   var addPin = new google.maps.Marker({
+      map: map,
+      position: event.latLng,
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      title: "Alert",
+      icon: potholeCaution //change to specific picture? or should pin be added through a form??
   });
 
-//GET RID OF BLUE HIGHLIGHT
-  var contentString = $('<div class = "pin_info">'+ 
-    '<div class = "inner"> Watch out here! </div>'
-    + '<button class = "remove" title= "Remove"> Remove</button></div>');
+//double check this form
 
+  // var markerForm = $('<p><div class="marker-edit">'+
+        // '<form action="ajax-save.php" method="POST" name="SaveMarker" id="SaveMarker">'+
+        //  '<label for="pName"><span>Place Name :</span><input type="text" name="pName" class="save-name" placeholder="Enter Title" maxlength="40" /></label>'+
+        //  '<label for="pDesc"><span>Description :</span><textarea name="pDesc" class="save-desc" placeholder="Enter Address" maxlength="150"></textarea></label>'+
+        //  '</form>'+
+        //  '</div></p><button name="save-marker" class="save-marker">Save Marker Details</button>'+
+        //  '<button class = "remove" title= "Remove"> Remove</button>');
 
-  var infoWindow = new google.maps.InfoWindow();
-  infoWindow.setContent(contentString[0]);
+var markerForm = $('<div class = "pin_info">'+ 
+    '<div class = "inner"> <b> Add Pin Here </b> </div>'+
+    '<form>Details: <br> <input type="text" name="details"> <br> <br>' +
+    '<label for="type"><span>Type: </span> <select name="type" class="save-type">' +
+    '<option value="door">Accessible Door</option>'+
+    '<option value="pothole">Pothole</option>'+
+            '<option value="elevator">Elevator</option></select></label>'
+    + '</form>'
+    + '<button name="save-marker" class="save-marker">Save Marker Details</button>' 
+    +'<button class = "remove" title= "Remove"> Remove</button></div>');
+
+    var infoWindow = new google.maps.InfoWindow();
+    infoWindow.setContent(markerForm[0]);
+    // infoWindow.setContent(markerForm);
+
   google.maps.event.addListener(addPin, 'click', function(){
     infoWindow.open(map,addPin);
   });
 
-  var removePin =contentString.find('button.remove')[0];
+  var removePin = markerForm.find('button.remove')[0];
   google.maps.event.addDomListener(removePin, "click", function(event){
-    addPin.setMap(null);
+    addPin.setMap(null); //can call removePin(addPin)
   });
+
 });
+
+
+
+//CHECK THESE FUNCTIONS..??..???
+// function removePin(Pin)
+// {
+
+//    //Remove saved marker from DB and map using jQuery Ajax
+//    var position = Pin.getPosition().toUrlValue(); //get marker position
+//    var data = {del : 'true', latlang : position}; //post variables
+//    $.ajax({
+//    type: "POST",
+//    url: //WHAT GOES HERE??
+//    data: data,
+//    success:function(data){
+//    Pin.setMap(null); 
+//    alert(data);
+//      },
+//    error:function (xhr, ajaxOptions, thrownError){
+//        alert(thrownError); //throw any errors
+//               }
+//         });
+//     }
+// }
+
+// function save_marker(Pin, name, address, type, newHtml)
+// {
+//     //Save new marker using jQuery Ajax
+//     var mLatLang = Pin.getPosition().toUrlValue(); //get marker position
+//     var myData = {name : mName, address : address, latlang : mLatLang, type : mType }; //post variables
+//     console.log(newHtml);        
+//     $.ajax({
+//       type: "POST",
+//       url: //WHAT GOES HERE,
+//       data: myData,
+//       success:function(data){
+//             newHtml.html(data); //replace info window with new html
+//             Pin.setDraggable(false); //set marker to fixed
+//             Pin.setIcon(potholeCaution); //replace icon
+//         },
+//         error:function (xhr, ajaxOptions, thrownError){
+//             alert(thrownError); //throw any errors
+//         }
+//     });
+// }
+
+
+
+
+
 //END PHOEBE ADDED THIS
 
 
