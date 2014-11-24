@@ -361,7 +361,7 @@ for (i = 0; i< markerArray.length; i++){
 
 //POST MERGE CHANGES-> PHOEBE:::::::::::::::::::::::::::
 
-
+//LEGEND / KEY CODE
 //MADE A KEY
 // //need to make dynamic..
 var key = document.getElementById('key');
@@ -379,10 +379,10 @@ key.appendChild(div2);
 var div3 = document.createElement('div');
 div3.innerHTML = '<img src= "../testImagePhoebe/elevatorIcon.png" height = "40" width = "40"> Elevator';
 key.appendChild(div3);
+// END LEGEND / KEY CODE
 
 
-
-
+//ADDING/REMOVING FLAGS FROM DATABASE
 //on double click, creates a marker
 google.maps.event.addListener(map, 'dblclick', function(event) {
   console.log('DOUBLE CLICKED');
@@ -392,33 +392,23 @@ google.maps.event.addListener(map, 'dblclick', function(event) {
       draggable: true,
       animation: google.maps.Animation.DROP,
       title: "Alert",
-      icon: potholeCaution //change to specific picture? or should pin be added through a form??
   });
 
-//double check this form
-
-  // var markerForm = $('<p><div class="marker-edit">'+
-        // '<form action="ajax-save.php" method="POST" name="SaveMarker" id="SaveMarker">'+
-        //  '<label for="pName"><span>Place Name :</span><input type="text" name="pName" class="save-name" placeholder="Enter Title" maxlength="40" /></label>'+
-        //  '<label for="pDesc"><span>Description :</span><textarea name="pDesc" class="save-desc" placeholder="Enter Address" maxlength="150"></textarea></label>'+
-        //  '</form>'+
-        //  '</div></p><button name="save-marker" class="save-marker">Save Marker Details</button>'+
-        //  '<button class = "remove" title= "Remove"> Remove</button>');
 
 var markerForm = $('<div class = "pin_info">'+ 
     '<div class = "inner"> <b> Add Pin Here </b> </div>'+
-    '<form>Details: <br> <input type="text" name="details"> <br> <br>' +
-    '<label for="type"><span>Type: </span> <select name="type" class="save-type">' +
+    '<form action= "createMarker" method = "post">Details: <br> <input type="text" class="save_details"> <br> <br>' +
+    '<label for="type"><span>Type: </span> <select name="type" class="save_type">' +
     '<option value="door">Accessible Door</option>'+
     '<option value="pothole">Pothole</option>'+
             '<option value="elevator">Elevator</option></select></label>'
-    + '</form>'
-    + '<button name="save-marker" class="save-marker">Save Marker Details</button>' 
+    + '</form> <br>'
+    + '<button name="save" class="save">Save Flag</button>' 
     +'<button class = "remove" title= "Remove"> Remove</button></div>');
 
     var infoWindow = new google.maps.InfoWindow();
     infoWindow.setContent(markerForm[0]);
-    // infoWindow.setContent(markerForm);
+
 
   google.maps.event.addListener(addPin, 'click', function(){
     infoWindow.open(map,addPin);
@@ -426,58 +416,83 @@ var markerForm = $('<div class = "pin_info">'+
 
   var removePin = markerForm.find('button.remove')[0];
   google.maps.event.addDomListener(removePin, "click", function(event){
-    addPin.setMap(null); //can call removePin(addPin)
+    addPin.setMap(null); 
+    var replace = markerForm.find('input.save_details')[0].value;
+    var coords = addPin.position;
+    removeMarker(removePin, replace, coords);
   });
 
+  var savePin = markerForm.find('button.save')[0];
+  if(typeof savePin !== 'undefined'){
+      google.maps.event.addDomListener(savePin, "click", function(event){
+        //some stuff here..
+        var replace = markerForm.find('input.save_details')[0].value;
+        var type= markerForm.find('select.save_type')[0].value;
+        // console.log(replace);
+        // console.log(type);
+        var coords = addPin.position;
+        // console.log(coords);
+        saveMarker(savePin, replace, type, coords);
+
+        });
+      }
 });
 
+function saveMarker(Pin, replace, type, coords)
+{
+    //made default color white... s
+    //TODO: hould remove that in routes?
+    var coords = coords; //get marker position
+    // console.log(coords.B);   //k = long, B = lat
+    var flagData = {color: "white", description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+    // console.log(type);
+    var icon;
+    if (type == "door"){
+      icon = wheelchairDoor;
+    }else if (type == "pothole"){
+      icon = potholeCaution;
+    }else{
+      icon = elevatorCaution;
+    }
 
+    //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
+    $.ajax({
+      type: "POST",
+      //TODO: is this URL PATH correct???
+      url: '/flags',
+      data: flagData,
+      success:function(data){
+            //TODO: HOW TO DO NEXT LINE..??
+            replace.html(data); //replace infowindow with new html
+            Pin.setDraggable(false); 
+            Pin.setIcon(icon); 
+        },
+        error:function (xhr, ajaxOptions, thrownError){
+            alert(thrownError); 
+        }
+    });
+}
 
-//CHECK THESE FUNCTIONS..??..???
-// function removePin(Pin)
-// {
-
-//    //Remove saved marker from DB and map using jQuery Ajax
-//    var position = Pin.getPosition().toUrlValue(); //get marker position
-//    var data = {del : 'true', latlang : position}; //post variables
-//    $.ajax({
-//    type: "POST",
-//    url: //WHAT GOES HERE??
-//    data: data,
-//    success:function(data){
-//    Pin.setMap(null); 
-//    alert(data);
-//      },
-//    error:function (xhr, ajaxOptions, thrownError){
-//        alert(thrownError); //throw any errors
-//               }
-//         });
-//     }
-// }
-
-// function save_marker(Pin, name, address, type, newHtml)
-// {
-//     //Save new marker using jQuery Ajax
-//     var mLatLang = Pin.getPosition().toUrlValue(); //get marker position
-//     var myData = {name : mName, address : address, latlang : mLatLang, type : mType }; //post variables
-//     console.log(newHtml);        
-//     $.ajax({
-//       type: "POST",
-//       url: //WHAT GOES HERE,
-//       data: myData,
-//       success:function(data){
-//             newHtml.html(data); //replace info window with new html
-//             Pin.setDraggable(false); //set marker to fixed
-//             Pin.setIcon(potholeCaution); //replace icon
-//         },
-//         error:function (xhr, ajaxOptions, thrownError){
-//             alert(thrownError); //throw any errors
-//         }
-//     });
-// }
-
-
-
+//TODO: GET request to get an ID
+function removeMarker(Pin, replace, coords)
+{
+   //Remove saved marker from DB and map using jQuery Ajax
+   var position = coords; //get marker position
+   var data = {del : 'true', latlang : coords}; //post variables
+   $.ajax({
+   type: "POST",
+   //TODO: CHECK IF THIS URL PATH RIGHT...
+   url: '/flags',
+   data: data,
+   success:function(data){
+      Pin.setMap(null); 
+      alert(data);
+   },
+   error:function (xhr, ajaxOptions, thrownError){
+       alert(thrownError); 
+   }
+  });
+}
 
 
 //END PHOEBE ADDED THIS
