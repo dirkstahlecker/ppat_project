@@ -61,7 +61,7 @@ router.get('/:id', function (req, res) {
     - err: on error, an error message
 */
 router.get('/:id/:floor', function (req, res) {
-    var buildingsQuery = Building.find({"_id": req.id}).populate({path: 'floors', match: {number: req.floor}});
+    var buildingsQuery = Building.find({"_id": req.params.id}).populate({path: 'floors', match: {number: req.floor}});
     console.log(buildingsQuery);
 
     buildingsQuery.exec(function (err, docs) {

@@ -37,6 +37,7 @@ app.use('/testing', require('./routes/testing'));
 app.use('/flags', require('./routes/flags'));
 app.use('/buildings', require('./routes/buildings'));
 app.use('/templates', require('./routes/templates'));
+app.use('/image/', require('./routes/image'));
 
 // ======================================================================
 // error handling

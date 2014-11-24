@@ -1,9 +1,12 @@
 <!-- Building Modal -->
+
 <div class="modal fade" id="<%= building.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" data-dismiss="modal">
+        	<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+    	</button>
         <h4 class="modal-title" id="myModalLabel"><%= building.name %></h4>
       </div>
       <div class="modal-body">
@@ -15,20 +18,20 @@
           <tr>
             <td>  <!-- Floor and Summary Nav Bar -->
               <ul class="nav nav-pills nav-stacked" role="tablist">
-                  <% for (var i = 1; i <= building.floorplans.length; i++) { %> <!-- TODO: allow negative floors -->
-                      <li role="presentation"><a href="#" onclick='showFloor("floor<%= i %>")'>
-                      	<% if (i == 0) { %>
+                  <% for (var i = 0; i < building.floorplans.length; i++) { %> <!-- TODO: allow negative floors -->
+                  	<% var num = building.floorplans[i].number %>
+                      <li role="presentation"><a href="#" onclick='showFloor("<%= building._id %>", "<%= num %>",<%= building.floorplans.length %>)'>
+                      	<% if (num == 0) { %>
                       		Summary
                       	<% } else { %>
-                      		Floor <%= i %></a><li> 
+                      		Floor <%= num %></a>
                       	<% } %>
+                      	</a></li>
                   <% } %>
               </ul>
             </td>
-            <td> <!-- Floor Plans -->
-            	<% for (var i = 0; i < building.floorplans.length; i++) { %>
-              		<img id="floorImage" src = "<%= building.floorplans[i].image %>" class = "floorplan">
-              	<% } %>
+            <td> <!-- Floor Plan -->
+              	<img id="floorImage" src="/image/building/<%= building._id %>" class="floorplan">
             </td>
           </tr>
         </tbody>
@@ -39,18 +42,25 @@
 <!-- Detailed Descriptions of Floor Plans -->
     <table class="table">
         <tbody>
+          	<% for (var i = 0; i < building.floorplans.length; i++) { %>
+          		<% var num = building.floorplans[i].number %>
+			<tr>
+				<div id="floorText_floor<%= building._id %><%= num %>" class="floortext <% if (num == 0) { %>show <% } else { %>hidden <% } %>">
+					<h3>
+						<% if (num == 0) { %>
+							Summary
+						<% } else { %>
+							Floor <%= num %>
+						<% } %>
+					</h3>
+					<ul>
+						<li><%= building.floorplans[i].description %></li>
+					</ul>
+				</div>
+			</tr>
+            <% } %>
 
-          <% for (var i = 0; i < building.floorplans.length; i++) { %>
-                <tr>
-                  <div id="floorText_floor<%= building.floorplans[i] %>" class="floortext, hidden">
-                    <h3><%= building.floorplans[i] %></h3>
-                    <ul>
-                      <li><%= building.floorplans[i].description %></li>
-                    </ul>
-                  </div>
-                </tr>
-                <% } %>
-                <!-- ??? need to make class not hidden for the [0] description -->
+            <!-- ??? need to make class not hidden for the [0] description -->
 
         </tbody>
       </table>

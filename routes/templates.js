@@ -4,7 +4,8 @@ var utils = require('../utils/utils');
 var EJS = require('ejs');
 var fs = require('fs');
 var Building = require('../models/building');
-var floorplan = require('../models/floorplan');
+var Floorplan = require('../models/floorplan');
+var async = require('async');
 
 
 function renderEJS(url, data) {
@@ -33,6 +34,17 @@ function renderEJS(url, data) {
 }
 
 
+function compareFloorplans(a,b) {
+	if (a.number > b.number) {
+		return 1;
+	}
+	else if (a.number < b.number) {
+		return -1;
+	}
+	return 0
+}
+
+
 /*
   Renders an ejs template
 
@@ -47,36 +59,86 @@ router.post('/renderbuilding', function (req,res) {
 	var dir = __dirname.split('/routes');
 
 	var building = req.body;
+	console.log('building id in renderbuilding: ');
+	console.log(building.id);
 
 	var url = dir[0] + req.body.url;
-	console.log(url);
-	//html = new EJS({url:url});
-	//var html = EJS.render(url,req.body.data);
-	console.log('building from server: ');
-	console.log(building);
+	//console.log('building from server: ');
+	//console.log(building);
 
-	Building.findOne({_id: building.id})/*.populate('floorplans')*/.exec(function (err,building) {
+	Building.findById(building.id).populate('floorplans').exec(function (err,building) {
 		console.log('populated building');
 		console.log(building);
-		try {
-			var html = "";
-			var templateString = null;
-			fs.readFile(url, 'utf-8', function(err, template) {
-			    if(!err) {
-			        templateString = template;
-			        html = EJS.render(templateString, {building: building});
-			        res.send({html:html});
-			    }
-			    else {
-			    	console.log('Error in reading file: ' + err);
-			    }
-			});
-		}
-		catch (err) {
-			console.log(err);
-		}
-	});
 
+		console.log('before sorting floorplans');
+		console.log(building.floorplans);
+		building.floorplans = building.floorplans.sort(compareFloorplans);
+		console.log('sorted floorplans:');
+		console.log(building.floorplans);
+
+		fs.readFile(url, 'utf-8', function(err, template) {
+		    if(!err) {
+		        templateString = template;
+		        html = EJS.render(templateString, {building: building});
+		        console.log('rendered html: ');
+		        console.log(html);
+		        res.send({html:html});
+		    }
+		    else {
+		    	console.log('Error in reading file: ' + err);
+		    }
+		});
+		
+		/*
+		var floorplans = [];
+		//console.log('building.floorplans:');
+		//console.log(building.floorplans);
+		var plansInBuilding = building.floorplans;
+		Floorplan.find({}, function (err, floorplans) {
+			//finds all floorplans
+			console.log('all floorplans:');
+			console.log(floorplans);
+			for (var i = 0; i < floorplans.length; i++) {
+				var plan = floorplans[i];
+				if (jQuery.inArray(plan._id, plansInBuilding) != -1) {
+					console.log('found!');
+				}
+			}
+		});*/
+		/*
+		async.eachSeries(building.floorplans,
+			function(floorplanID, callback) {
+				console.log('floorplanID in each');
+				console.log(floorplanID);
+				console.log('err');
+				console.log(err);
+				Floorplan.findOne({_id: floorplanID}, function(err, found_plan) {
+					console.log('pushing this floorplan: ');
+					console.log(found_plan);
+					floorplans.push(found_plan);
+					//callback();
+				});
+			},
+			function(err) { //callback
+				console.log('in async callback');
+				var html = "";
+				var templateString = null;
+				building.floorplans = floorplans;
+				//console.log('building after manually adding floorplans');
+				//console.log(building);
+				fs.readFile(url, 'utf-8', function(err, template) {
+				    if(!err) {
+				        templateString = template;
+				        html = EJS.render(templateString, {building: building});
+				        res.send({html:html});
+				    }
+				    else {
+				    	console.log('Error in reading file: ' + err);
+				    }
+				});
+			}
+		);*/
+	});
 });
 
 /*

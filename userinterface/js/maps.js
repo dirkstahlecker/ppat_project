@@ -1,7 +1,7 @@
 
 
 //************ ARTHI'S FUNCTIONS ************//
-
+/*
 function showFloor(updateFloor){
   newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
   document.getElementById("fultonFloorImage").src = newImageSource;
@@ -40,12 +40,37 @@ function showFultonModal(event){
 //opens modal with Fulton Floor plans and details:
 function showStokesModal(event){
   $('#myFultonModal').modal('toggle')
-}
+}*/
 
 
 //***************************************************************************************************//
 //*************************************** DIRK ******************************************************//
 //***************************************************************************************************//
+
+
+
+function showFloor(buildingID, updateFloor, numFloors){
+	console.log('in showFloor');
+	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
+	//document.getElementById("floorImage").src = newImageSource;
+
+	//hide all text
+	hideAllText(numFloors, buildingID);
+
+	//show the relevant text
+	newTextID = "#floorText_floor" + buildingID + updateFloor;
+	$(newTextID).removeClass('hidden');
+	$(newTextID).addClass('show');
+}
+
+function hideAllText(numFloors, buildingID){
+	console.log('hiding all text');
+	for (i = 0; i < numFloors; i++) {
+		newID = "#floorText_floor" + buildingID + String(i);
+		$(newID).removeClass('show');
+		$(newID).addClass('hidden');
+	}
+}
 
 
 
@@ -343,6 +368,17 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
+	/*
+	$.ajax({
+		url: '/image',
+		method: 'GET',
+		data: {},
+		success: function(data) {
+			console.log('successfully stored image (?)');
+		}
+	});
+	*/
+
 
 	console.log('in buildGUI');
 	var zoom = 19;
