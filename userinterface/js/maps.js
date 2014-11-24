@@ -218,6 +218,8 @@ doorLocations = [new google.maps.LatLng(42.334112,-71.171623),
     new google.maps.LatLng(42.334663,-71.170271),
     new google.maps.LatLng(42.334298,-71.169955)];
 
+elevatorLocations = [new google.maps.LatLng(42.334151,-71.171274)];
+
 //instantiating door symbol
 var wheelchairDoor = {
   url: '../testImagePhoebe/wheelchair.jpg',
@@ -229,9 +231,9 @@ var potholeCaution = {
   scaledSize:new google.maps.Size(30,25)
 }
 
-varElevatorCaution = {
+var elevatorCaution = {
   url: '../testImagePhoebe/elevatorIcon.png',
-  scaledSize: new google.maps.Size(30,25)
+  scaledSize: new google.maps.Size(40,40)
 }
 
 //adding markers
@@ -253,6 +255,8 @@ function addMarkers(array, iconType){
 addMarkers(potholeLocations, potholeCaution);
 //indices 1-6
 addMarkers(doorLocations, wheelchairDoor);
+
+addMarkers(elevatorLocations, elevatorCaution);
 
 //PHOEBE ADDED THIS: ZOOM LISTENER TO DEAL WITH FLAG SIZES
 google.maps.event.addListener(map,'zoom_changed', function(){
@@ -321,7 +325,17 @@ content = ['<div id="content"> <div id="siteNotice"></div>'+
       '<div id="bodyContent">'+
       '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
+      '</div>',
+
+      '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">this be elevator</h1>'+
+      '<div id="bodyContent">'+
+      '<p>lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
       '</div>'
+
 
       ];
 
@@ -362,6 +376,9 @@ key.appendChild(div1);
 var div2 = document.createElement('div');
 div2.innerHTML = '<img src= "../testImagePhoebe/wheelchair.jpg" height = "35" width = "35"> Accessible Entrance';
 key.appendChild(div2);
+var div3 = document.createElement('div');
+div3.innerHTML = '<img src= "../testImagePhoebe/elevatorIcon.png" height = "40" width = "40"> Elevator';
+key.appendChild(div3);
 
 
 
