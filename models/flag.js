@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 
 var flagSchema = mongoose.Schema({
 	title: String,
-	color: String,
 	icon: String,
 	description: String,
 	image: { data: Buffer, contentType: String },

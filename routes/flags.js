@@ -30,4 +30,58 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
     });
 });
 
+router.post('/', function (req, res) {
+    var flag = new Flag({
+        "title": req.body.title,
+        "description": req.body.description,
+        "latitude": req.body.latitude,
+        "longitude": req.body.longitude,
+        "icon": req.body.icon,
+    });
+
+    console.log('flag to post:');
+    console.log(flag);
+
+    /* //TODO: put back in
+    if (req.body.image != undefined) {
+    	flag.image.data = fs.readFileSync(req.body.image);
+    	flag.image.contentType = 'image/jpg';
+	}
+	*/
+
+    flag.save(function (err, docs) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
+});
+
+router.delete('/:id', function (req, res) {
+    var Flags = models.Flags;
+    Flags.remove({
+        "_id": req.id
+    }).exec(function (err, doc) {
+        if (err) {
+            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+        } else {
+            utils.sendSuccessResponse(res);
+        }
+    });
+});
+
+
+
+
+//called from the add new flag dialog box
+router.post('/form', function(req,res) {
+	var flag = new Flag({description: replace, latitude:coords.k, longitude: coords.B });
+
+	flag.save(function(err) {
+
+	});
+});
+
+
 module.exports = router;

@@ -216,6 +216,8 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
+	//populateDatabase();
+ 	
 	console.log('in buildGUI');
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
@@ -239,11 +241,11 @@ function buildGUI() {
 		method: 'GET',
 		data: {},
 		success: function(data) {
+			console.log('all buildings returned:');
+			console.log(data);
 			//data contains all buildings
 			for (var i = 0; i < data.documents.length; i++) { //TODO: this is wrong
 				var building = data.documents[i];
-				console.log('building from client: ');
-				console.log(building);
 				addBuilding(building, map);
 			}
 		}
@@ -264,41 +266,191 @@ function makeKey(map) {
 	// map.controls[google.maps.ControlPosition.TOP].push(document.getElementById('topBar'));
 
 	key.append('<div>');
-	key.append('<img src= "../testImagePhoebe/caution.png" height = "30" width = "30"> Caution<br />');
-	key.append('<img src= "../testImagePhoebe/wheelchair.jpg" height = "35" width = "35"> Accessible Entrance<br />');
-	key.append('<img src= "../testImagePhoebe/elevatorIcon.png" height = "40" width = "40"> Elevator<br />');
+	key.append('<img src= "/images/caution.png" height="30" width="30"> Caution<br />');
+	key.append('<img src= "/images/wheelchair.jpg" height="30" width="30"> Accessible Entrance<br />');
+	key.append('<img src= "/images/elevatorIcon.png" height="30" width="30"> Elevator<br />');
 	key.append('</div>');
-	/*
+	
 	//on double click, creates a marker
-	google.maps.event.addListener(map, 'dblclick', function(event) {
+	google.maps.event.addListener(map, 'rightclick', function(event) {
 		var addPin = new google.maps.Marker({
 			map: map,
 			position: event.latLng,
 			draggable: true,
 			animation: google.maps.Animation.DROP,
-			title: "Alert",
-			icon: potholeCaution //change to specific picture? or should pin be added through a form??
-		  });
+			title: "Alert"
+			//icon: potholeCaution //change to specific picture? or should pin be added through a form??
+		});
 
-		//GET RID OF BLUE HIGHLIGHT
-		var contentString = $('<div class = "pin_info">'+ 
-			'<div class = "inner"> Watch out here! </div>'
-			+ '<button class = "remove" title= "Remove"> Remove</button></div>');
 
+		var markerForm = $('<div class = "pin_info">'+ 
+			'<div class = "inner"><strong> Add Pin Here </strong></div>'+
+			'<form action= "createMarker" method = "post">Details:<br />' +
+			'<input type="text" class="save_details"><br /><br />' +
+			'<label for="type">Type:<select name="type" class="save_type">' +
+			'<option value="door">Accessible Door</option>'+
+			'<option value="pothole">Pothole</option>'+
+			'<option value="obstacle">Obstruction</option>' +
+			'<option value="elevator">Elevator</option></select></label>' +
+			'</form><br />' +
+			'<button name="save" class="save">Save Flag</button>' +
+			'<button class="remove" title= "Remove">Remove</button></div>');
 
 		var infoWindow = new google.maps.InfoWindow();
-		infoWindow.setContent(contentString[0]);
+		infoWindow.setContent(markerForm[0]);
+
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
 		});
 
-		var removePin =contentString.find('button.remove')[0];
+		var removePin = markerForm.find('button.remove')[0];
 		google.maps.event.addDomListener(removePin, "click", function(event){
+			addPin.setMap(null); 
+			var replace = markerForm.find('input.save_details')[0].value;
+			var coords = addPin.position;
+			removeMarker(removePin, replace, coords);
+		});
+
+		var savePin = markerForm.find('button.save')[0];
+		console.log('savePin:');
+		console.log(savePin);
+		google.maps.event.addDomListener(savePin, "click", function(event){
+			var details = markerForm.find('input.save_details')[0].value;
+			var type = markerForm.find('select.save_type')[0].value;
+			var coords = addPin.position;
+			saveMarker(savePin, details, type, coords);
+			//clear the old pin
+			infoWindow.close();
 			addPin.setMap(null);
+			//show newly created alert
+			addAlerts(map);
 		});
 	});
-	*/
 }
+
+
+function saveMarker(Pin, replace, type, coords)
+{
+	var coords = coords; //get marker position
+	// console.log(coords.B);   //k = long, B = lat
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+	var icon, title;
+	//TODO: add this back in
+	if (type == "door") {
+		icon = 'images/wheelchair.jpg';
+		title = 'Accessible Door';
+	}
+	else if (type == "pothole") {
+		icon = 'images/caution.png';
+		title = "Pothole";
+	}
+	else if (type == "obstruction") {
+		icon = 'images/caution.png';
+		title = "Obstruction";
+	}
+	else {
+		icon = 'images/elevatorIcon.png';
+		title = "Elevator";
+	}
+	flagData.icon = icon;
+	flagData.title = title;
+
+    //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
+	$.ajax({
+		type: "POST",
+		url: '/flags',
+		data: flagData,
+		success:function(data){
+			//TODO: HOW TO DO NEXT LINE..??
+			replace.html = data; //replace infowindow with new html
+			//Pin.setDraggable(false); 
+			//Pin.setIcon(icon); 
+		},
+		error:function (xhr){
+			alert(thrownError); //TODO: what to do here?
+		}
+	});
+}
+
+//TODO: GET request to get an ID
+function removeMarker(Pin, replace, coords)
+{
+   //Remove saved marker from DB and map using jQuery Ajax
+   var position = coords; //get marker position
+   var data = {del : 'true', latlang : coords}; //post variables
+   $.ajax({
+   type: "POST",
+   //TODO: CHECK IF THIS URL PATH RIGHT...
+   url: '/flags',
+   data: data,
+   success:function(data){
+      Pin.setMap(null); 
+      alert(data);
+   },
+   error:function (xhr, ajaxOptions, thrownError){
+       alert(thrownError); 
+   }
+  });
+}
+
+
+
+/*
+var fultonPoints = [
+	42.334553,-71.170432,
+	42.334319,-71.170346,
+	42.334309,-71.170389,
+	42.334247,-71.170368,
+	42.334245,-71.170335,
+	42.334223,-71.170319,
+	42.334220,-71.170290,
+	42.334247,-71.170193,
+	42.334336,-71.169791,
+	42.334323,-71.169751,
+	42.334348,-71.169673,
+	42.334374,-71.169649,
+	42.334444,-71.169670,
+	42.334444,-71.169713,
+	42.334672,-71.169812,
+	42.334668,-71.169845,
+	42.334800,-71.169898,
+	42.334791,-71.169981,
+	42.334749,-71.169971,
+	42.334749,-71.170016,
+	42.334707,-71.170011,
+	42.334656,-71.170263,
+	42.334685,-71.170282,
+	42.334685,-71.170325,
+	42.334713,-71.170346,
+	42.334695,-71.170432,
+	42.334570,-71.170402
+];
+
+function populateDatabase() {
+	$.ajax({
+		url: '/buildings',
+		method: 'POST',
+		data: {
+			name: "Fulton Hall",
+			latitude: 42.334488,
+			longitude: -71.170188,
+			points: fultonPoints,
+			floorplans: [],
+			image: null
+		},
+		success: function(data) {
+			console.log('added Fulton Hall');
+				$.ajax({
+				url: '/buildings',
+				method: 'GET',
+				data: {},
+				success: function(data) {
+					console.log(data);
+				}
+			});
+		}
+	});
+}*/
 
 
 

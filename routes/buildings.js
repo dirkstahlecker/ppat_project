@@ -26,10 +26,7 @@ router.get('/', function (req, res) {
 });
 
 /*
-  Gets a specified building by id
-
-  This API endpoint may only be called with an existing user being logged in.
-
+  Gets all buildings which are held in the system.
   GET /buildings/:id
   Request body:
     - No body
@@ -51,8 +48,6 @@ router.get('/:id', function (req, res) {
 /*
   Gets all particular floors of a building.
 
-  This API endpoint may only be called with an existing user being logged in.
-
   GET /buildings/:id/:floor
   Request body:
     - No body
@@ -73,5 +68,75 @@ router.get('/:id/:floor', function (req, res) {
     });
 });
 
-module.exports = router;
 
+
+
+
+router.post('/', function (req, res) {
+	var building = new Building({
+		"name": req.body.name,
+		"latitude": req.body.latitude,
+		"longitude": req.body.longitude,
+		"points": req.body.points,
+		"floorplans": req.body.floorplans,
+		"image": req.body.image
+	});
+
+	building.save(function (err, docs) {
+		if (err) {
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		} else {
+			utils.sendSuccessResponse(res, docs.id);
+		}
+	});
+	console.log("building saved");
+});
+
+
+router.post('/:id', function (req, res){
+	var floorplan = new Floorplan({
+		"number": req.body.number,
+		"description": req.body.description
+	});
+
+	console.log("floorplan made")
+
+	floorplan.image.data = fs.readFileSync(req.body.image);
+	floorplan.image.contentType = 'image/jpeg';
+
+	console.log("floorplan image");
+
+	floorplan.save(function (err, doc){
+		if (err) {
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		} else {
+			Building.findOneAndUpdate({"_id": req.id}, {
+				$push: {
+					floorplans: doc._id
+				}
+			}, function (error, document) {
+			if (error) {
+				utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+			} else {
+				utils.sendSuccessResponse(res);
+			}
+			});
+		}
+	});
+	console.log("floorplan saved");
+});
+
+router.delete('/:id', function (req, res) {
+	var Buildings = models.Buildings;
+	Buildings.remove({
+		"_id": req.id
+	}).exec(function (err, doc) {
+		if (err) {
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		} else {
+			utils.sendSuccessResponse(res);
+		}
+	});
+});
+
+module.exports = router;
