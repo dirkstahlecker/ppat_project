@@ -59,21 +59,16 @@ function showStokesModal(event){
         var mapCanvas = document.getElementById('map_canvas');
         var mapOptions = {
 
+            //PHOEBE ADDED THIS
             disableDoubleClickZoom: true,
+            //END PHOEBE ADDED THIS
+
             center: stokesCoords,
             zoom:19,
             // mapTypeId: google.maps.MapTypeId.ROADMAP,
         }
 
         var map = new google.maps.Map(mapCanvas, mapOptions)
-
-        //FLOOR PLAN MAP TEST, PHOEBE:
-      var bounds = {
-            17: [[20969, 20970], [50657, 50658]],
-            18: [[41939, 41940], [101315, 101317]],
-            19: [[83878, 83881], [202631, 202634]],
-            20: [[167757, 167763], [405263, 405269]]
-      };
 
 
 //Shape of Fulton Hall Building
@@ -207,8 +202,21 @@ windows = [];
       }
   });
 
+//POST-MERGE EDIT:
+//PHOEBE ADDING ACTUAL LOCATIONS OF ACCESSIBLE ENTRANCES
+//42.334112, -71.171623
+//42.333961, -71.171564
+//42.333799, -71.171167
+//42.334136, -71.171113
+//42.334663, -71.170271
+//42.334298, -71.169955
 potholeLocations = [new google.maps.LatLng(42.334379,-71.169555)];
-doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
+doorLocations = [new google.maps.LatLng(42.334112,-71.171623), 
+    new google.maps.LatLng(42.333961,-71.171564),
+    new google.maps.LatLng(42.333799,-71.171167),
+    new google.maps.LatLng(42.334136,-71.171113),
+    new google.maps.LatLng(42.334663,-71.170271),
+    new google.maps.LatLng(42.334298,-71.169955)];
 
 //instantiating door symbol
 var wheelchairDoor = {
@@ -219,6 +227,11 @@ var wheelchairDoor = {
 var potholeCaution = {
   url: '../testImagePhoebe/caution.png',
   scaledSize:new google.maps.Size(30,25)
+}
+
+varElevatorCaution = {
+  url: '../testImagePhoebe/elevatorIcon.png',
+  scaledSize: new google.maps.Size(30,25)
 }
 
 //adding markers
@@ -238,11 +251,10 @@ function addMarkers(array, iconType){
 }
 //index 0
 addMarkers(potholeLocations, potholeCaution);
-//indices 1-2
+//indices 1-6
 addMarkers(doorLocations, wheelchairDoor);
 
-//AFTER MERGE FIX: ZOOM LISTENER TO DEAL WITH FLAG SIZES
-
+//PHOEBE ADDED THIS: ZOOM LISTENER TO DEAL WITH FLAG SIZES
 google.maps.event.addListener(map,'zoom_changed', function(){
   var zoom = map.getZoom();
   for (i = 0; i< markerArray.length; i++){
@@ -274,7 +286,43 @@ content = ['<div id="content"> <div id="siteNotice"></div>'+
       '<div id="bodyContent">'+
       '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
       'wooooooo sample text!!!'+
+      '</div>',
+
+      '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>',
+
+      '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>',
+
+            '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
+      '</div>',
+                  '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
+      'wooooooo sample text!!!'+
       '</div>'
+
       ];
 
 
@@ -346,6 +394,8 @@ google.maps.event.addListener(map, 'dblclick', function(event) {
     addPin.setMap(null);
   });
 });
+//END PHOEBE ADDED THIS
+
 
 
 }
