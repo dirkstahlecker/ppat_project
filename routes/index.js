@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-var ImageTesting = require('../models/imagetesting.js');
 
 
 router.get('/', function(req,res) {
