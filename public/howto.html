@@ -32,40 +32,13 @@
     <!-- SCRIPTS AND MAP REFERENCES -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw1eIV3AxYXAI4bFYAow-UBYl3Q3JURJk"></script>
     <script type="text/javascript" src = "js/maps.js"></script>
-    <script type="text/javascript" src="js/modal_helper.js"></script>
 
     <!-- SCRIPTS AND BOOTSTRAP REFERENCES -->
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
-
-    <!-- CSS AND REFERENCES -->
-    <style type = "text/css">
-    html body,
-      #map_canvas {
-        width: 100%;
-        height: 100%;
-        top: 50px;
-        bottom: 0px;
-        right: 0px;
-        left: 0px;
-        background-color: #CCC;
-        margin: 0px;
-        z-index: -999;
-      }
-
-       #key{
-        background: white;
-        padding: 10px;
-        margin: 10px;
-        border:3px solid black;
-      }
-    </style>
-
 </head>
   
-
-
 
 
 <body>
@@ -99,17 +72,68 @@
     </div>
 
 
-    <!-- Full Campus Map (Google Maps) -->
-    <div id="map_canvas" style="position:absolute"></div>
+    <!-- How To Page -->
 
-<div id="modals_area">
-	<div></div>
-</div>
+    <div class="callout" id="sec0">
+      <div class="vert">
+        <div class="col-md-12 text-center"><h1>How To</h1></div>
+        <div class="col-md-12 text-center">&nbsp;</div>
+      </div>
+    </div>
+    </br></br>
 
-<!--Legend -->
-<div id = "key">
-<p><strong>Legend</strong></p>
-</div>
+
+    <!-- Campus Map -->
+    <div class="callout" id="sec1">
+      <div class="vert">
+        <div class="col-md-12 text-center"><h2>Navigate the Campus</h2></div>
+        <div class="col-md-8 col-md-offset-2 text-center">
+          <div class="row hidden-xs"> 
+           <div class="col-sm-12 text-center">
+            <li>Click on an icon on the main map for more details</li>
+            <li>Click on a highlighted bulding for floor-by-floor details</li>
+           </div>
+          </div></br></br>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 text-center">&nbsp;</div>
+
+
+    <!-- Floor Plan View -->
+    <div class="callout" id="sec2">
+      <div class="vert">
+        <div class="col-md-12 text-center"><h2></br></br>Look at Indoor Building Details</h2></div>
+        <div class="col-md-8 col-md-offset-2 text-center">
+          <div class="row hidden-xs"> 
+           <div class="col-sm-12 text-center">
+            <li>Floor Plans - click on each floor to check out each specific plan</li>
+            <li>Specific Details - scroll down to view specific notes on each floor</li>
+           </div>
+          </div></br></br>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 text-center">&nbsp;</div>
+
+    
+    <!-- Adding your own pins -->
+    <div class="callout" id="sec2">
+      <div class="vert">
+        <div class="col-md-12 text-center"><h2></br></br>Add Your Own Callouts</h2></div>
+        <div class="col-md-8 col-md-offset-2 text-center">
+          <div class="row hidden-xs"> 
+           <div class="col-sm-12 text-center">
+            <li>Double click on a specific location on the map to add your own pin</li>
+           </div>
+          </div></br></br>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 text-center">&nbsp;</div>
+
+    
+
 
   </div>
 </div>
@@ -118,4 +142,3 @@
 
 </body>
 </html>
-

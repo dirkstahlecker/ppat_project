@@ -2,7 +2,8 @@
 var debug = require('debug')('ppat_project');
 var app = require('../app');
 
-app.set('port', process.env.PORT || 3000);
+//app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 3000, process.env.OPENSHIFT_NODEJS_IP);
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
   debug('The magic happens on port ' + server.address().port);

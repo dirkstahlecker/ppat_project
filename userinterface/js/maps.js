@@ -1,152 +1,124 @@
+function showFloor(buildingID, updateFloor, numFloors){
+	console.log('in showFloor');
+	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
+	//document.getElementById("floorImage").src = newImageSource;
 
+	//hide all text
+	hideAllText(numFloors, buildingID);
 
-//************ ARTHI'S FUNCTIONS ************//
-
-function showFloor(updateFloor){
-  newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
-  document.getElementById("fultonFloorImage").src = newImageSource;
-
-  //hide all text
-  hideAllText();
-
-  //show the relevant text
-  newTextID = "#fultonFloorText_" + updateFloor;
-  $(newTextID).removeClass('hidden');
-  $(newTextID).addClass('show');
+	//show the relevant text
+	newTextID = "#floorText_floor" + buildingID + updateFloor;
+	$(newTextID).removeClass('hidden');
+	$(newTextID).addClass('show');
 }
 
-function hideAllText(){
-  textIDs = ['floorSummaries', 'floor1', 'floor2', 'floor3', 'floor4']
-
-  for (i=0; i<textIDs.length; i++) {
-    newID = "#fultonFloorText_" + textIDs[i];
-    $(newID).removeClass('show');
-    $(newID).addClass('hidden');
-  }
-}
-
-// $(".nav-tabs").find("a").click(function(){
-//     $(".nav-tabs").find("a").removeClass("active");
-//     $(this).addClass("active");
-// });
-
-
-//opens modal with Fulton Floor plans and details:
-function showFultonModal(event){
-  $('#myFultonModal').modal('toggle')
-}
-
-
-//opens modal with Fulton Floor plans and details:
-function showStokesModal(event){
-  $('#myFultonModal').modal('toggle')
+function hideAllText(numFloors, buildingID){
+	console.log('hiding all text');
+	for (i = 0; i < numFloors; i++) {
+		newID = "#floorText_floor" + buildingID + String(i);
+		$(newID).removeClass('show');
+		$(newID).addClass('hidden');
+	}
 }
 
 
 
-//*********** DIRK ************//
-
-
-
-function addAlerts() {
-
-	console.log('in addAlerts');
-	//TODO: create alerts
-	potholeLocations = [new google.maps.LatLng(42.334379,-71.169555)];
-	doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
-
-	//instantiating door symbol
-	var wheelchairDoor = {
-		url: '../testImagePhoebe/wheelchair.jpg',
+function addFlag(map, flag) {
+	console.log('in addFlag');
+	//console.log(flag);
+	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
+	var icon = {
+		url: flag.icon,
 		scaledSize: new google.maps.Size(25,25)
 	};
-	//instantiating pothole caution symbol
-	var potholeCaution = {
-		url: '../testImagePhoebe/caution.png',
-		scaledSize:new google.maps.Size(30,25)
-	}
 
-	//adding markers
-	markerArray = [];
-	function addMarkers(array, iconType){
-		for (i = 0; i < array.length; i++){
-			var marker = new google.maps.Marker({
-				position: array[i],
-				icon: iconType,
-				map: map,
-				draggable: false
-			});
-			markerArray.push(marker);
-		}
-	}
+	var marker = new google.maps.Marker({
+		position: loc,
+		icon: icon,
+		map: map,
+		draggable: false
+	});
 
-	//index 0
-	addMarkers(potholeLocations, potholeCaution);
-	//indices 1-2
-	addMarkers(doorLocations, wheelchairDoor);
+	$.ajax({
+		url: '/templates/render',
+		type: 'POST',
+		//contentType: "application/json",
+		data: {
+			title: flag.title,
+			image: flag.image,
+			url: '/views/flag.ejs',
+			description: flag.description
+		},
+		success: function(html) {
+			var content = html.html;
+			//console.log('rendered html for alert:');
+			//console.log(content);
 
-
-	//TODO: make this not ugly
-	//html content for each  marker popup
-	content = ['<div id="content"> <div id="siteNotice"></div>'+
-		'<h1 id="firstHeading" class="firstHeading">Pothole</h1>'+
-		'<div id="bodyContent">'+
-		'<p><b><img src = "../testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
-		'wooooooo sample text!!!</div>',
-
-		'<div id="content"><div id="siteNotice"></div>'+
-		'<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
-		'<div id="bodyContent">'+
-		'<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
-		'wooooooo sample text!!!</div>',
-
-		'<div id="content">'+
-		'<div id="siteNotice">'+
-		'</div>'+
-		'<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
-		'<div id="bodyContent">'+
-		'<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
-		'wooooooo sample text!!!'+
-		'</div>'
-	];
-
-	//boolean: if a window is up, clicking on the map gets rid of it
-	var windowUp = false;
-
-	//makes sure each marker has different content and different click responses
-	function addInfoWindow(marker,contentString){
-		var flagWindow = new google.maps.InfoWindow({
-			content: contentString
-		});
-		google.maps.event.addListener(marker, 'click', function(){
-			windowUp = true;
-			map: map
-			flagWindow.setPosition(event.latLng);
-			flagWindow.open(map,marker);
-		});
-		windows.push(flagWindow);
-	}
-
-	//calls addInfoWindow for each marker
-	for (i = 0; i< markerArray.length; i++){
-		addInfoWindow(markerArray[i],content[i]);
-	}
-
-	//pop up window when click building
-	//var insideBuilding = new google.maps.InfoWindow(); //TODO: deleted this - should I have?
-
-	//all pop up windows
-	windows = [];
-	//if a window (either flag, or a building flag) is open and click map, close the infowindow
-	google.maps.event.addListener(map, 'click', function (event){
-		if (windowUp == true){
-			for (i=0; i<windows.length; i++){
-				windows[i].close();
+			function addInfoWindow(marker,contentString){
+				var flagWindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+				google.maps.event.addListener(marker, 'click', function(){
+					windowUp = true;
+					map: map
+					flagWindow.setPosition(event.latLng);
+					flagWindow.open(map,marker);
+				});
 			}
+
+			var flagWindow = new google.maps.InfoWindow({
+				content: content
+			});
+			google.maps.event.addListener(marker, 'click', function(){
+				windowUp = true;
+				map: map
+				flagWindow.setPosition(event.latLng);
+				flagWindow.open(map,marker);
+			});
+			addInfoWindow(loc,content);
+
+			windowUp = false;
+
+			//if a window (either flag, or a building flag) is open and click map, close the infowindow
+			google.maps.event.addListener(map, 'click', function (event){
+				if (windowUp == true){
+					flagWindow.close();
+				}
+			});
 		}
 	});
 
 }
+
+
+function addAlerts(map) {
+	console.log('in addAlerts');
+	console.log(map.getBounds());
+
+	var bounds = map.getBounds();
+	sw = bounds.getSouthWest();
+	ne = bounds.getNorthEast();
+
+	var SWlat = sw.lat();
+	var SWlng = sw.lng();
+	var NElat = ne.lat();
+	var NElng = ne.lng();
+
+	$.ajax({
+		url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
+		method: 'GET',
+		data: {},
+		success: function(flags) {
+			console.log('flags returned: ');
+			console.log(flags);
+			for (var i = 0; i < flags.documents.length; i++) {
+				var flag = flags.documents[i];
+				addFlag(map, flag);
+			}
+		}
+	});
+}
+
 
 /* Converts the list of coordinates stored in the database
  * to an actual usable array
@@ -212,18 +184,16 @@ function addBuilding(building, map) {
 	var buildingID = building._id; //used to create unique id in DOM for building modal
 
 	$.ajax({
-		url: '/templates/render',
+		url: '/templates/renderbuilding',
 		type: 'POST',
 		contentType: "application/json",
 		data: JSON.stringify({
-			//name: building.name,
 			id: buildingID,
 			url: '/views/modal.ejs',
-			//floorplans: building.floorplans
 		}),
 		success: function(html) {
 			console.log('returned html: ');
-			console.log(html.html);
+			//console.log(html.html);
 			var modalArea = document.getElementById('modals_area');
 			//console.log('inner html: ');
 			//console.log(modalArea.innerHTML);
@@ -246,32 +216,36 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-
+	//populateDatabase();
+ 	
 	console.log('in buildGUI');
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
-	console.log('mapCanvas:');
-	console.log(mapCanvas);
 
 	var mapOptions = {
-        center: new google.maps.LatLng(42.334488, -71.1701876),
-        zoom: zoom,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+		center: new google.maps.LatLng(42.334488, -71.1701876), //TODO: make this dynamic
+		zoom: zoom,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 	var map = new google.maps.Map(mapCanvas, mapOptions);
 	
-	//addBuilding({latitude: 42.334488, longitude: -71.1701876}, mapCanvas);
-	
+	makeKey(map);
+
+	//populate flags, whenever scrolling changes
+	google.maps.event.addListener(map, 'bounds_changed', function() {
+		addAlerts(map);
+	});
+
 	$.ajax({
 		url: '/buildings',
 		method: 'GET',
 		data: {},
 		success: function(data) {
+			console.log('all buildings returned:');
+			console.log(data);
 			//data contains all buildings
 			for (var i = 0; i < data.documents.length; i++) { //TODO: this is wrong
 				var building = data.documents[i];
-				console.log('building from client: ');
-				console.log(building);
 				addBuilding(building, map);
 			}
 		}
@@ -280,273 +254,211 @@ function buildGUI() {
 
 
 
+function makeKey(map) {
+	//MADE A KEY
+	// //need to make dynamic..
+	var key = $('#key');
+	console.log('key: ');
+	console.log(key);
+	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('key'));
+
+	//consider doing this so screen resizing issues go away???
+	// map.controls[google.maps.ControlPosition.TOP].push(document.getElementById('topBar'));
+
+	key.append('<div>');
+	key.append('<img src= "/images/caution.png" height="30" width="30"> Caution<br />');
+	key.append('<img src= "/images/wheelchair.jpg" height="30" width="30"> Accessible Entrance<br />');
+	key.append('<img src= "/images/elevatorIcon.png" height="30" width="30"> Elevator<br />');
+	key.append('</div>');
+	
+	//on double click, creates a marker
+	google.maps.event.addListener(map, 'rightclick', function(event) {
+		var addPin = new google.maps.Marker({
+			map: map,
+			position: event.latLng,
+			draggable: true,
+			animation: google.maps.Animation.DROP,
+			title: "Alert"
+		});
 
 
+		var markerForm = $('<div class = "pin_info">'+ 
+			'<div class = "inner"><strong> Add Pin Here </strong></div>'+
+			'<form action= "createMarker" method = "post">Details:<br />' +
+			'<input type="text" class="save_details"><br /><br />' +
+			'<label for="type">Type:<select name="type" class="save_type">' +
+			'<option value="door">Accessible Door</option>'+
+			'<option value="pothole">Pothole</option>'+
+			'<option value="obstacle">Obstruction</option>' +
+			'<option value="elevator">Elevator</option></select></label>' +
+			'</form><br />' +
+			'<button name="save" class="save">Save Flag</button>' +
+			'<button class="remove" title= "Remove">Remove</button></div>');
 
+		var infoWindow = new google.maps.InfoWindow();
+		infoWindow.setContent(markerForm[0]);
 
+		google.maps.event.addListener(addPin, 'click', function(){
+			infoWindow.open(map,addPin);
+		});
 
+		var removePin = markerForm.find('button.remove')[0];
+		google.maps.event.addDomListener(removePin, "click", function(event){
+			addPin.setMap(null); 
+			var replace = markerForm.find('input.save_details')[0].value;
+			var coords = addPin.position;
+			removeMarker(removePin, replace, coords);
+		});
 
-
-
-
-
-
-
-
-
-
-
-
-//*********** PHOEBE'S FUNCTIONS ************//
-
-// Boston College all-campus coordinates:
-          // center: new google.maps.LatLng(42.3352078, -71.1699536),
-           // zoom: 16,
-//center position: Fulton Hall
-	  
-
-function initialize() { //this is called on load
-	fultonCoords = new google.maps.LatLng(42.334488, -71.1701876);
-        var mapCanvas = document.getElementById('map_canvas');
-        var mapOptions = {
-
-
-            center: fultonCoords,
-            zoom:19,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-
-        var map = new google.maps.Map(mapCanvas, mapOptions)
-
-//Shape of Fulton Hall Building
-        var fultonShape = new google.maps.Polygon({
-          map: map,
-          paths: [
-            new google.maps.LatLng(42.334553,-71.170432),
-            new google.maps.LatLng(42.334319,-71.170346),
-            new google.maps.LatLng(42.334309,-71.170389),
-            new google.maps.LatLng(42.334247,-71.170368),
-            new google.maps.LatLng(42.334245,-71.170335),
-            new google.maps.LatLng(42.334223,-71.170319),
-            new google.maps.LatLng(42.334220,-71.170290),
-            new google.maps.LatLng(42.334247,-71.170193),
-            new google.maps.LatLng(42.334336,-71.169791),
-            new google.maps.LatLng(42.334323,-71.169751),
-            new google.maps.LatLng(42.334348,-71.169673),
-            new google.maps.LatLng(42.334374,-71.169649),
-            new google.maps.LatLng(42.334444,-71.169670),
-            new google.maps.LatLng(42.334444,-71.169713),
-            new google.maps.LatLng(42.334672,-71.169812),
-            new google.maps.LatLng(42.334668,-71.169845),
-            new google.maps.LatLng(42.334800,-71.169898),
-            new google.maps.LatLng(42.334791,-71.169981),
-            new google.maps.LatLng(42.334749,-71.169971),
-            new google.maps.LatLng(42.334749,-71.170016),
-            new google.maps.LatLng(42.334707,-71.170011),
-            new google.maps.LatLng(42.334656,-71.170263),
-            new google.maps.LatLng(42.334685,-71.170282),
-            new google.maps.LatLng(42.334685,-71.170325),
-            new google.maps.LatLng(42.334713,-71.170346),
-            new google.maps.LatLng(42.334695,-71.170432),
-            new google.maps.LatLng(42.334570,-71.170402)
-          ],
-          strokeColor: '#ff0000',
-          strokeOpacity: 0.8,
-          strokeWeight:2,
-          fillOpacity: 0
-        });
-
-//shape of stokes hall
-        var stokesShape = new google.maps.Polygon({
-          map: map,
-          paths: [
-            new google.maps.LatLng(42.334324,-71.171325),
-            new google.maps.LatLng(42.334348,-71.171325),
-            new google.maps.LatLng(42.334376,-71.171207),
-            new google.maps.LatLng(42.334362,-71.171199),
-            new google.maps.LatLng(42.334362,-71.171164),
-            new google.maps.LatLng(42.334274,-71.171127),
-            new google.maps.LatLng(42.334263,-71.171156),
-            new google.maps.LatLng(42.334005,-71.171065),
-            new google.maps.LatLng(42.334009,-71.171035),
-            new google.maps.LatLng(42.333914,-71.170993),
-            new google.maps.LatLng(42.333902,-71.171044),
-            new google.maps.LatLng(42.333824,-71.171019),
-            new google.maps.LatLng(42.333777,-71.171237),
-            new google.maps.LatLng(42.333757,-71.171242),
-            new google.maps.LatLng(42.333733,-71.171363),
-            new google.maps.LatLng(42.333888,-71.171430),
-            new google.maps.LatLng(42.333864,-71.171542),
-            new google.maps.LatLng(42.334112,-71.171623),
-            new google.maps.LatLng(42.334112,-71.171655),
-            new google.maps.LatLng(42.334191,-71.171674),
-            new google.maps.LatLng(42.334195,-71.171609),
-            new google.maps.LatLng(42.334272,-71.171626)
-
-          ],
-          strokeColor: '#ff0000',
-          strokeOpacity: 0.8,
-          strokeWeight:2,
-          fillOpacity: 0
-        });
-
-//event listener when click stokes shape
-//WILL CLEAN THIS UP LATER
-google.maps.event.addListener(stokesShape, 'click', showStokesModal);
-//color changes when mousing over the building
-google.maps.event.addListener(stokesShape, 'mouseover', function (event){
-  this.setOptions({
-    strokeColor: '#ff0000',
-    fillColor: '#ff0000',
-    fillOpacity: 0.5
-  });
-});
-
-//removes color when mouse out of the building
-google.maps.event.addListener(stokesShape, 'mouseout', function (event){
-  this.setOptions({
-    strokeColor: '#ff0000',
-    fillOpacity: 0
-  });
-  
-});
-
-//end stokes stuff
-
-//event listener when click shape
-google.maps.event.addListener(fultonShape, 'click', showFultonModal);
-
-//pop up window when click building
-insideBuilding = new google.maps.InfoWindow();
-
-//boolean: if a window is up, clicking on the map gets rid of it
-var windowUp = false;
-
-// //loads contents of popup window; opens up the popup window 
-// function showFloors(event){
-//   windowUp = true;
-//   map: map
-//   var contentString = '<div id="content">'+
-//       '<div id="siteNotice">'+
-//       '</div>'+
-//       '<h1 id="firstHeading" class="firstHeading">First Floor</h1>'+
-//       '<div id="bodyContent">'+
-//       '<p><b>Insert Floorplan here</b>, lalalalalal <p>Testing stuff</p>' +
-//       'wooooooo sample text!!!'+
-//       '</div> <img src = "../testImagePhoebe/phoebePicTest.jpg" height = "500" width = "500">'
-//       +'</div>';
-//   insideBuilding.setContent(contentString);
-//   insideBuilding.setPosition(fultonCoords);
-//   insideBuilding.open(map);
-//   windows.push(insideBuilding);
-// }
-
-//color changes when mousing over the building
-google.maps.event.addListener(fultonShape, 'mouseover', function (event){
-  this.setOptions({
-    strokeColor: '#ff0000',
-    fillColor: '#ff0000',
-    fillOpacity: 0.5
-  });
-});
-
-//removes color when mouse out of the building
-google.maps.event.addListener(fultonShape, 'mouseout', function (event){
-  this.setOptions({
-    strokeColor: '#ff0000',
-    fillOpacity: 0
-  });
-  
-});
-
-//all pop up windows
-windows = [];
-//if a window (either flag, or a building flag) is open and click map, close the infowindow
-  google.maps.event.addListener(map, 'click', function (event){
-      if (windowUp == true){
-        for (i=0; i<windows.length; i++){
-          windows[i].close();
-        }
-      }
-  });
-
-potholeLocations = [new google.maps.LatLng(42.334379,-71.169555)];
-doorLocations = [new google.maps.LatLng(42.334294,-71.169987), new google.maps.LatLng(42.334635,-71.169783)];
-
-//instantiating door symbol
-var wheelchairDoor = {
-  url: '../testImagePhoebe/wheelchair.jpg',
-  scaledSize: new google.maps.Size(25,25)
-};
-//instantiating pothole caution symbol
-var potholeCaution = {
-  url: '../testImagePhoebe/caution.png',
-  scaledSize:new google.maps.Size(30,25)
+		var savePin = markerForm.find('button.save')[0];
+		console.log('savePin:');
+		console.log(savePin);
+		google.maps.event.addDomListener(savePin, "click", function(event){
+			var details = markerForm.find('input.save_details')[0].value;
+			var type = markerForm.find('select.save_type')[0].value;
+			var coords = addPin.position;
+			saveMarker(savePin, details, type, coords);
+			//clear the old pin
+			infoWindow.close();
+			addPin.setMap(null);
+			//show newly created alert
+			addAlerts(map);
+		});
+	});
 }
 
-//adding markers
-markerArray = [];
-function addMarkers(array, iconType){
-  for (i = 0; i < array.length; i++){
-    var marker = new google.maps.Marker({
-      position: array[i],
-      icon: iconType,
-      map: map,
-      draggable: false
-    })
-    markerArray.push(marker);
-  }
+
+function saveMarker(Pin, replace, type, coords)
+{
+	var coords = coords; //get marker position
+	// console.log(coords.B);   //k = long, B = lat
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+	var icon, title;
+	//TODO: add this back in
+	if (type == "door") {
+		icon = 'images/wheelchair.jpg';
+		title = 'Accessible Door';
+	}
+	else if (type == "pothole") {
+		icon = 'images/caution.png';
+		title = "Pothole";
+	}
+	else if (type == "obstruction") {
+		icon = 'images/caution.png';
+		title = "Obstruction";
+	}
+	else {
+		icon = 'images/elevatorIcon.png';
+		title = "Elevator";
+	}
+	flagData.icon = icon;
+	flagData.title = title;
+
+    //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
+	$.ajax({
+		type: "POST",
+		url: '/flags',
+		data: flagData,
+		success:function(data){
+			//TODO: HOW TO DO NEXT LINE..??
+			replace.html = data; //replace infowindow with new html
+			//Pin.setDraggable(false); 
+			//Pin.setIcon(icon); 
+		},
+		error:function (xhr){
+			alert(thrownError); //TODO: what to do here?
+		}
+	});
 }
 
-//index 0
-addMarkers(potholeLocations, potholeCaution);
-//indices 1-2
-addMarkers(doorLocations, wheelchairDoor);
-
-
-//html content for each  marker popup
-content = ['<div id="content"> <div id="siteNotice"></div>'+
-      '<h1 id="firstHeading" class="firstHeading">Pothole</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/pothole.jpg" height = "100" width = "100"></b>, lalalalalal <p>Testing stuff</p>' +
-      'wooooooo sample text!!!</div>',
-
-      '<div id="content"><div id="siteNotice"></div>'+
-      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b>, lalalalalal <p>Testing stuff</p>' +
-      'wooooooo sample text!!!</div>',
-
-      '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">Front Door</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b><img src = "../testImagePhoebe/fultonHall.jpg" height = "250" width = "300"></b> lalalalalal <p>Testing stuff</p>' +
-      'wooooooo sample text!!!'+
-      '</div>'
-      ];
-
-
-//makes sure each marker has different content and different click responses
-function addInfoWindow(marker,contentString){
-  var flagWindow = new google.maps.InfoWindow({
-    content: contentString
+//TODO: GET request to get an ID
+function removeMarker(Pin, replace, coords)
+{
+   //Remove saved marker from DB and map using jQuery Ajax
+   var position = coords; //get marker position
+   var data = {del : 'true', latlang : coords}; //post variables
+   $.ajax({
+   type: "POST",
+   //TODO: CHECK IF THIS URL PATH RIGHT...
+   url: '/flags',
+   data: data,
+   success:function(data){
+      Pin.setMap(null); 
+      alert(data);
+   },
+   error:function (xhr, ajaxOptions, thrownError){
+       alert(thrownError); 
+   }
   });
-  google.maps.event.addListener(marker, 'click', function(){
-    windowUp = true;
-    map: map
-    flagWindow.setPosition(event.latLng);
-    flagWindow.open(map,marker);
-  });
-  windows.push(flagWindow);
 }
 
-//calls addInfoWindow for each marker
-for (i = 0; i< markerArray.length; i++){
-  addInfoWindow(markerArray[i],content[i]);
+
+
+
+var fultonPoints = [
+	42.334553,-71.170432,
+	42.334319,-71.170346,
+	42.334309,-71.170389,
+	42.334247,-71.170368,
+	42.334245,-71.170335,
+	42.334223,-71.170319,
+	42.334220,-71.170290,
+	42.334247,-71.170193,
+	42.334336,-71.169791,
+	42.334323,-71.169751,
+	42.334348,-71.169673,
+	42.334374,-71.169649,
+	42.334444,-71.169670,
+	42.334444,-71.169713,
+	42.334672,-71.169812,
+	42.334668,-71.169845,
+	42.334800,-71.169898,
+	42.334791,-71.169981,
+	42.334749,-71.169971,
+	42.334749,-71.170016,
+	42.334707,-71.170011,
+	42.334656,-71.170263,
+	42.334685,-71.170282,
+	42.334685,-71.170325,
+	42.334713,-71.170346,
+	42.334695,-71.170432,
+	42.334570,-71.170402
+];
+
+function populateDatabase() {
+	console.log('in populateDatabase');
+	$.ajax({
+		url: '/buildings',
+		method: 'POST',
+		data: {
+			name: "Testing building 1",
+			latitude: 42.334488,
+			longitude: -71.170188,
+			points: fultonPoints.toString(),
+			floorplans: [],
+			image: '/users/dirk/downloads/jeffgordon.jpg'
+		},
+		success: function(data) {
+			console.log('added Fulton Hall');
+				$.ajax({
+				url: '/buildings',
+				method: 'GET',
+				data: {},
+				success: function(data) {
+					console.log(data);
+				}
+			});
+		},
+		error: function(err) {
+			console.log('error in populateDatabase call');
+			console.log(err);
+		}
+	});
 }
 
-}
+
+
+
+
 //google.maps.event.addDomListener(window, 'load', initialize);
 google.maps.event.addDomListener(window, 'load', buildGUI);

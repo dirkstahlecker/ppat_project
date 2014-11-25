@@ -1,5 +1,26 @@
 //requires a document in the database that fits the description
-QUnit.asyncTest("testing flags", function(assert){
+
+QUnit.asyncTest("testing adding floorplans to a building", function(assert) {
+	var buildingID = "5473e345b54ffb5ff4cd5c55";
+	$.ajax({
+		type: "POST",
+		url: '/buildings/floorplan/' + buildingID,
+		data : {
+			number: 1,
+			description: 'This is a description of the first floor',
+			image: '/users/dirk/downloads/jeffgordon.jpg'
+		},
+		success: function(obj) {
+			console.log(obj);
+			ok(obj.building != null);
+			QUnit.start();
+		}
+	}); 	
+});
+
+
+
+/*QUnit.asyncTest("testing flags", function(assert){
 	var latr = 30;
 	var latl = 20;
 	var longb = 20;
@@ -19,14 +40,14 @@ QUnit.asyncTest("testing flags", function(assert){
 			QUnit.start();
 		}
 	}); 
-});
-
+});*/
+/*
 QUnit.asyncTest("testing buildings", function(assert){
 	var id = "5459a7d60b939c4f971a8af0";
 
 	$.ajax({
 		type: "GET",
-		url: '/building/' + id,
+		url: '/buildings/' + id,
 		data : {},
 		success: function(obj) {
 			var res = JSON.parse(obj);
@@ -36,15 +57,15 @@ QUnit.asyncTest("testing buildings", function(assert){
 			QUnit.start();
 		}
 	}); 
-});
-
+});*/
+/*
 QUnit.asyncTest("testing buildings with floors", function(assert){
-	var id = "5459a7d60b939c4f971a8af0"; //building id
+	var id = "546d6c49510934eb9e5bf3fd"; //building id
 	var floor = '1';
 
 	$.ajax({
 		type: "GET",
-		url: '/building/' + id + '/' + floor,
+		url: '/buildings/' + id + '/' + floor,
 		data : {},
 		success: function(obj) {
 			var res = JSON.parse(obj);
@@ -54,4 +75,4 @@ QUnit.asyncTest("testing buildings with floors", function(assert){
 			QUnit.start();
 		}
 	}); 
-});
+});*/
