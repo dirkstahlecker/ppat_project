@@ -3,6 +3,7 @@ var router = express.Router();
 var fs = require('fs');
 var ImageTesting = require('../models/imagetesting.js');
 
+
 router.get('/', function(req,res) {
 	console.log('in GET / route');
 	res.render('main.ejs',{});
@@ -25,8 +26,8 @@ router.get('/', function(req, res) {
 
 	});
 
-});
-
+});*/
+/*
 router.get('/getimage', function(req,res) {
 	console.log('in get image');
 	ImageTesting.findOne({ name: 'test' }, function(err, imgRaw) {
