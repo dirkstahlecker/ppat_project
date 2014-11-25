@@ -37,7 +37,7 @@ app.use('/testing', require('./routes/testing'));
 app.use('/flags', require('./routes/flags'));
 app.use('/buildings', require('./routes/buildings'));
 app.use('/templates', require('./routes/templates'));
-
+app.use('/image/', require('./routes/image'));
 
 // ======================================================================
 // error handling
@@ -70,5 +70,11 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
+// ======================================================================
+// launch 
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+app.listen(port, process.env.OPENSHIFT_NODEJS_IP);
+console.log('The magic happens on port ' + port);
 
 module.exports = app;
