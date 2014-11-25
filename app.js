@@ -33,7 +33,6 @@ app.use(express.static(path.join(__dirname, 'userinterface')));
 // ======================================================================
 // routes
 app.use('/', require('./routes/index'));
-app.use('/testing', require('./routes/testing'));
 app.use('/flags', require('./routes/flags'));
 app.use('/buildings', require('./routes/buildings'));
 app.use('/templates', require('./routes/templates'));
