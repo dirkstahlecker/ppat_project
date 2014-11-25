@@ -51,8 +51,8 @@ function addFlag(map, flag) {
 		},
 		success: function(html) {
 			var content = html.html;
-			console.log('rendered html for alert:');
-			console.log(content);
+			//console.log('rendered html for alert:');
+			//console.log(content);
 
 			function addInfoWindow(marker,contentString){
 				var flagWindow = new google.maps.InfoWindow({
@@ -279,7 +279,6 @@ function makeKey(map) {
 			draggable: true,
 			animation: google.maps.Animation.DROP,
 			title: "Alert"
-			//icon: potholeCaution //change to specific picture? or should pin be added through a form??
 		});
 
 
@@ -395,7 +394,7 @@ function removeMarker(Pin, replace, coords)
 
 
 
-/*
+
 var fultonPoints = [
 	42.334553,-71.170432,
 	42.334319,-71.170346,
@@ -427,16 +426,17 @@ var fultonPoints = [
 ];
 
 function populateDatabase() {
+	console.log('in populateDatabase');
 	$.ajax({
 		url: '/buildings',
 		method: 'POST',
 		data: {
-			name: "Fulton Hall",
+			name: "Testing building 1",
 			latitude: 42.334488,
 			longitude: -71.170188,
-			points: fultonPoints,
+			points: fultonPoints.toString(),
 			floorplans: [],
-			image: null
+			image: '/users/dirk/downloads/jeffgordon.jpg'
 		},
 		success: function(data) {
 			console.log('added Fulton Hall');
@@ -448,9 +448,15 @@ function populateDatabase() {
 					console.log(data);
 				}
 			});
+		},
+		error: function(err) {
+			console.log('error in populateDatabase call');
+			console.log(err);
 		}
 	});
-}*/
+}
+
+
 
 
 

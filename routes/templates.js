@@ -80,8 +80,8 @@ router.post('/renderbuilding', function (req,res) {
 		    if(!err) {
 		        templateString = template;
 		        html = EJS.render(templateString, {building: building});
-		        console.log('rendered html: ');
-		        console.log(html);
+		        //console.log('rendered html: ');
+		        //console.log(html);
 		        res.send({html:html});
 		    }
 		    else {

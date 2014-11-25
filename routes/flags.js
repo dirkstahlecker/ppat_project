@@ -74,14 +74,4 @@ router.delete('/:id', function (req, res) {
 
 
 
-//called from the add new flag dialog box
-router.post('/form', function(req,res) {
-	var flag = new Flag({description: replace, latitude:coords.k, longitude: coords.B });
-
-	flag.save(function(err) {
-
-	});
-});
-
-
 module.exports = router;
