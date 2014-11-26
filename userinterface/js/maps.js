@@ -226,6 +226,7 @@ function buildGUI() {
 	var mapOptions = {
 		center: new google.maps.LatLng(42.334488, -71.1701876), //TODO: make this dynamic
 		zoom: zoom,
+		disableDoubleClickZoom: true,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 	var map = new google.maps.Map(mapCanvas, mapOptions);
@@ -273,7 +274,7 @@ function makeKey(map) {
 	key.append('</div>');
 	
 	//on double click, creates a marker
-	google.maps.event.addListener(map, 'rightclick', function(event) {
+	google.maps.event.addListener(map, 'dblclick', function(event) {
 		var addPin = new google.maps.Marker({
 			map: map,
 			position: event.latLng,
@@ -331,6 +332,12 @@ function makeKey(map) {
 
 function saveMarker(Pin, replace, type, coords)
 {
+
+	var date = new Date();
+	var month = date.getMonth() + 1
+	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
+	replace = replace + '\n'+ timeStamp;
+
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
 	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
