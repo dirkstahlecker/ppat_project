@@ -5,7 +5,7 @@ var fs = require('fs');
 
 router.get('/', function(req,res) {
 	console.log('in GET / route');
-	res.render('main.ejs',{});
+	res.render('main.ejs',{error: null});
 });
 
 /* GET home page. 

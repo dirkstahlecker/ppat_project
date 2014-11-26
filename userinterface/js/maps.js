@@ -337,19 +337,19 @@ function saveMarker(Pin, replace, type, coords)
 	var icon, title;
 	//TODO: add this back in
 	if (type == "door") {
-		icon = 'images/wheelchair.jpg';
+		icon = '/images/wheelchair.jpg';
 		title = 'Accessible Door';
 	}
 	else if (type == "pothole") {
-		icon = 'images/caution.png';
+		icon = '/images/caution.png';
 		title = "Pothole";
 	}
 	else if (type == "obstruction") {
-		icon = 'images/caution.png';
+		icon = '/images/caution.png';
 		title = "Obstruction";
 	}
 	else {
-		icon = 'images/elevatorIcon.png';
+		icon = '/images/elevatorIcon.png';
 		title = "Elevator";
 	}
 	flagData.icon = icon;

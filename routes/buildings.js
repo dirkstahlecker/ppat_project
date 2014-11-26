@@ -8,6 +8,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fs = require('fs');
 
+
+router.get('/addfloor/:id', function (req, res) {
+	console.log('Adding floor route that renders the ejs');
+	var id = req.params.id;
+
+	Building.findOne({_id: id}, function (err, building) {
+		res.render('addfloor.ejs', {building: building});
+	});
+});
+
 /*
   Gets all buildings which are held in the system.
 
@@ -30,14 +40,7 @@ router.get('/', function (req, res) {
 });
 
 
-router.get('/addfloor/:id', function (req, res) {
-	console.log('Adding floor route that renders the ejs');
-	var id = req.params.id;
 
-	Building.findOne({_id: id}, function (err, building) {
-		res.render('addfloor.ejs', {building: building});
-	});
-});
 
 /*
   Gets all buildings which are held in the system.
@@ -237,28 +240,43 @@ router.post('/floorplan/:id', function (req, res) {
 		"description": req.body.description
 	});
 
-	floorplan.image.data = fs.readFileSync(req.body.image);
-	floorplan.image.contentType = 'image/jpeg';
+	var error = null;
+	if (req.body.image != "") { //TODO: use regex to ignore spaces
+		try {
+			floorplan.image.data = fs.readFileSync(req.body.image);
+			floorplan.image.contentType = 'image/jpeg';
+		}
+		catch (err) {
+			floorplan.image = {};
+			error = "Invalid image path";
+			//TODO: alert the user somehow 
+		}
+	}
 
 	console.log("floorplan made");
 	console.log(floorplan);
 
-	floorplan.save(function (err, doc) {
-		if (err) {
-			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-		}
-		Building.findOneAndUpdate({"_id": req.params.id}, {
-			$push: {
-				floorplans: doc._id
-			}
-		}, function (error, building) {
-			if (error) {
+	if (error != null) {
+		res.render('main.ejs', {error: error});
+	}
+	else {
+		floorplan.save(function (err, doc) {
+			if (err) {
 				utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-			} else {
-				res.send({building: building});
 			}
-		});
-	});
+			Building.findOneAndUpdate({"_id": req.params.id}, {
+				$push: {
+					floorplans: doc._id
+				}
+			}, function (error, building) {
+				if (error) {
+					res.render('main.ejs', {error: 'An unknown error occurred'});
+				} else {
+					res.render('main.ejs', {error: null});
+				}
+			});
+		});		
+	}
 });
 
 
