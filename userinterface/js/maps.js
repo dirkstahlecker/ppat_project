@@ -282,9 +282,9 @@ google.maps.event.addListener(map,'zoom_changed', function(){
   var zoom = map.getZoom();
   for (i = 0; i< markerArray.length; i++){
     if (zoom <19 || zoom >20){
-      markerArray[i].setMap(null);
+      // markerArray[i].setMap(null);
     }else{
-      markerArray[i].setMap(map);
+      // markerArray[i].setMap(map);
     }
 }
 });
@@ -311,7 +311,8 @@ function makeKey(map) {
   key.append('</div>');
   
   //on double click, creates a marker
-  google.maps.event.addListener(map, 'rightclick', function(event) {
+  //PHOEBE EDIT - changed to dblclick
+  google.maps.event.addListener(map, 'dblclick', function(event) {
     var addPin = new google.maps.Marker({
       map: map,
       position: event.latLng,
@@ -319,6 +320,7 @@ function makeKey(map) {
       animation: google.maps.Animation.DROP,
       title: "Alert"
     });
+  //END PHOEBE EDIT
 
 
     var markerForm = $('<div class = "pin_info">'+ 
@@ -373,23 +375,31 @@ function saveMarker(Pin, replace, type, coords)
   // console.log(coords.B);   //k = long, B = lat
   var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
   var icon, title;
+
+  //PHOEBE EDIT: adding timestamp
+  var test = new Date();
+  var month = test.getMonth() + 1
+  var timeStamp = month.toString() + '-' + test.getDate().toString() + '-'+test.getFullYear().toString();
+  
   //TODO: add this back in
   if (type == "door") {
     icon = 'images/wheelchair.jpg';
-    title = 'Accessible Door';
+    title = 'Accessible Door\n' + timeStamp;
   }
   else if (type == "pothole") {
     icon = 'images/caution.png';
-    title = "Pothole";
+    title = "Pothole\n" + timeStamp;
   }
   else if (type == "obstruction") {
     icon = 'images/caution.png';
-    title = "Obstruction";
+    title = "Obstruction\n" + timeStamp;
   }
   else {
     icon = 'images/elevatorIcon.png';
-    title = "Elevator";
+    title = "Elevator\n" + timeStamp;
   }
+
+  //END PHOEBE EDIT
   flagData.icon = icon;
   flagData.title = title;
 
