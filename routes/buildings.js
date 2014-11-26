@@ -29,6 +29,16 @@ router.get('/', function (req, res) {
     });
 });
 
+
+router.get('/addfloor/:id', function (req, res) {
+	console.log('Adding floor route that renders the ejs');
+	var id = req.params.id;
+
+	Building.findOne({_id: id}, function (err, building) {
+		res.render('addfloor.ejs', {building: building});
+	});
+});
+
 /*
   Gets all buildings which are held in the system.
   GET /buildings/:id
@@ -61,6 +71,7 @@ router.get('/:id', function (req, res) {
 */
 router.get('/:id/:floor', function (req, res) {
     var buildingsQuery = Building.find({"_id": req.params.id}).populate({path: 'floors', match: {number: req.floor}});
+    console.log('buildingsQuery: ');
     console.log(buildingsQuery);
 
     buildingsQuery.exec(function (err, docs) {
@@ -249,6 +260,7 @@ router.post('/floorplan/:id', function (req, res) {
 		});
 	});
 });
+
 
 router.delete('/:id', function (req, res) {
 	var Buildings = models.Buildings;
