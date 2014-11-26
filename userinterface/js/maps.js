@@ -43,69 +43,68 @@ function hideAllText(numFloors, buildingID){
 
 
 function addFlag(map, flag) {
-  console.log('in addFlag');
-  //console.log(flag);
-  var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
-  var icon = {
-    url: flag.icon,
-    scaledSize: new google.maps.Size(25,25)
-  };
+	console.log('in addFlag');
+	//console.log(flag);
+	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
+	var icon = {
+		url: flag.icon,
+		scaledSize: new google.maps.Size(25,25)
+	};
 
-  var marker = new google.maps.Marker({
-    position: loc,
-    icon: icon,
-    map: map,
-    draggable: false
-  });
+	var marker = new google.maps.Marker({
+		position: loc,
+		icon: icon,
+		map: map,
+		draggable: false
+	});
 
-  $.ajax({
-    url: '/templates/render',
-    type: 'POST',
-    //contentType: "application/json",
-    data: {
-      title: flag.title,
-      image: flag.image,
-      url: '/views/flag.ejs',
-      description: flag.description
-    },
-    success: function(html) {
-      var content = html.html;
-      //console.log('rendered html for alert:');
-      //console.log(content);
+	$.ajax({
+		url: '/templates/render',
+		type: 'POST',
+		data: {
+			title: flag.title,
+			image: flag.image,
+			url: '/views/flag.ejs',
+			description: flag.description
+		},
+		success: function(html) {
+			var content = html.html;
+			//console.log('rendered html for alert:');
+			//console.log(content);
 
-      function addInfoWindow(marker,contentString){
-        var flagWindow = new google.maps.InfoWindow({
-          content: contentString
-        });
-        google.maps.event.addListener(marker, 'click', function(){
-          windowUp = true;
-          map: map
-          flagWindow.setPosition(event.latLng);
-          flagWindow.open(map,marker);
-        });
-      }
+			function addInfoWindow(marker,contentString){
+				var flagWindow = new google.maps.InfoWindow({
+					content: contentString
+				});
+				google.maps.event.addListener(marker, 'click', function(){
+					windowUp = true;
+					map: map
+					flagWindow.setPosition(event.latLng);
+					flagWindow.open(map,marker);
+				});
+			}
 
-      var flagWindow = new google.maps.InfoWindow({
-        content: content
-      });
-      google.maps.event.addListener(marker, 'click', function(){
-        windowUp = true;
-        map: map
-        flagWindow.setPosition(event.latLng);
-        flagWindow.open(map,marker);
-      });
-      addInfoWindow(loc,content);
+			var flagWindow = new google.maps.InfoWindow({
+				content: content
+			});
+			google.maps.event.addListener(marker, 'click', function(){
+				windowUp = true;
+				map: map
+				flagWindow.setPosition(event.latLng);
+				flagWindow.open(map,marker);
+			});
+			addInfoWindow(loc,content);
 
-      windowUp = false;
+			windowUp = false;
 
-      //if a window (either flag, or a building flag) is open and click map, close the infowindow
-      google.maps.event.addListener(map, 'click', function (event){
-        if (windowUp == true){
-          flagWindow.close();
-        }
-      });
-    }
-  });
+			//if a window (either flag, or a building flag) is open and click map, close the infowindow
+			google.maps.event.addListener(map, 'click', function (event){
+				if (windowUp == true){
+					flagWindow.close();
+				}
+			});
+		}
+	});
 
 }
 
@@ -248,6 +247,7 @@ function buildGUI() {
     disableDoubleClickZoom: true,
     //END PHOEBE EDIT
     mapTypeId: google.maps.MapTypeId.ROADMAP
+
     };
   var map = new google.maps.Map(mapCanvas, mapOptions);
   
@@ -494,8 +494,4 @@ function populateDatabase() {
 }
 
 
-
-
-
-//google.maps.event.addDomListener(window, 'load', initialize);
 google.maps.event.addDomListener(window, 'load', buildGUI);
