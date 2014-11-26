@@ -43,12 +43,13 @@ router.post('/', function (req, res) {
     console.log('flag to post:');
     console.log(flag);
 
-    /* //TODO: put back in
-    if (req.body.image != undefined) {
+    if (req.body.image != '') { //TODO: error handling
     	flag.image.data = fs.readFileSync(req.body.image);
     	flag.image.contentType = 'image/jpg';
 	}
-	*/
+	else {
+		flag.image = null;
+	}
 
     flag.save(function (err, docs) {
         if (err) {

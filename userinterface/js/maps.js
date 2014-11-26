@@ -326,9 +326,11 @@ function makeKey(map) {
 
 
 		var markerForm = $('<div class = "pin_info">'+ 
-			'<div class = "inner"><strong> Add Pin Here </strong></div>'+
-			'<form action= "createMarker" method = "post">Details:<br />' +
-			'<input type="text" class="save_details"><br /><br />' +
+			'<div class="inner"><strong> Add Pin Here </strong></div>'+
+			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
+			'<input type="text" name="details" class="save_details"><br />' +
+			'<label for="image">Image</label><br />' +
+			'<input type="text" name="image" id="image" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
@@ -360,7 +362,8 @@ function makeKey(map) {
 			var details = markerForm.find('input.save_details')[0].value;
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
-			saveMarker(savePin, details, type, coords);
+			var image = markerForm.find('input#image').[0].value;
+			saveMarker(savePin, details, type, coords, image);
 			//clear the old pin
 			infoWindow.close();
 			addPin.setMap(null);
@@ -375,13 +378,12 @@ function saveMarker(Pin, replace, type, coords) {
 	var date = new Date();
 	var month = date.getMonth() + 1
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + '\n'+ timeStamp;
+	replace = replace + '<br />'+ timeStamp;
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
 	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
 	var icon, title;
-	//TODO: add this back in
 	if (type == "door") {
 		icon = '/images/wheelchair.jpg';
 		title = 'Accessible Door';
