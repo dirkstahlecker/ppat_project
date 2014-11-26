@@ -14,6 +14,9 @@
 //     new google.maps.LatLng(42.334298,-71.169955)];
 // elevatorLocations = [new google.maps.LatLng(42.334151,-71.171274)];
 
+//FYI: changed elevatorIcon in testImagePhoebe to a black background. name of icon is the same
+//END PHOEBE EDIT: 
+
 
 
 
