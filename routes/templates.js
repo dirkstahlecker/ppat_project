@@ -59,22 +59,18 @@ router.post('/renderbuilding', function (req,res) {
 	var dir = __dirname.split('/routes');
 
 	var building = req.body;
-	console.log('building id in renderbuilding: ');
-	console.log(building.id);
 
 	var url = dir[0] + req.body.url;
 	//console.log('building from server: ');
 	//console.log(building);
 
 	Building.findById(building.id).populate('floorplans').exec(function (err,building) {
-		console.log('populated building');
-		console.log(building);
 
-		console.log('before sorting floorplans');
-		console.log(building.floorplans);
+		//console.log('before sorting floorplans');
+		//console.log(building.floorplans);
 		building.floorplans = building.floorplans.sort(compareFloorplans);
-		console.log('sorted floorplans:');
-		console.log(building.floorplans);
+		//console.log('sorted floorplans:');
+		//console.log(building.floorplans);
 
 		fs.readFile(url, 'utf-8', function(err, template) {
 		    if(!err) {
@@ -152,9 +148,6 @@ router.post('/renderbuilding', function (req,res) {
     - err: an error message
 */
 router.post('/render', function (req,res) {
-	console.log('in render: ');
-	console.log(req.body);
-
 	var data = req.body;
 
 	var dir = __dirname.split('/routes');

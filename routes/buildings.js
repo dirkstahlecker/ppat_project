@@ -84,7 +84,46 @@ function parsePoints(points) {
 }
 
 
-/* Add new building
+
+
+
+
+
+function addBuilding(body) {
+	var image;
+	try {
+		image = {};
+		image.data = fs.readFileSync(body.image);
+		image.contentType = 'image/jpg';
+
+		console.log('image in POST /buildings:');
+		console.log(image);
+	}
+	catch (err) {
+		console.log("ERROR with image in POST /buildings"); //TODO: alert user of invalid url
+		console.log(err);
+	}
+
+	console.log('body.floorplans:');
+	console.log(body.floorplans);
+
+	var building = new Building({
+		"name": body.name,
+		"latitude": body.latitude,
+		"longitude": body.longitude,
+		"points": body.points,
+		"floorplans": []//body.floorplans//,
+		//"image": image
+	});
+
+	console.log('returning from addBuilding')
+
+	return building;
+}
+
+
+
+/* Add new building from an ajax request
 
   POST /buildings
   Request body:
@@ -100,42 +139,74 @@ function parsePoints(points) {
 	- err: error 500
  */
 router.post('/', function (req, res) {
-	var points = parsePoints(req.body.points);
+	console.log('BUILDING POST req.body');
+	console.log(req.body);
 
-	try {
-		var image = {};
-		image.data = fs.readFileSync(req.body.image);
-		image.contentType = 'image/jpg';
+	var body = req.body;
+	body.points = parsePoints(req.body.points);
 
-		console.log('image in POST /buildings:');
-		console.log(image);
-	}
-	catch (err) {
-		console.log("ERROR with image in POST /buildings");
-		console.log(err);
-	}
-
-	var building = new Building({
-		"name": req.body.name,
-		"latitude": req.body.latitude,
-		"longitude": req.body.longitude,
-		"points": points,
-		"floorplans": req.body.floorplans,
-		"image": image
-	});
-
-	console.log('building to be saved: ');
-	console.log(building);
+	var building = addBuilding(body,res,false);
 
 	building.save(function (err, docs) {
 		if (err) {
 			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
 		} else {
-			res.send({building: building});
+			res.send({building: building}); //ajax request; want to return data
 		}
 	});
-	console.log("building saved");
 });
+
+
+
+//add a new building from the add.html form
+router.post('/form', function(req,res) {
+	console.log("SENDING BUILDING DATA TO FORM");
+	console.log(req.body);
+	var body = {};
+
+	console.log('coords coming in:');
+	console.log(req.body.coords);
+	var re = new RegExp("[0-9\-\.]+,[0-9\-\.]+");
+	var coords = req.body.coords.match(re)[0].split(',');
+	console.log('coords after:');
+	console.log(coords);
+
+	try {
+		body.latitude = Number(coords[0]);
+		body.longitude = Number(coords[1]);
+		console.log('latitude:' + body.latitude);
+		console.log('longitude:' + body.longitude);	
+	}
+	catch (err) {
+		console.log('ERROR in getting latitude and longitude');
+		body.latitude = 0;
+		body.longitude = 0;
+	}
+
+	body.name = req.body.buildingname;
+	body.points = []; //TODO: this
+	body.floorplans = '';
+	body.image = req.body.image;
+
+	console.log('form body sending to addBuilding:');
+	console.log(body);
+
+	var building = addBuilding(body,res,true);
+	console.log('returned building in form:');
+	console.log(building);
+
+	building.save(function (err, docs) {
+		if (err) {
+			console.log('saving building error');
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		} else {
+			console.log('redirecting');
+			res.redirect('/');
+		}
+	});
+});
+
+
 
 /* Add floorplan to existing building
   

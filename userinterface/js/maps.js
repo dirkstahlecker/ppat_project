@@ -42,7 +42,6 @@ function addFlag(map, flag) {
 	$.ajax({
 		url: '/templates/render',
 		type: 'POST',
-		//contentType: "application/json",
 		data: {
 			title: flag.title,
 			image: flag.image,
@@ -221,6 +220,8 @@ function buildGUI() {
 	console.log('in buildGUI');
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
+
+
 
 	var mapOptions = {
 		center: new google.maps.LatLng(42.334488, -71.1701876), //TODO: make this dynamic
