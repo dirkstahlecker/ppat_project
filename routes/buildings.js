@@ -181,9 +181,17 @@ router.post('/form', function(req,res) {
 	console.log('coords coming in:');
 	console.log(req.body.coords);
 	var re = new RegExp("[0-9\-\.]+,[0-9\-\.]+");
-	var coords = req.body.coords.match(re)[0].split(',');
-	console.log('coords after:');
-	console.log(coords);
+	var coords;
+	try {
+		coords = req.body.coords.match(re)[0].split(',');
+		console.log('coords after:');
+		console.log(coords);		
+	}
+	catch (err) {
+		res.render('main.ejs', {error: "Error: Coordinates are required"});
+		return;
+	}
+
 
 	try {
 		body.latitude = Number(coords[0]);
@@ -272,7 +280,7 @@ router.post('/floorplan/:id', function (req, res) {
 				if (error) {
 					res.render('main.ejs', {error: 'An unknown error occurred'});
 				} else {
-					res.render('main.ejs', {error: null});
+					res.redirect('/');
 				}
 			});
 		});		
