@@ -412,6 +412,7 @@ function saveMarker(Pin, replace, type, coords)
   flagData.icon = icon;
   flagData.title = title;
 
+
     //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
   $.ajax({
     type: "POST",
