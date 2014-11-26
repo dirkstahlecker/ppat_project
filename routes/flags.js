@@ -33,17 +33,22 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
 
 router.post('/', function (req, res) {
     var flag = new Flag({
-        "color": req.body.color,
+        "title": req.body.title,
         "description": req.body.description,
         "latitude": req.body.latitude,
-        "longitude": req.body.longitude
+        "longitude": req.body.longitude,
+        "icon": req.body.icon,
     });
 
-    flag.icon.data = fs.readFileSync(req.body.icon);
-    flag.icon.contentType = 'image/jpeg';
+    console.log('flag to post:');
+    console.log(flag);
 
-    flag.image.data = fs.readFileSync(req.body.image);
-    flag.image.contentType = 'image/jpeg';
+    /* //TODO: put back in
+    if (req.body.image != undefined) {
+    	flag.image.data = fs.readFileSync(req.body.image);
+    	flag.image.contentType = 'image/jpg';
+	}
+	*/
 
     flag.save(function (err, docs) {
         if (err) {

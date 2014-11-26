@@ -1,10 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-var ImageTesting = require('../models/imagetesting.js');
 
-/* GET home page. */
-/*router.get('/', function(req, res) {
+
+router.get('/', function(req,res) {
+	console.log('in GET / route');
+	res.render('main.ejs',{});
+});
+
+/* GET home page. 
+router.get('/', function(req, res) {
 
 	var imgPath = '/users/dirk/downloads/jeffgordon.jpeg';
 	var img = new ImageTesting({name: 'test' });
@@ -21,7 +26,7 @@ var ImageTesting = require('../models/imagetesting.js');
 	});
 
 });*/
-
+/*
 router.get('/getimage', function(req,res) {
 	console.log('in get image');
 	ImageTesting.findOne({ name: 'test' }, function(err, imgRaw) {
@@ -35,9 +40,9 @@ router.get('/getimage', function(req,res) {
 		//var img = new Buffer(imgRaw.data, 'binary');
 
 		res.writeHead(200, {'Content-Type': 'image/jpeg' });
-		res.end(buf, 'binary'); //TODO: change to base64 is possible
+		res.end(buf, 'binary'); //TODO: change to base64 if possible
 	});	
-});
+});*/
 
 module.exports = router;
 
