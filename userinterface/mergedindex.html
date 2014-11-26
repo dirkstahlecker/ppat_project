@@ -52,6 +52,14 @@
         margin: 0px;
         z-index: -999;
       }
+
+      #key{
+        background: white;
+        padding: 10px;
+        margin: 10px;
+        border:3px solid black;
+      }
+
     </style>
 
 </head>
@@ -67,11 +75,12 @@
 
 
       <!-- Navigation Bar -->
-      <nav class="navbar navbar-default" role="navigation">
+      <!-- PHOEBE added an id: "topbar" -->
+      <nav class="navbar navbar-default" id = "topBar" role="navigation">
         <div class="navbar-header">
            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button> <a class="navbar-brand" href="#">Successible Maps</a>
         </div>
-        
+
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
             <li>
@@ -99,7 +108,10 @@
 </div>
 
 
-
+<!--Legend -->
+<div id = "key">
+<p> <b> Legend </b> </p>
+</div>
 
 <!-- Fulton Modal -->
 <div class="modal fade" id="myFultonModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
