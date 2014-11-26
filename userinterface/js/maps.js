@@ -372,34 +372,40 @@ function makeKey(map) {
 function saveMarker(Pin, replace, type, coords)
 {
   var coords = coords; //get marker position
+
+  //PHOEBE EDIT: adding timestamp to replace, aka the description text
+  var test = new Date();
+  var month = test.getMonth() + 1
+  var timeStamp = month.toString() + '-' + test.getDate().toString() + '-'+test.getFullYear().toString();
+  replace = replace + '\n'+ timeStamp;
+  // console.log('lalallaa' + timeStamp);
+
+  //END PHOEBE EDIT
+
   // console.log(coords.B);   //k = long, B = lat
   var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
   var icon, title;
 
-  //PHOEBE EDIT: adding timestamp
-  var test = new Date();
-  var month = test.getMonth() + 1
-  var timeStamp = month.toString() + '-' + test.getDate().toString() + '-'+test.getFullYear().toString();
+
   
   //TODO: add this back in
   if (type == "door") {
     icon = 'images/wheelchair.jpg';
-    title = 'Accessible Door\n' + timeStamp;
+    title = 'Accessible Door';
   }
   else if (type == "pothole") {
     icon = 'images/caution.png';
-    title = "Pothole\n" + timeStamp;
+    title = "Pothole";
   }
   else if (type == "obstruction") {
     icon = 'images/caution.png';
-    title = "Obstruction\n" + timeStamp;
+    title = "Obstruction";
   }
   else {
     icon = 'images/elevatorIcon.png';
-    title = "Elevator\n" + timeStamp;
+    title = "Elevator";
   }
 
-  //END PHOEBE EDIT
   flagData.icon = icon;
   flagData.title = title;
 
