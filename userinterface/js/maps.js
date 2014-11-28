@@ -325,7 +325,6 @@ function makeKey(map) {
 			title: "Alert"
 		});
 
-
 		var markerForm = $('<div class = "pin_info">'+ 
 			'<div class="inner"><strong> Add Pin Here </strong></div>'+
 			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
@@ -343,6 +342,8 @@ function makeKey(map) {
 
 		var infoWindow = new google.maps.InfoWindow();
 		infoWindow.setContent(markerForm[0]);
+
+    infoWindow.open(map,addPin); //open window immediately..
 
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
