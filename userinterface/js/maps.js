@@ -299,7 +299,6 @@ google.maps.event.addListener(map,'zoom_changed', function(){
 
 function makeKey(map) {
 	//MADE A KEY
-	// //need to make dynamic..
 	var key = $('#key');
 	console.log('key: ');
 	console.log(key);
@@ -324,7 +323,6 @@ function makeKey(map) {
 			title: "Alert"
 		});
 
-
 		var markerForm = $('<div class = "pin_info">'+ 
 			'<div class="inner"><strong> Add Pin Here </strong></div>'+
 			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
@@ -334,7 +332,7 @@ function makeKey(map) {
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
-			'<option value="obstacle">Obstruction</option>' +
+			'<option value="obstacle">Obstacle</option>' +
 			'<option value="elevator">Elevator</option></select></label>' +
 			'</form><br />' +
 			'<button name="save" class="save">Save Flag</button>' +
@@ -342,6 +340,8 @@ function makeKey(map) {
 
 		var infoWindow = new google.maps.InfoWindow();
 		infoWindow.setContent(markerForm[0]);
+
+    infoWindow.open(map,addPin); //open window immediately
 
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
@@ -356,14 +356,14 @@ function makeKey(map) {
 		});
 
 		var savePin = markerForm.find('button.save')[0];
-		console.log('savePin:');
-		console.log(savePin);
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
-			var image = markerForm.find('input.images')[0].value;
-			saveMarker(savePin, details, type, coords, image);
+
+			//var image = markerForm.find('input.image')[0].value;//got rid of .[0] -> [0]
+			saveMarker(savePin, details, type, coords); //got rid of image parameter.. not being used yet in saveMarker
+
 			//clear the old pin
 			infoWindow.close();
 			addPin.setMap(null);
@@ -378,11 +378,11 @@ function saveMarker(Pin, replace, type, coords, image) {
 	var date = new Date();
 	var month = date.getMonth() + 1
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + '<br />'+ timeStamp;
+	replace = replace + "<p> <br />"+ timeStamp + "</p>";
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
-	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.B, image: image}; //post variables
 	var icon, title;
 	if (type == "door") {
 		icon = '/images/wheelchair.jpg';
@@ -392,9 +392,9 @@ function saveMarker(Pin, replace, type, coords, image) {
 		icon = '/images/caution.png';
 		title = "Pothole";
 	}
-	else if (type == "obstruction") {
+	else if (type == "obstacle") {
 		icon = '/images/caution.png';
-		title = "Obstruction";
+		title = "Obstacle";
 	}
 	else {
 		icon = '/images/elevatorIcon.png';
