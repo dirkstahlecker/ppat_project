@@ -14,7 +14,6 @@
 //     new google.maps.LatLng(42.334298,-71.169955)];
 // elevatorLocations = [new google.maps.LatLng(42.334151,-71.171274)];
 
-//FYI: changed elevatorIcon in testImagePhoebe to a black background. name of icon is the same
 //END PHOEBE EDIT: 
 
 
@@ -234,7 +233,7 @@ function addBuilding(building, map) {
     }),
     success: function(html) {
 		console.log('returned html: ');
-		//console.log(html.html);
+		console.log(html.html);
 		var modalArea = $('#modals_area');
 
 		//console.log('inner html: ');
@@ -243,7 +242,9 @@ function addBuilding(building, map) {
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
 			console.log("EVENT LISTENER WAS CALLED: " + building.name);
-			$('#' + buildingID).modal('toggle');
+			// $('#' + buildingID).modal('show');
+            $('#myFultonModal').modal('toggle');
+            
 		});
 		},
 		error: function(err) {
@@ -257,7 +258,7 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-	//populateDatabase();
+	populateDatabase();
 
 	console.log('in buildGUI');
 	var zoom = 19;
@@ -507,7 +508,7 @@ function populateDatabase() {
       longitude: -71.170188,
       points: fultonPoints.toString(),
       floorplans: [],
-      image: '/users/dirk/downloads/jeffgordon.jpg'
+      image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
     },
     success: function(data) {
       console.log('added Fulton Hall');
