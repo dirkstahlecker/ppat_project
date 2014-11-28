@@ -43,9 +43,16 @@ router.post('/', function (req, res) {
     console.log('flag to post:');
     console.log(flag);
 
+    console.log('req.body.image:' + req.body.image);
+
     if (req.body.image != '') { //TODO: error handling
-    	flag.image.data = fs.readFileSync(req.body.image);
-    	flag.image.contentType = 'image/jpg';
+    	try {
+			flag.image.data = fs.readFileSync(req.body.image);
+			flag.image.contentType = 'image/jpg';   		
+    	}
+    	catch (err) {
+    		console.log("ERROR in POST /flags with getting the image");
+    	}
 	}
 	else {
 		flag.image = null;
