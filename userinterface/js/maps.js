@@ -61,6 +61,7 @@ function addFlag(map, flag) {
 		draggable: false
 	});
 
+
 	$.ajax({
 		url: '/templates/render',
 		type: 'POST',
@@ -72,31 +73,49 @@ function addFlag(map, flag) {
 		},
 		success: function(html) {
 			var content = html.html;
-			//console.log('rendered html for alert:');
-			//console.log(content);
 
-			function addInfoWindow(marker,contentString){
-				var flagWindow = new google.maps.InfoWindow({
-					content: contentString
-				});
-				google.maps.event.addListener(marker, 'click', function(){
-					windowUp = true;
-					map: map
-					flagWindow.setPosition(event.latLng);
-					flagWindow.open(map,marker);
-				});
-			}
+
+//PHOEBE EDIT: got rid of this function; seemed redundant?
+			// function addInfoWindow(marker,contentString){
+			// 	var flagWindow = new google.maps.InfoWindow({
+			// 		content: contentString
+			// 	});
+			// 	google.maps.event.addListener(marker, 'click', function(){
+			// 		windowUp = true;
+			// 		map: map
+			// 		flagWindow.setPosition(event.latLng);
+			// 		flagWindow.open(map,marker);
+			// 	});
+			// }
 
 			var flagWindow = new google.maps.InfoWindow({
 				content: content
 			});
+
+//PHOEBE: waits for infowindow to load before setting event listener for remove button click
+      google.maps.event.addListener(flagWindow, 'domready', function() {
+          var removePin = $(content).contents().find('button.remove')[0];
+          console.log('remove Pin: ' + $('.remove'));
+          $('.remove').off('click').on('click', function(event){
+            //PHOEBE: This prints okay
+              console.log('PHOEBE AHHHHHH' + marker);
+              marker.setMap(null);
+              console.log("why is it not gone");
+              //PHOEBE: seems to load again; maybe removing from database
+                        //would prevent it from reloading the flag?
+              // removeMarker();
+          });
+            
+      });
+
 			google.maps.event.addListener(marker, 'click', function(){
 				windowUp = true;
 				map: map
 				flagWindow.setPosition(event.latLng);
 				flagWindow.open(map,marker);
 			});
-			addInfoWindow(loc,content);
+			// addInfoWindow(loc,content); //commented this out because got rid of fcn
+//END PHOEBE EDIT
 
 			windowUp = false;
 
@@ -138,6 +157,7 @@ function addAlerts(map) {
       }
     }
   });
+
 }
 
 
@@ -358,6 +378,9 @@ function makeKey(map) {
 		var savePin = markerForm.find('button.save')[0];
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
+      details = details + '<button class="remove" title= "Remove">Remove</button></div>';
+      console.log("details");
+      console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
 			var image = markerForm.find('input#image')[0].value;//got rid of .[0] -> [0]
@@ -376,7 +399,7 @@ function saveMarker(Pin, replace, type, coords, image) {
 	var date = new Date();
 	var month = date.getMonth() + 1
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + "<p> <br />"+ timeStamp + "</p>";
+	replace = replace + "<p> <br />"+ timeStamp;
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
@@ -407,7 +430,6 @@ function saveMarker(Pin, replace, type, coords, image) {
 		url: '/flags',
 		data: flagData,
 		success:function(data){
-			//TODO: HOW TO DO NEXT LINE..??
 			replace.html = data; //replace infowindow with new html
 			//Pin.setDraggable(false); 
 			//Pin.setIcon(icon); 
@@ -420,7 +442,8 @@ function saveMarker(Pin, replace, type, coords, image) {
 
 function removeMarker(Pin, replace, coords)
 {
-   //Remove saved marker from DB and map using jQuery Ajax
+  //if pin is not in database yet, just remove from UI
+
    var position = coords; //get marker position
    var data = {del : 'true', latlang : coords}; //post variables
    $.ajax({
