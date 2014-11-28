@@ -271,14 +271,32 @@ function buildGUI() {
 
 	};
 	var map = new google.maps.Map(mapCanvas, mapOptions);
+    makeKey(map);
 
-	makeKey(map);
 
-	//populate flags, whenever scrolling changes
-	google.maps.event.addListener(map, 'bounds_changed', function() {
-	addAlerts(map);
-	});
+    //PHOEBE EDIT: THIS IS NOW A LOWER PRIORITY TASK
+    var displayFlags = true;
+    google.maps.event.addListener(map,'zoom_changed', function(){
+      var zoom = map.getZoom();
+        if (zoom <19 || zoom >20){
+            displayFlags = false;
+        }else{
+            displayFlags = true;
+        }
+    });
 
+        //populate flags, whenever scrolling changes
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        if (displayFlags){
+            addAlerts(map);
+        }else{
+            //PHOEBE: once it's loaded, the flags don't go away. 
+            //choices: delete from database every time zoom changes (no)
+            //figure out clustering of markers as described in Maps developer article(time)
+            console.log("NO FLAGS HERE PLEASE");
+        }
+     });
+      //END PHOEBE EDIT
 
 	$.ajax({
 		url: '/buildings',
@@ -295,25 +313,6 @@ function buildGUI() {
 		}
 	});
 }
-
-
-/* TODO: put this in
-  //PHOEBE EDIT:
-  //markerArray = all the arrays (use GET call?)
-  //another way: don't create markers unless zoom is in this range (boolean value 
-                  //when zoom changes?)
-google.maps.event.addListener(map,'zoom_changed', function(){
-  var zoom = map.getZoom();
-  for (i = 0; i< markerArray.length; i++){
-    if (zoom <19 || zoom >20){
-      // markerArray[i].setMap(null);
-    }else{
-      // markerArray[i].setMap(map);
-    }
-}
-});
-  //END PHOEBE EDIT
-}*/
 
 
 
