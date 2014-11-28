@@ -199,7 +199,7 @@ function addBuilding(building, map) {
   var buildingShape = new google.maps.Polygon({
     map: map,
     paths: paths,
-    strokeColor: '#ff0000', //TODO: make these into variables
+    strokeColor: '#ff0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillOpacity: 0
@@ -233,23 +233,23 @@ function addBuilding(building, map) {
       url: '/views/modal.ejs',
     }),
     success: function(html) {
-      console.log('returned html: ');
-      //console.log(html.html);
-      var modalArea = document.getElementById('modals_area');
-      //console.log('inner html: ');
-      //console.log(modalArea.innerHTML);
-      modalArea.innerHTML += html.html;
-      //create anonymous function to be the event listener
-      google.maps.event.addListener(buildingShape, 'click', function (event) { 
-        console.log("EVENT LISTENER WAS CALLED: " + building.name);
-        $('#' + buildingID).modal('toggle');
-      });
-    },
-    error: function(err) {
-      console.log('ERROR in rendering EJS template');
-    }
-  });
+		console.log('returned html: ');
+		//console.log(html.html);
+		var modalArea = $('#modals_area');
 
+		//console.log('inner html: ');
+		//console.log(modalArea.innerHTML);
+		modalArea.innerHTML += html.html;
+		//create anonymous function to be the event listener
+		google.maps.event.addListener(buildingShape, 'click', function (event) { 
+			console.log("EVENT LISTENER WAS CALLED: " + building.name);
+			$('#' + buildingID).modal('toggle');
+		});
+		},
+		error: function(err) {
+			console.log('ERROR in rendering EJS template');
+		}
+  });
 }
 
 
@@ -346,8 +346,8 @@ function makeKey(map) {
 			'<div class="inner"><strong> Add Pin Here </strong></div>'+
 			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
 			'<input type="text" name="details" class="save_details"><br />' +
-			'<label for="image">Image</label><br />' +
-			'<input type="text" name="image" id="image" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
+			//'<label for="image">Image</label><br />' +
+			//'<input type="text" name="image" class="images" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
@@ -360,7 +360,7 @@ function makeKey(map) {
 		var infoWindow = new google.maps.InfoWindow();
 		infoWindow.setContent(markerForm[0]);
 
-    infoWindow.open(map,addPin); //open window immediately
+    	infoWindow.open(map,addPin); //open window immediately
 
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
@@ -377,13 +377,15 @@ function makeKey(map) {
 		var savePin = markerForm.find('button.save')[0];
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
-      details = details + '<button class="remove" title= "Remove">Remove</button></div>';
-      console.log("details");
-      console.log(details);
+			details = details + '<button class="remove" title= "Remove">Remove</button></div>';
+			console.log("details");
+			console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
-			var image = markerForm.find('input#image')[0].value;//got rid of .[0] -> [0]
-      saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
+
+			//var image = markerForm.find('input.image')[0].value;//got rid of .[0] -> [0]
+			saveMarker(savePin, details, type, coords); //got rid of image parameter.. not being used yet in saveMarker
+
 			//clear the old pin
 			infoWindow.close();
 			addPin.setMap(null);
@@ -422,6 +424,8 @@ function saveMarker(Pin, replace, type, coords, image) {
 	}
 	flagData.icon = icon;
 	flagData.title = title;
+	flagData.image = image;
+
 
     //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
 	$.ajax({

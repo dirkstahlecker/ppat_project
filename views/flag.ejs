@@ -2,7 +2,9 @@
 	<div id="siteNotice"></div>
 	<h4 id="firstHeading" class="firstHeading"><%= data.title %></h4>
 	<div id="bodyContent">
-		<p><strong><img src = "<%= data.image %>" height = "100" width = "100" /></strong>
-			<%- data.description %>
+
+			<p><strong><img src="<%= data.image %>" onerror="this.style.visibility='hidden'" height="100" width="100" /></strong>
+
+		<%- data.description %>
 	</div>
 </div>
