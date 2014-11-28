@@ -332,7 +332,7 @@ function makeKey(map) {
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
-			'<option value="obstacle">Obstruction</option>' +
+			'<option value="obstruction">Obstruction</option>' +
 			'<option value="elevator">Elevator</option></select></label>' +
 			'</form><br />' +
 			'<button name="save" class="save">Save Flag</button>' +
