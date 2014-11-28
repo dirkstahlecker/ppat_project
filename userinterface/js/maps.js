@@ -199,7 +199,7 @@ function addBuilding(building, map) {
   var buildingShape = new google.maps.Polygon({
     map: map,
     paths: paths,
-    strokeColor: '#ff0000', //TODO: make these into variables
+    strokeColor: '#ff0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillOpacity: 0
@@ -233,23 +233,23 @@ function addBuilding(building, map) {
       url: '/views/modal.ejs',
     }),
     success: function(html) {
-      console.log('returned html: ');
-      //console.log(html.html);
-      var modalArea = document.getElementById('modals_area');
-      //console.log('inner html: ');
-      //console.log(modalArea.innerHTML);
-      modalArea.innerHTML += html.html;
-      //create anonymous function to be the event listener
-      google.maps.event.addListener(buildingShape, 'click', function (event) { 
-        console.log("EVENT LISTENER WAS CALLED: " + building.name);
-        $('#' + buildingID).modal('toggle');
-      });
-    },
-    error: function(err) {
-      console.log('ERROR in rendering EJS template');
-    }
-  });
+		console.log('returned html: ');
+		//console.log(html.html);
+		var modalArea = $('#modals_area');
 
+		//console.log('inner html: ');
+		//console.log(modalArea.innerHTML);
+		modalArea.innerHTML += html.html;
+		//create anonymous function to be the event listener
+		google.maps.event.addListener(buildingShape, 'click', function (event) { 
+			console.log("EVENT LISTENER WAS CALLED: " + building.name);
+			$('#' + buildingID).modal('toggle');
+		});
+		},
+		error: function(err) {
+			console.log('ERROR in rendering EJS template');
+		}
+  });
 }
 
 
@@ -361,7 +361,7 @@ function makeKey(map) {
 		var infoWindow = new google.maps.InfoWindow();
 		infoWindow.setContent(markerForm[0]);
 
-    infoWindow.open(map,addPin); //open window immediately
+    	infoWindow.open(map,addPin); //open window immediately
 
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
@@ -378,9 +378,9 @@ function makeKey(map) {
 		var savePin = markerForm.find('button.save')[0];
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
-      details = details + '<button class="remove" title= "Remove">Remove</button></div>';
-      console.log("details");
-      console.log(details);
+			details = details + '<button class="remove" title= "Remove">Remove</button></div>';
+			console.log("details");
+			console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
 
