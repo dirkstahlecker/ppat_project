@@ -376,7 +376,7 @@ function saveMarker(Pin, replace, type, coords, image) {
 	var date = new Date();
 	var month = date.getMonth() + 1
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + '\n'+ timeStamp;
+	replace = replace + "<p> <br />"+ timeStamp + "</p>";
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
