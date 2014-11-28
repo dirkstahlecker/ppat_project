@@ -332,7 +332,7 @@ function makeKey(map) {
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
-			'<option value="obstruction">Obstruction</option>' +
+			'<option value="obstacle">Obstacle</option>' +
 			'<option value="elevator">Elevator</option></select></label>' +
 			'</form><br />' +
 			'<button name="save" class="save">Save Flag</button>' +
@@ -356,29 +356,11 @@ function makeKey(map) {
 		});
 
 		var savePin = markerForm.find('button.save')[0];
-		console.log('savePin:');
-		console.log(savePin);
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
-
-    console.log('details:');
-    console.log(details);
-
 			var type = markerForm.find('select.save_type')[0].value;
-
-    console.log('type:');
-    console.log(type);
-
 			var coords = addPin.position;
-
-    console.log('coords:');
-    console.log(coords);
-
 			var image = markerForm.find('input#image')[0].value;//got rid of .[0] -> [0]
-			
-      console.log('image:');
-      console.log(image);
-
       saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
 			//clear the old pin
 			infoWindow.close();
@@ -408,9 +390,9 @@ function saveMarker(Pin, replace, type, coords, image) {
 		icon = '/images/caution.png';
 		title = "Pothole";
 	}
-	else if (type == "obstruction") {
+	else if (type == "obstacle") {
 		icon = '/images/caution.png';
-		title = "Obstruction";
+		title = "Obstacle";
 	}
 	else {
 		icon = '/images/elevatorIcon.png';
