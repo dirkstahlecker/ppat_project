@@ -300,6 +300,7 @@ google.maps.event.addListener(map,'zoom_changed', function(){
 function makeKey(map) {
 	//MADE A KEY
 	// //need to make dynamic..
+  console.log('make key..');
 	var key = $('#key');
 	console.log('key: ');
 	console.log(key);
@@ -362,7 +363,7 @@ function makeKey(map) {
 			var details = markerForm.find('input.save_details')[0].value;
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
-			var image = markerForm.find('input#image').[0].value;
+			var image = markerForm.find('input#image')[0].value;//got rid of .[0] -> [0]
 			saveMarker(savePin, details, type, coords, image);
 			//clear the old pin
 			infoWindow.close();
