@@ -299,8 +299,6 @@ google.maps.event.addListener(map,'zoom_changed', function(){
 
 function makeKey(map) {
 	//MADE A KEY
-	// //need to make dynamic..
-  console.log('make key..');
 	var key = $('#key');
 	console.log('key: ');
 	console.log(key);
@@ -362,10 +360,26 @@ function makeKey(map) {
 		console.log(savePin);
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
+
+    console.log('details:');
+    console.log(details);
+
 			var type = markerForm.find('select.save_type')[0].value;
+
+    console.log('type:');
+    console.log(type);
+
 			var coords = addPin.position;
+
+    console.log('coords:');
+    console.log(coords);
+
 			var image = markerForm.find('input#image')[0].value;//got rid of .[0] -> [0]
-			saveMarker(savePin, details, type, coords, image);
+			
+      console.log('image:');
+      console.log(image);
+
+      saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
 			//clear the old pin
 			infoWindow.close();
 			addPin.setMap(null);
@@ -376,15 +390,15 @@ function makeKey(map) {
 }
 
 
-function saveMarker(Pin, replace, type, coords) {
+function saveMarker(Pin, replace, type, coords, image) {
 	var date = new Date();
 	var month = date.getMonth() + 1
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + '<br />'+ timeStamp;
+	replace = replace + '\n'+ timeStamp;
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
-	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.B, image: image}; //post variables
 	var icon, title;
 	if (type == "door") {
 		icon = '/images/wheelchair.jpg';

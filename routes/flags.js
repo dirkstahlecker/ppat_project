@@ -43,13 +43,16 @@ router.post('/', function (req, res) {
     console.log('flag to post:');
     console.log(flag);
 
-    if (req.body.image != '') { //TODO: error handling
-    	flag.image.data = fs.readFileSync(req.body.image);
-    	flag.image.contentType = 'image/jpg';
-	}
-	else {
-		flag.image = null;
-	}
+    //image stuff is broken; comment out for now
+
+ //    if (req.body.image != '') { //TODO: error handling
+ //    	flag.image.data = fs.readFileSync(req.body.image);
+ //    	flag.image.contentType = 'image/jpg';
+	// }
+	// else {
+ //        console.log("IT'S NULL :(");
+	// 	flag.image = null;
+	// }
 
     flag.save(function (err, docs) {
         if (err) {
