@@ -343,7 +343,7 @@ function makeKey(map) {
 		var infoWindow = new google.maps.InfoWindow();
 		infoWindow.setContent(markerForm[0]);
 
-    infoWindow.open(map,addPin); //open window immediately..
+    infoWindow.open(map,addPin); //open window immediately
 
 		google.maps.event.addListener(addPin, 'click', function(){
 			infoWindow.open(map,addPin);
