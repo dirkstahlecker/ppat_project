@@ -19,11 +19,7 @@ router.get('/building/:id', function (req,res) {
 	var id = req.params.id;
 
 	Building.findOne({_id: id}, 'image', function(err, building) {
-
-		//console.log(imgRaw);
-		console.log(building.image.data);
 		var buf = building.image.data;
-		console.log(buf);
 
 		res.writeHead(200, {'Content-Type': 'image/jpg' });
 		res.end(buf, 'binary'); //TODO: change to base64 if possible

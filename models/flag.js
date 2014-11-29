@@ -14,8 +14,6 @@ flagSchema.methods.inView = function() {
 };
 */
 flagSchema.statics.inView = function(latl, latr, longb, longt, callback) {
-    console.log('Flag inView');
-
     var inView = [];
     this.find({}).sort({"end":-1}).exec(function(error, docs){
         docs.forEach(function(doc){

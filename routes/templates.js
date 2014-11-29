@@ -57,26 +57,15 @@ function compareFloorplans(a,b) {
 */
 router.post('/renderbuilding', function (req,res) {
 	var dir = __dirname.split('/routes');
-
 	var buildingIn = req.body;
-
 	var url = dir[0] + req.body.url;
-	//console.log('building from server: ');
-	//console.log(building);
 
 	Building.findById(buildingIn.id).populate('floorplans').exec(function (err,building) {
 
-		//console.log('before sorting floorplans');
-		//console.log(building.floorplans);
 		building.floorplans = building.floorplans.sort(compareFloorplans);
-		//console.log('sorted floorplans:');
-		//console.log(building.floorplans);
 
 		fs.readFile(url, 'utf-8', function(err, template) {
 		    if(!err) {
-
-		    	console.log('rendering with building data: ');
-				console.log(building);
 
 		        templateString = template;
 		        html = EJS.render(templateString, {building: building});
@@ -88,56 +77,6 @@ router.post('/renderbuilding', function (req,res) {
 		    	console.log('Error in reading file: ' + err);
 		    }
 		});
-		
-		/*
-		var floorplans = [];
-		//console.log('building.floorplans:');
-		//console.log(building.floorplans);
-		var plansInBuilding = building.floorplans;
-		Floorplan.find({}, function (err, floorplans) {
-			//finds all floorplans
-			console.log('all floorplans:');
-			console.log(floorplans);
-			for (var i = 0; i < floorplans.length; i++) {
-				var plan = floorplans[i];
-				if (jQuery.inArray(plan._id, plansInBuilding) != -1) {
-					console.log('found!');
-				}
-			}
-		});*/
-		/*
-		async.eachSeries(building.floorplans,
-			function(floorplanID, callback) {
-				console.log('floorplanID in each');
-				console.log(floorplanID);
-				console.log('err');
-				console.log(err);
-				Floorplan.findOne({_id: floorplanID}, function(err, found_plan) {
-					console.log('pushing this floorplan: ');
-					console.log(found_plan);
-					floorplans.push(found_plan);
-					//callback();
-				});
-			},
-			function(err) { //callback
-				console.log('in async callback');
-				var html = "";
-				var templateString = null;
-				building.floorplans = floorplans;
-				//console.log('building after manually adding floorplans');
-				//console.log(building);
-				fs.readFile(url, 'utf-8', function(err, template) {
-				    if(!err) {
-				        templateString = template;
-				        html = EJS.render(templateString, {building: building});
-				        res.send({html:html});
-				    }
-				    else {
-				    	console.log('Error in reading file: ' + err);
-				    }
-				});
-			}
-		);*/
 	});
 });
 
@@ -156,7 +95,6 @@ router.post('/render', function (req,res) {
 
 	var dir = __dirname.split('/routes');
 	var url = dir[0] + req.body.url;
-	console.log(url);
 
 	var html = "";
 	var templateString = null;
