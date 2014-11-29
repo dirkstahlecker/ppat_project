@@ -228,28 +228,26 @@ function addBuilding(building, map) {
     type: 'POST',
     contentType: "application/json",
     data: JSON.stringify({
-      id: buildingID,
-      url: '/views/modal.ejs',
+		id: buildingID,
+		url: '/views/modal.ejs',
     }),
     success: function(html) {
-		console.log('returned html: ');
-		console.log(html.html);
-		var modalArea = $('#modals_area');
+		//console.log('returned html: ');
+		//console.log(html.html);
 
-		//console.log('inner html: ');
-		//console.log(modalArea.innerHTML);
-		modalArea.innerHTML += html.html;
+		var modalArea = $('#modals_area');
+		old_html = modalArea.html();
+		modalArea.html(old_html + html.html);
+
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
-			console.log("EVENT LISTENER WAS CALLED: " + building.name);
-			$('#' + buildingID).modal('toggle');
-            // $('#myFultonModal').modal('toggle');
-            
+			console.log("EVENT LISTENER WAS CALLED: " + building._id);
+            $('#' + buildingID).modal('toggle');
 		});
-		},
-		error: function(err) {
-			console.log('ERROR in rendering EJS template');
-		}
+	},
+	error: function(err) {
+		console.log('ERROR in rendering EJS template');
+	}
   });
 }
 
@@ -258,7 +256,6 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-	populateDatabase();
 
 	console.log('in buildGUI');
 	var zoom = 19;

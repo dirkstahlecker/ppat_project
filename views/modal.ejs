@@ -1,6 +1,6 @@
 <!-- Building Modal -->
 
-<div class="modal fade" id="<%= building.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="<%= building.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -11,8 +11,6 @@
       </div>
       <div class="modal-body">
 
-
-
     <table class="table">
         <tbody>
           <tr>
@@ -20,7 +18,7 @@
               <ul class="nav nav-pills nav-stacked" role="tablist">
                   <% for (var i = 0; i < building.floorplans.length; i++) { %> <!-- TODO: allow negative floors -->
                   	<% var num = building.floorplans[i].number %>
-                      <li role="presentation"><a href="#" onclick='showFloor("<%= building._id %>", "<%= num %>",<%= building.floorplans.length %>)'>
+                      <li role="presentation"><a href="#" onclick='showFloor("<%= building._id %>","<%= num %>",<%= building.floorplans.length %>)'>
                       	<% if (num == 0) { %>
                       		Summary
                       	<% } else { %>

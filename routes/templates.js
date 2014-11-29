@@ -58,13 +58,13 @@ function compareFloorplans(a,b) {
 router.post('/renderbuilding', function (req,res) {
 	var dir = __dirname.split('/routes');
 
-	var building = req.body;
+	var buildingIn = req.body;
 
 	var url = dir[0] + req.body.url;
 	//console.log('building from server: ');
 	//console.log(building);
 
-	Building.findById(building.id).populate('floorplans').exec(function (err,building) {
+	Building.findById(buildingIn.id).populate('floorplans').exec(function (err,building) {
 
 		//console.log('before sorting floorplans');
 		//console.log(building.floorplans);
@@ -74,6 +74,10 @@ router.post('/renderbuilding', function (req,res) {
 
 		fs.readFile(url, 'utf-8', function(err, template) {
 		    if(!err) {
+
+		    	console.log('rendering with building data: ');
+				console.log(building);
+
 		        templateString = template;
 		        html = EJS.render(templateString, {building: building});
 		        //console.log('rendered html: ');
