@@ -14,7 +14,6 @@
 //     new google.maps.LatLng(42.334298,-71.169955)];
 // elevatorLocations = [new google.maps.LatLng(42.334151,-71.171274)];
 
-//FYI: changed elevatorIcon in testImagePhoebe to a black background. name of icon is the same
 //END PHOEBE EDIT: 
 
 
@@ -233,8 +232,10 @@ function addBuilding(building, map) {
 		url: '/views/modal.ejs',
     }),
     success: function(html) {
+
 		//console.log('returned html: ');
 		//console.log(html.html);
+
 		var modalArea = $('#modals_area');
 
 		console.log('inner html: ');
@@ -244,10 +245,16 @@ function addBuilding(building, map) {
 		console.log(modalArea.innerHTML);
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
+
 			console.log("EVENT LISTENER WAS CALLED: " + building._id);
 			$('#' + buildingID).modal('toggle');
 			//document.getElementById(buildingID).modal('toggle');
 			//console.log(document.getElementById('#' + buildingID).innerHTML);
+
+			// $('#' + buildingID).modal('show');
+            $('#myFultonModal').modal('toggle');
+            
+
 		});
 		},
 		error: function(err) {
@@ -261,7 +268,7 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-	//populateDatabase();
+	populateDatabase();
 
 	console.log('in buildGUI');
 	var zoom = 19;
@@ -275,14 +282,32 @@ function buildGUI() {
 
 	};
 	var map = new google.maps.Map(mapCanvas, mapOptions);
+    makeKey(map);
 
-	makeKey(map);
 
-	//populate flags, whenever scrolling changes
-	google.maps.event.addListener(map, 'bounds_changed', function() {
-	addAlerts(map);
-	});
+    //PHOEBE EDIT: THIS IS NOW A LOWER PRIORITY TASK
+    var displayFlags = true;
+    google.maps.event.addListener(map,'zoom_changed', function(){
+      var zoom = map.getZoom();
+        if (zoom <19 || zoom >20){
+            displayFlags = false;
+        }else{
+            displayFlags = true;
+        }
+    });
 
+        //populate flags, whenever scrolling changes
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        if (displayFlags){
+            addAlerts(map);
+        }else{
+            //PHOEBE: once it's loaded, the flags don't go away. 
+            //choices: delete from database every time zoom changes (no)
+            //figure out clustering of markers as described in Maps developer article(time)
+            console.log("NO FLAGS HERE PLEASE");
+        }
+     });
+      //END PHOEBE EDIT
 
 	$.ajax({
 		url: '/buildings',
@@ -299,25 +324,6 @@ function buildGUI() {
 		}
 	});
 }
-
-
-/* TODO: put this in
-  //PHOEBE EDIT:
-  //markerArray = all the arrays (use GET call?)
-  //another way: don't create markers unless zoom is in this range (boolean value 
-                  //when zoom changes?)
-google.maps.event.addListener(map,'zoom_changed', function(){
-  var zoom = map.getZoom();
-  for (i = 0; i< markerArray.length; i++){
-    if (zoom <19 || zoom >20){
-      // markerArray[i].setMap(null);
-    }else{
-      // markerArray[i].setMap(map);
-    }
-}
-});
-  //END PHOEBE EDIT
-}*/
 
 
 
@@ -512,7 +518,7 @@ function populateDatabase() {
       longitude: -71.170188,
       points: fultonPoints.toString(),
       floorplans: [],
-      image: '/users/dirk/downloads/jeffgordon.jpg'
+      image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
     },
     success: function(data) {
       console.log('added Fulton Hall');
