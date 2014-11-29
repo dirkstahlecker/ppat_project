@@ -97,7 +97,6 @@ function addFlag(map, flag) {
           console.log('remove Pin: ' + $('.remove'));
           $('.remove').off('click').on('click', function(event){
             //PHOEBE: This prints okay
-              console.log('PHOEBE AHHHHHH' + marker);
               marker.setMap(null);
               console.log("why is it not gone");
               //PHOEBE: seems to load again; maybe removing from database
@@ -344,8 +343,8 @@ function makeKey(map) {
 			'<div class="inner"><strong> Add Pin Here </strong></div>'+
 			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
 			'<input type="text" name="details" class="save_details"><br />' +
-			//'<label for="image">Image</label><br />' +
-			//'<input type="text" name="image" class="images" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
+			'<label for="image">Image</label><br />' +
+			'<input type="text" name="image" class="images" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
@@ -376,13 +375,15 @@ function makeKey(map) {
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
 			details = details + '<button class="remove" title= "Remove">Remove</button></div>';
-			console.log("details");
-			console.log(details);
+			// console.log("details");
+			// console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
 
-			//var image = markerForm.find('input.image')[0].value;//got rid of .[0] -> [0]
-			saveMarker(savePin, details, type, coords); //got rid of image parameter.. not being used yet in saveMarker
+			var image = markerForm.find('input.images')[0].value;//got rid of .[0] -> [0]
+            // console.log("image");
+            // console.log(image);
+			saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
 
 			//clear the old pin
 			infoWindow.close();
@@ -423,6 +424,8 @@ function saveMarker(Pin, replace, type, coords, image) {
 	flagData.icon = icon;
 	flagData.title = title;
 	flagData.image = image;
+    console.log("flagdata image");
+    console.log(flagData.image);
 
 
     //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
@@ -505,6 +508,7 @@ function populateDatabase() {
       longitude: -71.170188,
       points: fultonPoints.toString(),
       floorplans: [],
+      // image: '../img/testImagePhoebe/fultonHall.jpg'
       image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
     },
     success: function(data) {

@@ -40,11 +40,10 @@ router.post('/', function (req, res) {
         "icon": req.body.icon,
     });
 
-    console.log('flag to post:');
-    console.log(flag);
-
+    // console.log('TESTING IMAGES:');
+    // console.log('req.body.image:' + req.body.image);
     /*
-    console.log('req.body.image:' + req.body.image);
+   
 
     if (req.body.image != '') { //TODO: error handling
     	try {
