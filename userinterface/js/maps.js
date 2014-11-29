@@ -243,7 +243,6 @@ function addBuilding(building, map) {
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
 			console.log("EVENT LISTENER WAS CALLED: " + building._id);
             $('#' + buildingID).modal('toggle');
-
 		});
 	},
 	error: function(err) {
