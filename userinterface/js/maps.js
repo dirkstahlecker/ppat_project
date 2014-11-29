@@ -361,7 +361,6 @@ function makeKey(map) {
 		var savePin = markerForm.find('button.save')[0];
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
-			details = details + '<button class="remove" title= "Remove">Remove</button></div>';
 			// console.log("details");
 			// console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
@@ -452,12 +451,11 @@ function removeMarker(Pin, coords)
 				url: '/flags/' + flag._id,
 				type: "DELETE",
 				success: function(data){
-					console.log("i think it worked?");
 					// Pin.setMap(null); 
-					alert(data);
+					console.log('successfully removed from database');
 				},
 				error: function (xhr, status, err){
-					alert(err); 
+					console.log(err);
 				}
 			});
 		},
