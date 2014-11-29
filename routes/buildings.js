@@ -126,8 +126,8 @@ function addBuilding(body) {
 		"latitude": body.latitude,
 		"longitude": body.longitude,
 		"points": body.points,
-		"floorplans": []//body.floorplans//,
-		//"image": image
+		"floorplans": [],//body.floorplans//,
+		"image": image
 	});
 
 	//console.log('returning from addBuilding')
