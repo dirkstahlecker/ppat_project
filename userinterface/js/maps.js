@@ -76,22 +76,22 @@ function addFlag(map, flag) {
 				content: content
 			});
 
-//PHOEBE: waits for infowindow to load before setting event listener for remove button click
-      google.maps.event.addListener(flagWindow, 'domready', function() {
-          var removePin = $(content).contents().find('button.remove')[0];
-          console.log('remove Pin: ' + $('.remove'));
-          $('.remove').off('click').on('click', function(event){
-            //PHOEBE: This prints okay
-                console.log("why is it not gone");
-              //PHOEBE: seems to load again; maybe removing from database
-                        //would prevent it from reloading the flag?
-                marker.setMap(null);
-                console.log("should be deleted now..");
-                removeMarker(marker);
-                
-          });
-            
-      });
+			//PHOEBE: waits for infowindow to load before setting event listener for remove button click
+			google.maps.event.addListener(flagWindow, 'domready', function() {
+			  var removePin = $(content).contents().find('button.remove')[0];
+			  console.log('remove Pin: ' + $('.remove'));
+			  $('.remove').off('click').on('click', function(event){
+			    //PHOEBE: This prints okay
+			        console.log("why is it not gone");
+			      //PHOEBE: seems to load again; maybe removing from database
+			                //would prevent it from reloading the flag?
+			        marker.setMap(null);
+			        console.log("should be deleted now..");
+			        removeMarker(marker, loc);
+			        
+			  });
+			    
+			});
 
 			google.maps.event.addListener(marker, 'click', function(){
 				windowUp = true;
@@ -117,32 +117,31 @@ function addFlag(map, flag) {
 
 
 function addAlerts(map) {
-  console.log('in addAlerts');
-  console.log(map.getBounds());
+	console.log('in addAlerts');
+	console.log(map.getBounds());
 
-  var bounds = map.getBounds();
-  sw = bounds.getSouthWest();
-  ne = bounds.getNorthEast();
+	var bounds = map.getBounds();
+	sw = bounds.getSouthWest();
+	ne = bounds.getNorthEast();
 
-  var SWlat = sw.lat();
-  var SWlng = sw.lng();
-  var NElat = ne.lat();
-  var NElng = ne.lng();
+	var SWlat = sw.lat();
+	var SWlng = sw.lng();
+	var NElat = ne.lat();
+	var NElng = ne.lng();
 
-  $.ajax({
-    url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
-    method: 'GET',
-    data: {},
-    success: function(flags) {
-      console.log('flags returned: ');
-      console.log(flags);
-      for (var i = 0; i < flags.documents.length; i++) {
-        var flag = flags.documents[i];
-        addFlag(map, flag);
-      }
-    }
-  });
-
+	$.ajax({
+	url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
+	method: 'GET',
+	data: {},
+	success: function(flags) {
+		console.log('flags returned: ');
+		console.log(flags);
+		for (var i = 0; i < flags.documents.length; i++) {
+			var flag = flags.documents[i];
+			addFlag(map, flag);
+		}
+	}
+	});
 }
 
 
@@ -432,28 +431,41 @@ function saveMarker(Pin, replace, type, coords, image) {
 	});
 }
 
-function removeMarker(Pin)
+function removeMarker(Pin, coords)
 {
-  //if pin is not in database yet, just remove from UI
+	console.log('removeMarker coords:');
+	console.log(coords);
+	$.ajax({
+		url: '/flags/' + coords.k + '/' + coords.B,
+		type: 'GET',
+		success: function(flag) {
+			console.log('removeMarker returned flag:');
+			console.log(flag);
+			//if pin is not in database yet, just remove from UI
 
-   // var position = coords; //get marker position
-   // var data = {del : 'true'}//, latlang : coords}; //post variables
-   // console.log($(this));
-   $.ajax({
-        //with just /flags, 404 error. when hard code marker's id from
-        //database, 500 error....
-        url: '/flags',
-        type: "DELETE",
-        async: true, //don't know what this means
-        success:function(data){
-            console.log("i think it worked?");
-            // Pin.setMap(null); 
-            alert(data);
-        },
-        error:function (xhr, status, err){
-           alert(err); 
-        }
-    });
+			// var position = coords; //get marker position
+			// var data = {del : 'true'}//, latlang : coords}; //post variables
+			// console.log($(this));
+			$.ajax({
+				//with just /flags, 404 error. when hard code marker's id from
+				//database, 500 error....
+				url: '/flags/' + flag._id,
+				type: "DELETE",
+				success: function(data){
+					console.log("i think it worked?");
+					// Pin.setMap(null); 
+					alert(data);
+				},
+				error: function (xhr, status, err){
+					alert(err); 
+				}
+			});
+		},
+		error: function(err) {
+
+		}
+
+	});
 }
 
 

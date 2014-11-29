@@ -30,6 +30,20 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
     });
 });
 
+router.get('/:lat/:lng', function (req,res) {
+	console.log(req.params.lat);
+	console.log(req.params.lng);
+	Flag.findOne({latitude: req.params.lat, longitude: req.params.lng}, function(err,flag) {
+		console.log(flag);
+		if (err) {
+			utils.sendErrResponse(res,500, 'Unknown database error');
+		}
+		else {
+			res.send(flag);
+		}
+	});
+});
+
 router.post('/', function (req, res) {
     var flag = new Flag({
         "title": req.body.title,
@@ -70,16 +84,13 @@ router.post('/', function (req, res) {
 
 
 router.delete('/:id', function (req, res) {
-    var Flags = models.Flags;
-    Flags.remove({
-        "_id": req.id
-    }).exec(function (err, doc) {
-        if (err) {
-            utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-        } else {
-            utils.sendSuccessResponse(res);
-        }
-    });
+	Flag.remove({_id: req.params.id}, function (err, doc) {
+		if (err) {
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		} else {
+			utils.sendSuccessResponse(res);
+		}
+	});
 });
 
 
