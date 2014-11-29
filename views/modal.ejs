@@ -11,6 +11,9 @@
       </div>
       <div class="modal-body">
 
+
+
+
     <table class="table">
         <tbody>
           <tr>
@@ -28,13 +31,17 @@
                   <% } %>
               </ul>
             </td>
-            <td> <!-- Floor Plan -->
-              	<img id="floorImage" src="/image/building/<%= building._id %>" class="floorplan">
+            <td>
+            	<% for (var i = 0; i < building.floorplans.length; i++) { %>
+            		<% var num = building.floorplans[i].number %>
+            		<span id="floorImage_floor<%= building._id %><%= num %>" class="<% if (num == 0) { %>show <% } else { %>hidden <% } %>">
+            			<img src="/image/floorplan/<%= building.floorplans[i]._id %>" onerror="this.onerror=null; this.src='/img/placeholder.jpg';" />
+            		</span>
+            	<% } %>
             </td>
           </tr>
         </tbody>
       </table>
-
 
 
 <!-- Detailed Descriptions of Floor Plans -->
@@ -57,9 +64,6 @@
 				</div>
 			</tr>
             <% } %>
-
-            <!-- ??? need to make class not hidden for the [0] description -->
-
         </tbody>
       </table>
 

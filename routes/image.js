@@ -1,36 +1,55 @@
 var express = require('express');
 var router = express.Router();
-var Building = require('../models/building');
-var floorplan = require('../models/floorplan');
+//var Building = require('../models/building');
+var Floorplan = require('../models/floorplan');
 var fs = require('fs');
+var utils = require('../utils/utils');
 
 
 /*
   Retreives an image from the database associated with a building
 
-  POST /templates/renderbuilding
+  POST /image/building/:id
   Request body:
     - None
   Response:
     - success: image buffer
     - err: an error message
 */
-router.get('/building/:id', function (req,res) {
+router.get('/floorplan/:id', function (req,res) {
+	console.log('in GET /floorplan/:id');
 	var id = req.params.id;
 
-	Building.findOne({_id: id}, 'image', function(err, building) {
-		var buf = building.image.data;
+	Floorplan.findOne({_id: id}, 'image', function(err, floorplan) {
+		var buf = floorplan.image.data;
 
-		console.log('finding building image:');
-		console.log(building);
+		console.log('buf: ');
 		console.log(buf);
 
-		res.writeHead(200, {'Content-Type': 'image/jpg' });
-		res.end(buf, 'binary'); //TODO: change to base64 if possible
+		if (buf == null || buf == undefined || buf == "") {
+			utils.sendErrResponse(res, 500, 'Error: no image available');
+		}
+		else {
+			/* console.log('finding floorplan image:');
+			console.log(floorplan);
+			console.log(buf); */
 
+			res.writeHead(200, {'Content-Type': 'image/jpg' });
+			res.end(buf, 'binary'); //TODO: change to base64 if possible
+		}
 	});
 });
 
+
+router.get('/placeholder', function (req,res) {
+	var data = fs.readFileSync('/img/placeholder.jpg');
+	var contentType = 'image/jpg';
+
+	res.writeHead(200, {'Content-Type': 'image/jpg' });
+	res.end(data, 'binary');
+});
+
+/*
 router.get('/:imgPath', function(req, res) {
 
 	var imgPath = req.params.imgPath;
@@ -47,11 +66,8 @@ router.get('/:imgPath', function(req, res) {
 
 		});	
 	});
-
-
-
 });
-
+*/
 
 
 module.exports = router;

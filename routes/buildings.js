@@ -286,17 +286,16 @@ router.post('/floorplan/:id', function (req, res) {
 	});
 
 	var error = null;
-	if (req.body.image != "") { //TODO: use regex to ignore spaces
-		try {
-			floorplan.image.data = fs.readFileSync(req.body.image);
-			floorplan.image.contentType = 'image/jpeg';
-		}
-		catch (err) {
-			floorplan.image = {};
-			error = "Invalid image path";
-			//TODO: alert the user somehow 
-		}
+	try {
+		floorplan.image.data = fs.readFileSync(req.body.image);
+		floorplan.image.contentType = 'image/jpeg';
 	}
+	catch (err) {
+		floorplan.image = {};
+		error = "Invalid image path";
+		//TODO: alert the user somehow 
+	}
+	
 
 
 	if (error != null) {

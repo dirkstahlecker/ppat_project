@@ -20,26 +20,32 @@
 
 
 function showFloor(buildingID, updateFloor, numFloors){
-  console.log('in showFloor');
-  //newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
-  //document.getElementById("floorImage").src = newImageSource;
+	console.log('in showFloor');
+	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
+	//document.getElementById("floorImage").src = newImageSource;
 
-  //hide all text
-  hideAllText(numFloors, buildingID);
+	//hide all text
+	hideAllText(numFloors, buildingID);
 
-  //show the relevant text
-  newTextID = "#floorText_floor" + buildingID + updateFloor;
-  $(newTextID).removeClass('hidden');
-  $(newTextID).addClass('show');
+	//show the relevant text
+	newTextID = "#floorText_floor" + buildingID + updateFloor;
+	newPicID = "#floorImage_floor" + buildingID + updateFloor;
+	$(newTextID).removeClass('hidden');
+	$(newPicID).removeClass('hidden');
+	$(newTextID).addClass('show');
+	$(newPicID).addClass('show');
 }
 
 function hideAllText(numFloors, buildingID){
-  console.log('hiding all text');
-  for (i = 0; i < numFloors; i++) {
-    newID = "#floorText_floor" + buildingID + String(i);
-    $(newID).removeClass('show');
-    $(newID).addClass('hidden');
-  }
+	console.log('hiding all text');
+	for (i = 0; i < numFloors; i++) {
+		var newID = "#floorText_floor" + buildingID + String(i);
+		var newPicID = "#floorImage_floor" + buildingID + String(i);
+		$(newID).removeClass('show');
+		$(newID).addClass('hidden');
+		$(newPicID).removeClass('show');
+		$(newPicID).addClass('hidden');
+	}
 }
 
 
@@ -509,9 +515,7 @@ function populateDatabase() {
       latitude: 42.334488,
       longitude: -71.170188,
       points: fultonPoints.toString(),
-      floorplans: [],
-      image: '../img/testImagePhoebe/fultonHall.jpg'
-      // image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
+      floorplans: []
     },
     success: function(data) {
       console.log('added Fulton Hall');
