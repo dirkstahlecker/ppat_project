@@ -229,21 +229,25 @@ function addBuilding(building, map) {
     type: 'POST',
     contentType: "application/json",
     data: JSON.stringify({
-      id: buildingID,
-      url: '/views/modal.ejs',
+		id: buildingID,
+		url: '/views/modal.ejs',
     }),
     success: function(html) {
-		console.log('returned html: ');
+		//console.log('returned html: ');
 		//console.log(html.html);
 		var modalArea = $('#modals_area');
 
-		//console.log('inner html: ');
-		//console.log(modalArea.innerHTML);
+		console.log('inner html: ');
+		console.log(modalArea.innerHTML);
 		modalArea.innerHTML += html.html;
+		console.log('inner html after addition:');
+		console.log(modalArea.innerHTML);
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
-			console.log("EVENT LISTENER WAS CALLED: " + building.name);
+			console.log("EVENT LISTENER WAS CALLED: " + building._id);
 			$('#' + buildingID).modal('toggle');
+			//document.getElementById(buildingID).modal('toggle');
+			//console.log(document.getElementById('#' + buildingID).innerHTML);
 		});
 		},
 		error: function(err) {
