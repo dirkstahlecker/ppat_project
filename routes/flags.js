@@ -68,6 +68,7 @@ router.post('/', function (req, res) {
     });
 });
 
+
 router.delete('/:id', function (req, res) {
     var Flags = models.Flags;
     Flags.remove({
