@@ -72,21 +72,6 @@ function addFlag(map, flag) {
 		},
 		success: function(html) {
 			var content = html.html;
-
-
-//PHOEBE EDIT: got rid of this function; seemed redundant?
-			// function addInfoWindow(marker,contentString){
-			// 	var flagWindow = new google.maps.InfoWindow({
-			// 		content: contentString
-			// 	});
-			// 	google.maps.event.addListener(marker, 'click', function(){
-			// 		windowUp = true;
-			// 		map: map
-			// 		flagWindow.setPosition(event.latLng);
-			// 		flagWindow.open(map,marker);
-			// 	});
-			// }
-
 			var flagWindow = new google.maps.InfoWindow({
 				content: content
 			});
@@ -97,11 +82,13 @@ function addFlag(map, flag) {
           console.log('remove Pin: ' + $('.remove'));
           $('.remove').off('click').on('click', function(event){
             //PHOEBE: This prints okay
-              marker.setMap(null);
-              console.log("why is it not gone");
+                console.log("why is it not gone");
               //PHOEBE: seems to load again; maybe removing from database
                         //would prevent it from reloading the flag?
-              // removeMarker();
+                marker.setMap(null);
+                console.log("should be deleted now..");
+                removeMarker(marker);
+                
           });
             
       });
@@ -369,7 +356,7 @@ function makeKey(map) {
 			addPin.setMap(null); 
 			var replace = markerForm.find('input.save_details')[0].value;
 			var coords = addPin.position;
-			removeMarker(removePin, replace, coords);
+			removeMarker(removePin);
 		});
 
 		var savePin = markerForm.find('button.save')[0];
@@ -436,7 +423,9 @@ function saveMarker(Pin, replace, type, coords, image) {
 		data: flagData,
 		success:function(data){
 			replace.html = data; //replace infowindow with new html
-			//Pin.setDraggable(false); 
+			console.log("supah success");
+            console.log(Pin.id);
+            //Pin.setDraggable(false); 
 			//Pin.setIcon(icon); 
 		},
 		error:function (xhr){
@@ -445,24 +434,26 @@ function saveMarker(Pin, replace, type, coords, image) {
 	});
 }
 
-function removeMarker(Pin, replace, coords)
+function removeMarker(Pin)
 {
   //if pin is not in database yet, just remove from UI
 
-   var position = coords; //get marker position
-   var data = {del : 'true', latlang : coords}; //post variables
+   // var position = coords; //get marker position
+   // var data = {del : 'true'}//, latlang : coords}; //post variables
+   // console.log($(this).attr("id"));
    $.ajax({
-   type: "POST",
-   url: '/flags',
-   data: data,
-   success:function(data){
-      Pin.setMap(null); 
-      alert(data);
-   },
-   error:function (xhr, ajaxOptions, thrownError){
-       alert(thrownError); 
-   }
-  });
+        url: '/flags',
+        type: "DELETE",
+        async: true, //don't know what this means
+        success:function(data){
+            console.log("i think it worked?");
+            // Pin.setMap(null); 
+            // alert(data);
+        },
+        error:function (xhr, status, err){
+           alert(err); 
+        }
+    });
 }
 
 
