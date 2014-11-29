@@ -10,7 +10,7 @@ var fs = require('fs');
 
 
 router.get('/addfloor/:id', function (req, res) {
-	console.log('Adding floor route that renders the ejs');
+	//console.log('Adding floor route that renders the ejs');
 	var id = req.params.id;
 
 	Building.findOne({_id: id}, function (err, building) {
@@ -74,8 +74,8 @@ router.get('/:id', function (req, res) {
 */
 router.get('/:id/:floor', function (req, res) {
     var buildingsQuery = Building.find({"_id": req.params.id}).populate({path: 'floors', match: {number: req.floor}});
-    console.log('buildingsQuery: ');
-    console.log(buildingsQuery);
+    //console.log('buildingsQuery: ');
+    //console.log(buildingsQuery);
 
     buildingsQuery.exec(function (err, docs) {
         if (err) {
@@ -118,19 +118,19 @@ function addBuilding(body) {
 		console.log(err);
 	}
 
-	console.log('body.floorplans:');
-	console.log(body.floorplans);
+	//console.log('body.floorplans:');
+	//console.log(body.floorplans);
 
 	var building = new Building({
 		"name": body.name,
 		"latitude": body.latitude,
 		"longitude": body.longitude,
 		"points": body.points,
-		"floorplans": []//body.floorplans//,
-		//"image": image
+		"floorplans": [],//body.floorplans//,
+		"image": image
 	});
 
-	console.log('returning from addBuilding')
+	//console.log('returning from addBuilding')
 
 	return building;
 }
@@ -153,8 +153,8 @@ function addBuilding(body) {
 	- err: error 500
  */
 router.post('/', function (req, res) {
-	console.log('BUILDING POST req.body');
-	console.log(req.body);
+	//console.log('BUILDING POST req.body');
+	//console.log(req.body);
 
 	var body = req.body;
 	body.points = parsePoints(req.body.points);
@@ -210,9 +210,6 @@ router.post('/form', function(req,res) {
 	body.floorplans = '';
 	body.image = req.body.image;
 
-	console.log('form body sending to addBuilding:');
-	console.log(body);
-
 	var building = addBuilding(body,res,true);
 	console.log('returned building in form:');
 	console.log(building);
@@ -243,9 +240,26 @@ router.post('/form', function(req,res) {
 */
 router.post('/floorplan/:id', function (req, res) {
 	console.log('in POST /buildings/floorplan/:id');
+
+	var dscr = req.body.description;
+
+	var re = new RegExp('\/\/');
+	var segments = dscr.split(re);
+	console.log('segments');
+	console.log(segments);
+
+	var description = "";
+	for (var i = 0; i < segments.length; i++) {
+		description += '<li>'
+		description += segments[i];
+		description += '</li>'
+	}
+	console.log('fixed description:');
+	console.log(description);
+
 	var floorplan = new Floorplan({
 		"number": req.body.number,
-		"description": req.body.description
+		"description": description
 	});
 
 	var error = null;
@@ -261,8 +275,6 @@ router.post('/floorplan/:id', function (req, res) {
 		}
 	}
 
-	console.log("floorplan made");
-	console.log(floorplan);
 
 	if (error != null) {
 		res.render('main.ejs', {error: error});

@@ -255,6 +255,7 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
+	//populateDatabase();
 
 	console.log('in buildGUI');
 	var zoom = 19;

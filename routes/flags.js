@@ -24,7 +24,6 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
             console.log('error!');
             utils.sendErrResponse(res, 500, 'An unknown error occurred.');
         } else {
-            console.log('sending success response'); 
             //utils.sendSuccessResponse(res, {documents: result});
             res.send({documents: result});
         }
