@@ -505,7 +505,7 @@ function populateDatabase() {
     url: '/buildings',
     method: 'POST',
     data: {
-      name: "Testing building 1",
+      name: "Fulton Hall",
       latitude: 42.334488,
       longitude: -71.170188,
       points: fultonPoints.toString(),

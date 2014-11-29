@@ -95,7 +95,7 @@
             <div class="well well-sm">
                 <form class="form-horizontal" method="post" action="/buildings/form">
                     <fieldset>
-                        <legend class="text-center header">Add a Floor to building</legend>
+                        <legend class="text-center header">Add A Building</legend>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-1 text-center"><i class="fa fa-user bigicon"></i></span>
@@ -108,15 +108,15 @@
                             <span class="col-md-1 col-md-offset-1 text-center"><i class="fa fa-user bigicon"></i></span>
                             <div class="col-md-8">
                                 Center Coordinates (latitude, longitude)*
-                                <input id="coords" name="coords" type="text" placeholder="ex: (42.330380, -71.166187)" class="form-control">
+                                <input id="coords" name="coords" type="text" placeholder="ex: 42.330380, -71.166187" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <span class="col-md-1 col-md-offset-1 text-center"><i class="fa fa-envelope-o bigicon"></i></span>
-                            <div class="col-md-8">
-                                Building Radius* 
-                                <input id="radius" name="radius" type="text" placeholder="ex: 100ft" class="form-control">
+                            <div class="col-md-8"> 
+                                Building Outline (single number for radius (in feet), comma separated list for outline (in degrees))
+                                <input id="points" name="points" type="text" placeholder="ex: 100,23,65,64,24,34,67,76" class="form-control">
                             </div>
                         </div>
 

@@ -116,6 +116,7 @@ function addBuilding(body) {
 	catch (err) {
 		console.log("ERROR with image in POST /buildings"); //TODO: alert user of invalid url
 		console.log(err);
+		image = "";
 	}
 
 	//console.log('body.floorplans:');
@@ -129,8 +130,6 @@ function addBuilding(body) {
 		"floorplans": [],//body.floorplans//,
 		"image": image
 	});
-
-	//console.log('returning from addBuilding')
 
 	return building;
 }
@@ -174,8 +173,6 @@ router.post('/', function (req, res) {
 
 //add a new building from the add.html form
 router.post('/form', function(req,res) {
-	console.log("SENDING BUILDING DATA TO FORM");
-	console.log(req.body);
 	var body = {};
 
 	console.log('coords coming in:');
@@ -206,10 +203,36 @@ router.post('/form', function(req,res) {
 	}
 
 	body.name = req.body.buildingname;
-	body.points = []; //TODO: this
 	body.floorplans = '';
 	body.image = req.body.image;
 
+	var points = req.body.points.split(',');
+	if (points.length > 1) {
+		body.points = parsePoints(req.body.points);
+	}
+	else {
+		try {
+			var radius = Number(req.body.points);
+			radius /= 5000000; //TODO: kind of a hack (get an actual conversation factor)
+			if (radius == NaN) {
+				res.render('main.ejs', {error: "Error: Coordinates must only contain numbers and commas"});
+			}
+			console.log('radius: ' + radius);
+			console.log('latitude - radius: ' + String(body.latitude - radius));
+			body.points = [ 
+				body.latitude - radius , body.longitude - radius,
+				body.latitude + radius , body.longitude - radius,
+				body.latitude + radius , body.longitude + radius,
+				body.latitude - radius , body.longitude + radius
+			];
+		}
+		catch (err) {
+			res.render('main.ejs', {error: "Error: Coordinates must only contain numbers and commas"});
+		}
+	}
+
+	console.log('body.points:');
+	console.log(body.points);
 	var building = addBuilding(body,res,true);
 	console.log('returned building in form:');
 	console.log(building);
@@ -217,7 +240,7 @@ router.post('/form', function(req,res) {
 	building.save(function (err, docs) {
 		if (err) {
 			console.log('saving building error');
-			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+			res.render('main.ejs', {error: "Error: Unknown error occurred"});
 		} else {
 			console.log('redirecting');
 			res.redirect('/');
