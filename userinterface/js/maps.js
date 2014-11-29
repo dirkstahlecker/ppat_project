@@ -255,7 +255,7 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-	//populateDatabase();
+	populateDatabase();
 
 	console.log('in buildGUI');
 	var zoom = 19;
@@ -509,8 +509,8 @@ function populateDatabase() {
       longitude: -71.170188,
       points: fultonPoints.toString(),
       floorplans: [],
-      // image: '../img/testImagePhoebe/fultonHall.jpg'
-      image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
+      image: '../img/testImagePhoebe/fultonHall.jpg'
+      // image: '/users/dirk/downloads/jeffgordon.jpg' //change this to an image in our repo
     },
     success: function(data) {
       console.log('added Fulton Hall');
