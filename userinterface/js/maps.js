@@ -242,8 +242,8 @@ function addBuilding(building, map) {
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
 			console.log("EVENT LISTENER WAS CALLED: " + building.name);
-			// $('#' + buildingID).modal('show');
-            $('#myFultonModal').modal('toggle');
+			$('#' + buildingID).modal('toggle');
+            // $('#myFultonModal').modal('toggle');
             
 		});
 		},
