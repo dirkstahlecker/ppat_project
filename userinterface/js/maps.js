@@ -74,7 +74,8 @@ function addFlag(map, flag) {
 			title: flag.title,
 			image: flag.image,
 			url: '/views/flag.ejs',
-			description: flag.description
+			description: flag.description,
+			id: flag._id
 		},
 		success: function(html) {
 			var content = html.html;

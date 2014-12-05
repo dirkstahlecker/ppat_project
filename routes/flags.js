@@ -55,7 +55,6 @@ router.post('/', function (req, res) {
 
     // console.log('TESTING IMAGES:');
     // console.log('req.body.image:' + req.body.image);
-    /*
    
 
     if (req.body.image != '') { //TODO: error handling
@@ -70,7 +69,6 @@ router.post('/', function (req, res) {
 	else {
 		flag.image = null;
 	}
-	*/
 
 
     flag.save(function (err, docs) {

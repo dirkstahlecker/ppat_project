@@ -6,7 +6,8 @@ var flagSchema = mongoose.Schema({
 	description: String,
 	image: { data: Buffer, contentType: String },
 	latitude: Number,
-	longitude: Number
+	longitude: Number,
+	url: String
 });
 /*
 flagSchema.methods.inView = function() {

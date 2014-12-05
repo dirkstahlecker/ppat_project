@@ -49,6 +49,20 @@ router.get('/placeholder', function (req,res) {
 	res.end(data, 'binary');
 });
 
+router.get('flag/:id', function (req,res) {
+	var id = req.params.id;
+	Flags.findOne({_id: id}, 'image', function(err, flag) {
+		var buf = flag.image.data;
+		if (buf == null || buf == undefined || buf == "") {
+			utils.sendErrResponse(res, 500, 'Error: no image available');
+		}
+		else {
+			res.writeHead(200, {'Content-Type': 'image/jpg' });
+			res.end(buf, 'binary'); //TODO: change to base64 if possible
+		}
+	});
+});
+
 /*
 router.get('/:imgPath', function(req, res) {
 

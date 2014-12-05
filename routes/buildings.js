@@ -9,12 +9,35 @@ var Schema = mongoose.Schema;
 var fs = require('fs');
 
 
+//add java-like strip and lstrip functionality
+if (typeof(String.prototype.strip) === "undefined") {
+    String.prototype.strip = function() {
+        return String(this).replace(/\s+$/g, '');
+    };
+}
+if (typeof(String.prototype.lstrip) === "undefined") {
+    String.prototype.lstrip = function() {
+        return String(this).replace(/^\s+|\s+$/g, '');
+    };
+}
+
+
+//add a floor to a building
 router.get('/addfloor/:id', function (req, res) {
 	//console.log('Adding floor route that renders the ejs');
 	var id = req.params.id;
 
 	Building.findOne({_id: id}, function (err, building) {
 		res.render('addfloor.ejs', {building: building});
+	});
+});
+
+//edit a building
+router.get('/edit/:id', function (req,res) {
+	var id = req.params.id;
+
+	Building.findOne({_id: id}, function (err, building) {
+		res.render('editbuilding.ejs', {building: building});
 	});
 });
 
@@ -205,6 +228,8 @@ router.post('/form', function(req,res) {
 	body.name = req.body.buildingname;
 	body.floorplans = '';
 	body.image = req.body.image;
+	console.log('image path in buildings/form: ');
+	console.log(body.image); 
 
 	var points = req.body.points.split(',');
 	if (points.length > 1) {
@@ -282,13 +307,17 @@ router.post('/floorplan/:id', function (req, res) {
 
 	var floorplan = new Floorplan({
 		"number": req.body.number,
-		"description": description
+		"description": description,
+		"url": req.body.url
 	});
 
 	var error = null;
 	try {
-		floorplan.image.data = fs.readFileSync(req.body.image);
-		floorplan.image.contentType = 'image/jpeg';
+		if (req.body.image != "") {
+			floorplan.image.data = fs.readFileSync(req.body.image);
+			floorplan.image.contentType = 'image/jpeg';	
+		}
+
 	}
 	catch (err) {
 		floorplan.image = {};
@@ -319,6 +348,61 @@ router.post('/floorplan/:id', function (req, res) {
 			});
 		});		
 	}
+});
+
+/* Edit an existing building
+  
+  POST /buildings/edit/:id
+  Request:
+  	- name: building name
+  	- latLng: latitude and longitude, comma separated
+  	- outline: center and radius or list of coordinates (comma separated)
+  Response:
+  	- success: success response
+  	- error: error code 500
+*/
+router.post('/edit/:id', function (req,res) {
+	var id = req.params.id;
+	var name = req.body.name;
+	
+	var latitude = undefined;
+	var longitude = undefined;
+	var error = undefined;
+	if (req.body.latLng != '') {
+		try {
+			var latLng = req.body.latLng.split(',');
+			latitude = Number(latLng[0].strip().lstrip());
+			longitude = Number(latLng[1].strip().lstrip());		
+		}
+		catch (err) {
+			latitude = longitude = undefined;
+			error = 'Invalid latitude and longitude';
+		}
+	}
+
+	var points = req.body.outline;
+
+	console.log('latitude:' + latitude);
+	console.log('longitude:' + longitude);
+
+	Building.findOne({_id: id}, function (err, building) {
+		if (name != '') { building.name = name }
+		if (latitude != undefined) { building.latitude = latitude }
+		if (longitude != undefined) { building.longitude = longitude }
+		if (points != '') {
+			points = parsePoints(points);
+			building.points = points;
+		}
+		building.save(function (err) {
+			if (err) {
+				res.render('main.ejs', {error: 'Unable to edit building'});
+			}
+			if (error) {
+				res.render('main.ejs', {error: error});
+			}
+			res.render('main.ejs', {error: null});
+		});
+	});
 });
 
 

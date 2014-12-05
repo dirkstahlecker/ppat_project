@@ -35,7 +35,7 @@
             	<% for (var i = 0; i < building.floorplans.length; i++) { %>
             		<% var num = building.floorplans[i].number %>
             		<span id="floorImage_floor<%= building._id %><%= num %>" class="<% if (num == 0) { %>show <% } else { %>hidden <% } %>">
-            			<img src="/image/floorplan/<%= building.floorplans[i]._id %>" onerror="this.onerror=null; this.src='/img/placeholder.jpg';" />
+            			<img src="/image/floorplan/<%= building.floorplans[i]._id %>" width="400px" height="300px" onerror="<%= building.floorplans[i].url %>" /><!-- old onerror: "this.onerror=null; this.src='/img/placeholder.jpg';" -->
             		</span>
             	<% } %>
             </td>
@@ -70,8 +70,10 @@
 
       </div>
       <div class="modal-footer">
-      	<div align="left"><a href="/buildings/addfloor/<%= building._id %>">Add a floor</a></div>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        <div style="float:right"><button type="button" class="btn btn-primary" data-dismiss="modal">Close</button></div>
+      <div style="float:left">
+      	<a href="/buildings/addfloor/<%= building._id %>">Add a floor</a> | 
+      	<a href="/buildings/edit/<%= building._id %>">Edit building</a>
       </div>
     </div>
   </div>
