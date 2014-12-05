@@ -63,6 +63,14 @@ router.get('flag/:id', function (req,res) {
 	});
 });
 
+
+router.post('/upload', function (req, res) {
+	console.log('in uploading route!');
+	console.log(req.body);
+	console.log(req.body.image);
+	console.log(typeof req.body.image);
+});
+
 /*
 router.get('/:imgPath', function(req, res) {
 

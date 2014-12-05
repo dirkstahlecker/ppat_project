@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>File Testing</title>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  	<canvas id="canvas" width = "400px" height = "400px"></canvas>
+
+<form method="post" action="/image/upload">
+  <input type="file" id="fileInput" name="image" />
+  <button id="clickHere" type="submit" onclick="alert($('#fileInput').val());">Click Here</button>
+</form>
+
+  <div id="valueHere"></div>
+
+<script>
+var control = document.getElementById("fileInput");
+control.addEventListener("change", function(event) {
+
+    // When the control has changed, there are new files
+    var files = control.files;
+
+	var reader = new FileReader();
+	reader.onload = function(event) {
+	    var contents = event.target.result;
+		
+		$.ajax({
+			url: '/image/upload',
+			type: 'POST',
+			data: {
+				image: contents
+			},
+			success: function () {
+				console.log('successful upload')
+			}
+		});
+
+	};
+
+	reader.onerror = function(event) {
+	    console.error("File could not be read. Error code " + event.target.error.code);
+	};
+
+	reader.readAsText(control.files[0]);
+
+}, false);
+</script>
+
+  
+</body>
+</html>

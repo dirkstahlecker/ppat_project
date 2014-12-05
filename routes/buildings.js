@@ -209,20 +209,14 @@ router.post('/', function (req, res) {
 router.post('/form', function(req,res) {
 	var body = {};
 
-	console.log('coords coming in:');
-	console.log(req.body.coords);
-	var re = new RegExp("[0-9\-\.]+,[0-9\-\.]+");
 	var coords;
 	try {
-		coords = req.body.coords.split(',');
-		console.log('coords after:');
-		console.log(coords);		
+		coords = req.body.coords.split(',');	
 	}
 	catch (err) {
 		res.render('main.ejs', {error: "Error: Coordinates are required"});
 		return;
 	}
-
 
 	try {
 		body.latitude = Number(coords[0].strip().lstrip());
