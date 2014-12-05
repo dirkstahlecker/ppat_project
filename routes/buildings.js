@@ -33,11 +33,22 @@ router.get('/addfloor/:id', function (req, res) {
 });
 
 //edit a building
-router.get('/edit/:id', function (req,res) {
+router.get('/edit/:id', function (req, res) {
 	var id = req.params.id;
 
 	Building.findOne({_id: id}, function (err, building) {
 		res.render('editbuilding.ejs', {building: building});
+	});
+});
+
+router.get('/floorplans/edit/:floorplanid/:buildingid', function (req, res) {
+	Floorplan.findOne({_id: req.params.floorplanid}, function (err, floorplan) {
+		Building.findOne({_id: req.params.buildingid}, function (err, building) {
+			if (err) {
+				res.render('main.ejs', {error: 'unknown error in editing floorplan'});
+			}
+			res.render('editfloor.ejs', {floorplan: floorplan, building: building});
+		});
 	});
 });
 
@@ -293,8 +304,6 @@ router.post('/floorplan/:id', function (req, res) {
 
 	var re = new RegExp('\/\/');
 	var segments = dscr.split(re);
-	console.log('segments');
-	console.log(segments);
 
 	var description = "";
 	for (var i = 0; i < segments.length; i++) {
@@ -408,14 +417,66 @@ router.post('/edit/:id', function (req,res) {
 //deletes a building
 //gets called by a button
 router.post('/delete/:id', function (req, res) {
-	console.log('deleting building');
 	Building.findOne({_id: req.params.id}, function (err, building) {
-		console.log('building:');
-		console.log(building);
 		building.remove(function (err) {
 			var error = undefined;
 			if (err) {
 				error = 'error deleting building';
+			}
+			res.render('main.ejs', {error: error});
+		});
+	});
+});
+
+//edit a floor
+router.post('/floorplan/edit/:id', function (req, res) {
+	var name = req.body.name;
+	var description = '';
+	var image = req.body.image;
+
+	Floorplan.findOne({_id: req.params.id}, function (err, floorplan) {
+		if (name != '') { floorplan.name = name }
+		if (req.body.description != '') { 
+			var dscr = req.body.description;
+
+			var re = new RegExp('\/\/');
+			var segments = dscr.split(re);
+
+			for (var i = 0; i < segments.length; i++) {
+				description += '<li>'
+				description += segments[i];
+				description += '</li>'
+			}
+			floorplan.description = description;
+		}
+		try {
+			if (req.body.image != "") {
+				floorplan.image.data = fs.readFileSync(req.body.image);
+				floorplan.image.contentType = 'image/jpeg';	
+			}
+		}
+		catch (err) {
+			floorplan.image = {};
+			error = "Invalid image path";
+			//TODO: alert the user somehow 
+		}
+
+		floorplan.save(function (err) {
+			var error = undefined;
+			if (err) {
+				error = "unknown error editing floorplan";
+			}
+			res.render('main.ejs', {error: error});
+		})
+	});
+});
+
+router.post('/floorplan/delete/:id', function (req, res) {
+	Floorplan.findOne({_id: req.params.id}, function (err, floorplan) {
+		floorplan.remove(function (err) {
+			var error = undefined;
+			if (err) {
+				error = 'error deleting floorplan';
 			}
 			res.render('main.ejs', {error: error});
 		});
