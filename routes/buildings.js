@@ -203,7 +203,7 @@ router.post('/form', function(req,res) {
 	var re = new RegExp("[0-9\-\.]+,[0-9\-\.]+");
 	var coords;
 	try {
-		coords = req.body.coords.match(re)[0].split(',');
+		coords = req.body.coords.split(',');
 		console.log('coords after:');
 		console.log(coords);		
 	}
@@ -214,8 +214,8 @@ router.post('/form', function(req,res) {
 
 
 	try {
-		body.latitude = Number(coords[0]);
-		body.longitude = Number(coords[1]);
+		body.latitude = Number(coords[0].strip().lstrip());
+		body.longitude = Number(coords[1].strip().lstrip());
 		console.log('latitude:' + body.latitude);
 		console.log('longitude:' + body.longitude);	
 	}
@@ -401,6 +401,23 @@ router.post('/edit/:id', function (req,res) {
 				res.render('main.ejs', {error: error});
 			}
 			res.render('main.ejs', {error: null});
+		});
+	});
+});
+
+//deletes a building
+//gets called by a button
+router.post('/delete/:id', function (req, res) {
+	console.log('deleting building');
+	Building.findOne({_id: req.params.id}, function (err, building) {
+		console.log('building:');
+		console.log(building);
+		building.remove(function (err) {
+			var error = undefined;
+			if (err) {
+				error = 'error deleting building';
+			}
+			res.render('main.ejs', {error: error});
 		});
 	});
 });
