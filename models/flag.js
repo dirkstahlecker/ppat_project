@@ -9,11 +9,7 @@ var flagSchema = mongoose.Schema({
 	longitude: Number,
 	url: String
 });
-/*
-flagSchema.methods.inView = function() {
-    console.log('calling Flag method inView without "statics"');
-};
-*/
+
 flagSchema.statics.inView = function(latl, latr, longb, longt, callback) {
     var inView = [];
     this.find({}).sort({"end":-1}).exec(function(error, docs){

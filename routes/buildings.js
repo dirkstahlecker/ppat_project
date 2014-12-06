@@ -7,6 +7,7 @@ var fs = require('fs');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fs = require('fs');
+var async = require('async');
 
 
 //add java-like strip and lstrip functionality
@@ -315,6 +316,7 @@ router.post('/floorplan/:id', function (req, res) {
 	});
 
 	var error = null;
+	/*
 	try {
 		if (req.body.image != "") {
 			floorplan.image.data = fs.readFileSync(req.body.image);
@@ -327,8 +329,7 @@ router.post('/floorplan/:id', function (req, res) {
 		error = "Invalid image path";
 		//TODO: alert the user somehow 
 	}
-	
-
+	*/
 
 	if (error != null) {
 		res.render('main.ejs', {error: error});
@@ -474,6 +475,29 @@ router.post('/floorplan/delete/:id', function (req, res) {
 			}
 			res.render('main.ejs', {error: error});
 		});
+	});
+});
+
+router.post('/floorplan/image/:id/:floorNum', function (req, res) {
+	var floorplanToUpdate;
+	Building.findOne({_id: req.params.id}, function (err, building) {
+		async.each(building.floorplans, 
+			function (floorplan, callback) {
+				if (floorplan.number == Number(req.params.floorNum)) {
+					floorplanToUpdate = floorplan;
+				}
+			},
+			function (err) { //callback, executed after iterating through the claims
+				floorplanToUpdate.image.data = req.body.image;
+				floorplanToUpdate.image.contentType = 'image/jpeg';
+				floorplanToUpdate.save(function (err) {
+					if (err) {
+						res.render('main.ejs', {error: 'unknown error saving image'});
+					}
+					res.render('main.ejs', {error: null});
+				});
+			}
+		);
 	});
 });
 

@@ -1,28 +1,33 @@
-var control = document.getElementById("fileInput");
-control.addEventListener("change", function(event) {
-    // When the control has changed, there are new files
-    var files = control.files;
+$(document).ready(function() {
+	$(document).on('click', '#formSubmit', function (event) {
+		var buildingID = $('#building_id_holder').html();
+		var floorNum = $('#number').val();
 
-	var reader = new FileReader();
-	reader.onload = function(event) {
-	    var contents = event.target.result;
-		
-		$.ajax({
-			url: '/image/upload',
-			type: 'POST',
-			data: {
-				image: contents
-			},
-			success: function () {
-				console.log('successful upload')
-			}
-		});
-	};
+	    var files = $('#image')[0].files;
+	    console.log('files:');
+	    console.log(files);
 
-	reader.onerror = function(event) {
-	    console.error("File could not be read. Error code " + event.target.error.code);
-	};
+		var reader = new FileReader();
+		reader.onload = function(event) {
+		    var contents = event.target.result;
+			
+			$.ajax({
+				url: '/building/floorplan/image/' + buildingID + '/' + floorNum,
+				type: 'POST',
+				data: {
+					image: contents
+				},
+				success: function () {
+					console.log('successful upload')
+				}
+			});
+		};
 
-	reader.readAsText(control.files[0]);
+		reader.onerror = function(event) {
+		    console.error("File could not be read. Error code " + event.target.error.code);
+		};
 
-}, false);
+		reader.readAsText(files[0]);
+
+	});
+});

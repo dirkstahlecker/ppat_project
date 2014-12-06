@@ -20,7 +20,6 @@
 
 
 function showFloor(buildingID, updateFloor, numFloors){
-	console.log('in showFloor');
 	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
 	//document.getElementById("floorImage").src = newImageSource;
 
@@ -37,7 +36,6 @@ function showFloor(buildingID, updateFloor, numFloors){
 }
 
 function hideAllText(numFloors, buildingID){
-	console.log('hiding all text');
 	for (i = 0; i < numFloors; i++) {
 		var newID = "#floorText_floor" + buildingID + String(i);
 		var newPicID = "#floorImage_floor" + buildingID + String(i);
@@ -51,8 +49,6 @@ function hideAllText(numFloors, buildingID){
 
 
 function addFlag(map, flag) {
-	console.log('in addFlag');
-	//console.log(flag);
 	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
 	var icon = {
 		url: flag.icon,
@@ -124,8 +120,6 @@ function addFlag(map, flag) {
 
 
 function addAlerts(map) {
-	console.log('in addAlerts');
-	console.log(map.getBounds());
 
 	var bounds = map.getBounds();
 	sw = bounds.getSouthWest();
@@ -141,8 +135,6 @@ function addAlerts(map) {
 	method: 'GET',
 	data: {},
 	success: function(flags) {
-		console.log('flags returned: ');
-		console.log(flags);
 		for (var i = 0; i < flags.documents.length; i++) {
 			var flag = flags.documents[i];
 			addFlag(map, flag);
@@ -178,8 +170,6 @@ function makePaths(points) {
  * No return
  */
 function addBuilding(building, map) {
-  console.log('in addBuilding');
-
   //var lat = building.latitude;
   //var lon = building.longitude;
   //var coords = new google.maps.LatLng(lat, lon);
@@ -224,16 +214,12 @@ function addBuilding(building, map) {
 		url: '/views/modal.ejs',
     }),
     success: function(html) {
-		//console.log('returned html: ');
-		//console.log(html.html);
-
 		var modalArea = $('#modals_area');
 		old_html = modalArea.html();
 		modalArea.html(old_html + html.html);
 
 		//create anonymous function to be the event listener
 		google.maps.event.addListener(buildingShape, 'click', function (event) { 
-			console.log("EVENT LISTENER WAS CALLED: " + building._id);
             $('#' + buildingID).modal('toggle');
 		});
 	},
@@ -250,7 +236,6 @@ function addBuilding(building, map) {
 function buildGUI() {
 	//populateDatabase();
 
-	console.log('in buildGUI');
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
 
@@ -294,8 +279,6 @@ function buildGUI() {
 		method: 'GET',
 		data: {},
 		success: function(data) {
-			console.log('all buildings returned:');
-			console.log(data);
 			//data contains all buildings
 			for (var i = 0; i < data.documents.length; i++) { //TODO: this is wrong
 				var building = data.documents[i];
@@ -310,8 +293,6 @@ function buildGUI() {
 function makeKey(map) {
 	//MADE A KEY
 	var key = $('#key');
-	console.log('key: ');
-	console.log(key);
 	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('key'));
 
 	//consider doing this so screen resizing issues go away???
@@ -368,14 +349,10 @@ function makeKey(map) {
 		var savePin = markerForm.find('button.save')[0];
 		google.maps.event.addDomListener(savePin, "click", function(event){
 			var details = markerForm.find('input.save_details')[0].value;
-			// console.log("details");
-			// console.log(details);
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
 
 			var image = markerForm.find('input.images')[0].value;//got rid of .[0] -> [0]
-            console.log("image");
-            console.log(image);
 			saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
 
 			//clear the old pin
@@ -439,14 +416,10 @@ function saveMarker(Pin, replace, type, coords, image) {
 
 function removeMarker(Pin, coords)
 {
-	console.log('removeMarker coords:');
-	console.log(coords);
 	$.ajax({
 		url: '/flags/' + coords.k + '/' + coords.B,
 		type: 'GET',
 		success: function(flag) {
-			console.log('removeMarker returned flag:');
-			console.log(flag);
 			//if pin is not in database yet, just remove from UI
 
 			// var position = coords; //get marker position
