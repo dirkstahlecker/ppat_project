@@ -19,24 +19,40 @@
 
 
 
-function showFloor(buildingID, updateFloor, numFloors){
-	//hide all text
-	hideAllText(numFloors, buildingID);
 
-	//show the relevant text
-	newTextID = "#floorText_floor" + buildingID + updateFloor;
-	newPicID = "#floorImage_floor" + buildingID + updateFloor;
-	$(newTextID).removeClass('hidden');
-    $(newPicID).removeClass('hidden');
-	$(newTextID).addClass('show');
-	$(newPicID).addClass('show');
+
+function showFloor(buildingID, updateFloor){
+    $.ajax({
+        url: '/buildings/' + buildingID,
+        type: 'GET',
+        success: function (building) {
+            var floorNums = [];
+            for (var i = 0; i < building.floorplans.length; i++) {
+                var floorplan = building.floorplans[i];
+                floorNums.push(floorplan.number);
+            }
+
+            //hide all text
+            hideAllText(floorNums, buildingID);
+
+            //show the relevant text
+            newTextID = "#floorText_floor" + buildingID + updateFloor;
+            newPicID = "#floorImage_floor" + buildingID + updateFloor;
+            $(newTextID).removeClass('hidden');
+            $(newPicID).removeClass('hidden');
+            $(newTextID).addClass('show');
+            $(newPicID).addClass('show');
+        }
+    });
 }
 
-function hideAllText(numFloors, buildingID){
+function hideAllText(floorNums, buildingID){
+    //floorNums is an array of all the floor numbers present
     console.log('hiding all');
-	for (i = 0; i < 1000; i++) { //TODO: Problem here: numbers aren't sequential - need to pass in array of numbers we care about
-		var newID = "#floorText_floor" + buildingID + String(i);
-		var newPicID = "#floorImage_floor" + buildingID + String(i);
+	for (i = 0; i < floorNums.length; i++) { //TODO: Problem here: numbers aren't sequential - need to pass in array of numbers we care about
+        var num = String(floorNums[i]);
+		var newID = "#floorText_floor" + buildingID + num;
+		var newPicID = "#floorImage_floor" + buildingID + num;
 
         console.log('show: ' + $(newID).hasClass('show'));
         console.log('hidden: ' + $(newID).hasClass('hidden'));

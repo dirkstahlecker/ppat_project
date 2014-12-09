@@ -78,7 +78,7 @@ router.get('/', function (req, res) {
 
 
 /*
-  Gets all buildings which are held in the system.
+  Gets a particular building by id
   GET /buildings/:id
   Request body:
     - No body

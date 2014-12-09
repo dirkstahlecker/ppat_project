@@ -12,6 +12,11 @@
       <div class="modal-body">
 
 
+<% var allFloors = [] %>
+<% for (var i = 0; i < building.floorplans.length; i++) { %>
+    <% allFloors.push(building.floorplans[i].number); %>
+<% } %>
+
 
     <table class="table">
         <tbody>
@@ -20,7 +25,7 @@
               <ul class="nav nav-pills nav-stacked" role="tablist">
                   <% for (var i = 0; i < building.floorplans.length; i++) { %> <!-- TODO: allow negative floors -->
                   	<% var num = building.floorplans[i].number %>
-                      <li role="presentation"><a href="#" onclick='showFloor("<%= building._id %>","<%= num %>",<%= building.floorplans.length %>)'>
+                      <li role="presentation"><a href="#" onclick='showFloor("<%= building._id %>","<%= num %>",<%= allFloors %>)'>
                       	<% if (num == 0) { %>
                       		Summary
                       	<% } else { %>
