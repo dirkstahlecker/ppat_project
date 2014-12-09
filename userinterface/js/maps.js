@@ -319,7 +319,7 @@ function makeKey(map) {
 			'<form action="createMarker" method="post"><label for="details">Details*</label><br />' +
 			'<input type="text" name="details" class="save_details"><br />' +
 			'<label for="image">Image</label><br />' +
-			'<input type="text" name="image" class="images" placeholder="ex: /users/documents/img.jpg" /><br /><br />' +
+			'<input type="file" name="flagImage" id="flagImage" class="images" /><br /><br />' +
 			'<label for="type">Type:<select name="type" class="save_type">' +
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
@@ -352,8 +352,12 @@ function makeKey(map) {
 			var type = markerForm.find('select.save_type')[0].value;
 			var coords = addPin.position;
 
-			var image = markerForm.find('input.images')[0].value;//got rid of .[0] -> [0]
-			saveMarker(savePin, details, type, coords, image); //got rid of image parameter.. not being used yet in saveMarker
+            var files = $('#flagImage')[0].files;
+            console.log('files:');
+            console.log(files);
+
+			//var image = markerForm.find('input.images')[0].value;//got rid of .[0] -> [0]
+			saveMarker(savePin, details, type, coords, files); //got rid of image parameter.. not being used yet in saveMarker
 
 			//clear the old pin
 			infoWindow.close();
@@ -365,7 +369,7 @@ function makeKey(map) {
 }
 
 
-function saveMarker(Pin, replace, type, coords, image) {
+function saveMarker(Pin, replace, type, coords, files) {
 	var date = new Date();
 	var month = date.getMonth() + 1;
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
@@ -373,7 +377,7 @@ function saveMarker(Pin, replace, type, coords, image) {
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
-	var flagData = {description: replace, latitude:coords.k, longitude: coords.B, image: image}; //post variables
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
 	var icon, title;
 	if (type == "door") {
 		icon = '/images/wheelchair.jpg';
@@ -393,25 +397,52 @@ function saveMarker(Pin, replace, type, coords, image) {
 	}
 	flagData.icon = icon;
 	flagData.title = title;
-	flagData.image = image;
-    // console.log("flagdata image");
-    // console.log(flagData.image);
 
+    if (files.length > 0) {
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            var contents = event.target.result;
+            flagData.image = contents;
 
-    //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
-	$.ajax({
-		type: "POST",
-		url: '/flags',
-		data: flagData,
-		success:function(data){
-			replace.html = data; //replace infowindow with new html
-            //Pin.setDraggable(false); 
-			//Pin.setIcon(icon); 
-		},
-		error:function (xhr){
-		  alert(thrownError); //TODO: what to do here?
-		}
-	});
+            $.ajax({
+                type: "POST",
+                url: '/flags',
+                data: flagData,
+                success: function (data) {
+                    replace.html = data; //replace infowindow with new html
+                    //Pin.setDraggable(false); 
+                    //Pin.setIcon(icon); 
+                },
+                error:function (xhr) {
+                  alert(thrownError); //TODO: what to do here?
+                }
+            });
+        };
+
+        reader.onerror = function(event) {
+            console.error("File could not be read. Error code " + event.target.error.code);
+        };
+
+        reader.readAsDataURL(files[0]);  
+    }
+    else {
+        console.log('no image');
+        //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
+        $.ajax({
+            type: "POST",
+            url: '/flags',
+            data: flagData,
+            success:function(data){
+                replace.html = data; //replace infowindow with new html
+                //Pin.setDraggable(false); 
+                //Pin.setIcon(icon); 
+            },
+            error:function (xhr){
+              alert(thrownError); //TODO: what to do here?
+            }
+        });
+    }
+
 }
 
 function removeMarker(Pin, coords)

@@ -7,6 +7,8 @@ $(document).ready(function() {
             var reader = new FileReader();
             reader.onload = function(event) {
                 var contents = event.target.result;
+                console.log(contents);
+                console.log(typeof contents);
                 
                 $.ajax({
                     url: '/buildings/floorplan/' + buildingID,
@@ -18,7 +20,7 @@ $(document).ready(function() {
                     },
                     success: function () {
                         console.log('successful upload');
-                        window.location.replace('/'); //force redirect back home
+                        //window.location.replace('/'); //force redirect back home
                     }
                 });
             };

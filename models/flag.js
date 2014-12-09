@@ -4,10 +4,9 @@ var flagSchema = mongoose.Schema({
 	title: String,
 	icon: String,
 	description: String,
-	image: { data: Buffer, contentType: String },
+	image: String,
 	latitude: Number,
-	longitude: Number,
-	url: String
+	longitude: Number
 });
 
 flagSchema.statics.inView = function(latl, latr, longb, longt, callback) {

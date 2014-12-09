@@ -51,12 +51,13 @@ router.post('/', function (req, res) {
         "latitude": req.body.latitude,
         "longitude": req.body.longitude,
         "icon": req.body.icon,
+        "image": req.body.image
     });
 
     // console.log('TESTING IMAGES:');
     // console.log('req.body.image:' + req.body.image);
    
-
+    /*
     if (req.body.image != '') { //TODO: error handling
     	try {
 			flag.image.data = fs.readFileSync(req.body.image);
@@ -69,6 +70,7 @@ router.post('/', function (req, res) {
 	else {
 		flag.image = null;
 	}
+    */
 
 
     flag.save(function (err, docs) {
