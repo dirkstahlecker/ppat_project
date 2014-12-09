@@ -19,26 +19,47 @@
 
 
 
-function showFloor(buildingID, updateFloor, numFloors){
-	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
-	//document.getElementById("floorImage").src = newImageSource;
 
-	//hide all text
-	hideAllText(numFloors, buildingID);
 
-	//show the relevant text
-	newTextID = "#floorText_floor" + buildingID + updateFloor;
-	newPicID = "#floorImage_floor" + buildingID + updateFloor;
-	$(newTextID).removeClass('hidden');
-	$(newPicID).removeClass('hidden');
-	$(newTextID).addClass('show');
-	$(newPicID).addClass('show');
+function showFloor(buildingID, updateFloor){
+    $.ajax({
+        url: '/buildings/' + buildingID,
+        type: 'GET',
+        success: function (building) {
+            var building = building.documents;
+            console.log(building);
+            var floorNums = [];
+            for (var i = 0; i < building.floorplans.length; i++) {
+                var floorplan = building.floorplans[i];
+                floorNums.push(floorplan.number);
+            }
+            console.log(floorNums);
+
+            //hide all text
+            hideAllText(floorNums, buildingID);
+
+            //show the relevant text
+            newTextID = "#floorText_floor" + buildingID + updateFloor;
+            newPicID = "#floorImage_floor" + buildingID + updateFloor;
+            $(newTextID).removeClass('hidden');
+            $(newPicID).removeClass('hidden');
+            $(newTextID).addClass('show');
+            $(newPicID).addClass('show');
+        }
+    });
 }
 
-function hideAllText(numFloors, buildingID){
-	for (i = 0; i < numFloors; i++) {
-		var newID = "#floorText_floor" + buildingID + String(i);
-		var newPicID = "#floorImage_floor" + buildingID + String(i);
+function hideAllText(floorNums, buildingID){
+    //floorNums is an array of all the floor numbers present
+    console.log('hiding all');
+	for (i = 0; i < floorNums.length; i++) { //TODO: Problem here: numbers aren't sequential - need to pass in array of numbers we care about
+        var num = String(floorNums[i]);
+		var newID = "#floorText_floor" + buildingID + num;
+		var newPicID = "#floorImage_floor" + buildingID + num;
+
+        console.log('show: ' + $(newID).hasClass('show'));
+        console.log('hidden: ' + $(newID).hasClass('hidden'));
+
 		$(newID).removeClass('show');
 		$(newID).addClass('hidden');
 		$(newPicID).removeClass('show');

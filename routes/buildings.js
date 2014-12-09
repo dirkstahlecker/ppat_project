@@ -78,7 +78,7 @@ router.get('/', function (req, res) {
 
 
 /*
-  Gets all buildings which are held in the system.
+  Gets a particular building by id
   GET /buildings/:id
   Request body:
     - No body
@@ -452,14 +452,33 @@ router.put('/floorplan/:id', function (req, res) {
 	});
 });
 
-router.post('/floorplan/delete/:id', function (req, res) {
-	Floorplan.findOne({_id: req.params.id}, function (err, floorplan) {
+//deletes a floorplan and removes it from its associated building
+router.post('/floorplan/delete/:floorplanID/:buildingID', function (req, res) {
+	Floorplan.findOne({_id: req.params.floorplanID}, function (err, floorplan) {
 		floorplan.remove(function (err) {
 			var error = undefined;
 			if (err) {
 				error = 'error deleting floorplan';
 			}
-			res.render('main.ejs', {error: error});
+
+            //remove the reference from the building
+            Building.findOne({_id: req.params.buildingID}, function (err, building) {
+                if (err) {
+                    error = 'error deleting floorplan from building';
+                }
+
+                var index = building.floorplans.indexOf(floorplan._id);
+                if (index > -1) {
+                    building.floorplans.splice(index, 1);
+                }
+                
+                building.save(function (err) {
+                    if (err) {
+                        error = 'error saving building';
+                    }
+                    res.render('main.ejs', {error: error});
+                });
+            });
 		});
 	});
 });

@@ -20,7 +20,7 @@ $(document).ready(function() {
                     },
                     success: function () {
                         console.log('successful upload');
-                        //window.location.replace('/'); //force redirect back home
+                        window.location.replace('/'); //force redirect back home
                     }
                 });
             };
