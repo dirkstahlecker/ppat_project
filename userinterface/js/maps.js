@@ -48,7 +48,14 @@ function hideAllText(numFloors, buildingID){
 
 
 
+
 function addFlag(map, flag) {
+	//TEST:
+	console.log("addFLAG");
+	if (flag == null) {
+		console.log("WHEN CHRISTMAS COMES");
+		return;
+	}
 	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
 	var icon = {
 		url: flag.icon,
@@ -77,24 +84,10 @@ function addFlag(map, flag) {
 			var content = html.html;
 			var flagWindow = new google.maps.InfoWindow({
 				content: content
+
+
 			});
 
-			//PHOEBE: waits for infowindow to load before setting event listener for remove button click
-			google.maps.event.addListener(flagWindow, 'domready', function() {
-			  var removePin = $(content).contents().find('button.remove')[0];
-			  console.log('remove Pin: ' + $('.remove'));
-			  $('.remove').off('click').on('click', function(event){
-			    //PHOEBE: This prints okay
-			        console.log("why is it not gone");
-			      //PHOEBE: seems to load again; maybe removing from database
-			                //would prevent it from reloading the flag?
-			        marker.setMap(null);
-			        console.log("should be deleted now..");
-			        removeMarker(marker, loc);
-			        
-			  });
-			    
-			});
 
 			google.maps.event.addListener(marker, 'click', function(){
 				windowUp = true;
@@ -102,8 +95,6 @@ function addFlag(map, flag) {
 				flagWindow.setPosition(event.latLng);
 				flagWindow.open(map,marker);
 			});
-			// addInfoWindow(loc,content); //commented this out because got rid of fcn
-//END PHOEBE EDIT
 
 			windowUp = false;
 
@@ -113,6 +104,23 @@ function addFlag(map, flag) {
 					flagWindow.close();
 				}
 			});
+
+			//PHOEBE: waits for infowindow to load before setting event listener for remove button click
+			google.maps.event.addListener(flagWindow, 'domready', function() {
+			  var removePin = $(content).contents().find('button.remove')[0];
+			  console.log('remove Pin: ' + $('.remove'));
+			  $('.remove').off('click').on('click', function(event){
+			    //PHOEBE: This prints okay
+			        console.log("why is it not gone");
+			        // marker.setMap(null);
+			        console.log("should be deleted now..");
+			        removeMarker(marker, loc);
+			        
+			  });
+			    
+			});
+
+
 		}
 	});
 
@@ -120,7 +128,7 @@ function addFlag(map, flag) {
 
 
 function addAlerts(map) {
-
+	console.log(addAlerts);
 	var bounds = map.getBounds();
 	sw = bounds.getSouthWest();
 	ne = bounds.getNorthEast();
@@ -153,6 +161,7 @@ function addAlerts(map) {
  * Returns an array of google maps LatLng objects
  */
 function makePaths(points) {
+	console.log("makePaths");
   var paths = [];
   for (var i = 0; i < points.length; i = i + 2) {
     paths.push(new google.maps.LatLng(points[i], points[i+1]));
@@ -170,6 +179,7 @@ function makePaths(points) {
  * No return
  */
 function addBuilding(building, map) {
+	console.log("addBuilding");
   //var lat = building.latitude;
   //var lon = building.longitude;
   //var coords = new google.maps.LatLng(lat, lon);
@@ -234,6 +244,7 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
+	console.log("buildGUI");
 	//populateDatabase();
 
 	var zoom = 19;
@@ -291,6 +302,7 @@ function buildGUI() {
 
 
 function makeKey(map) {
+	console.log("makeKey");
 	//MADE A KEY
 	var key = $('#key');
 	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('key'));
@@ -370,6 +382,7 @@ function makeKey(map) {
 
 
 function saveMarker(Pin, replace, type, coords, files) {
+	console.log("saveMarker");
 	var date = new Date();
 	var month = date.getMonth() + 1;
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
@@ -447,6 +460,7 @@ function saveMarker(Pin, replace, type, coords, files) {
 
 function removeMarker(Pin, coords)
 {
+	console.log("removeMarker");
 	$.ajax({
 		url: '/flags/' + coords.k + '/' + coords.B,
 		type: 'GET',
@@ -462,7 +476,8 @@ function removeMarker(Pin, coords)
 				url: '/flags/' + flag._id,
 				type: "DELETE",
 				success: function(data){
-					// Pin.setMap(null); 
+					Pin.setMap(null); 
+					window.location.reload();
 					console.log('successfully removed from database');
 				},
 				error: function (xhr, status, err){
