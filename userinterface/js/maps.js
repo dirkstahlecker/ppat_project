@@ -23,10 +23,11 @@
 
 function showFloor(buildingID, updateFloor){
     $.ajax({
-        url: '/buildings/' + buildingID,
+        url: '/buildings/populate/' + buildingID,
         type: 'GET',
         success: function (building) {
             var building = building.documents;
+            console.log('buiding.documents:');
             console.log(building);
             var floorNums = [];
             for (var i = 0; i < building.floorplans.length; i++) {

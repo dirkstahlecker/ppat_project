@@ -98,6 +98,28 @@ router.get('/:id', function (req, res) {
 });
 
 /*
+  Gets a particular building by id and populates
+  GET /buildings/:id
+  Request body:
+    - No body
+  Response:
+    - success: building listings
+    - err: on error, an error message
+*/
+router.get('/populate/:id', function (req, res) {
+    //console.log('id: ' + req.params.id);
+    Building.findOne({ _id: req.params.id })
+        .populate('floorplans', 'number').exec(function (err, building) {
+            if (err) {
+                utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+            } else {
+                res.send({ documents: building });
+            }
+        });
+
+});
+
+/*
   Gets all particular floors of a building.
 
   GET /buildings/:id/:floor
