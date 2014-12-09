@@ -1,7 +1,7 @@
 $(document).ready(function() {
-	$(document).on('click', '#formSubmit', function (event) {
-		var buildingID = $('#building_id_holder').html();
-	    var files = $('#image')[0].files;
+    $(document).on('click', '#formSubmit', function (event) {
+        var buildingID = $('#building_id_holder').html();
+        var files = $('#image')[0].files;
 
         if (files.length > 0) {
             var reader = new FileReader();
@@ -10,7 +10,7 @@ $(document).ready(function() {
                 
                 $.ajax({
                     url: '/buildings/floorplan/' + buildingID,
-                    type: 'POST',
+                    type: 'PUT',
                     data: {
                         image: contents,
                         number: $('#number').val(),
@@ -32,7 +32,7 @@ $(document).ready(function() {
         else { //no image to upload
             $.ajax({
                 url: '/buildings/floorplan/' + buildingID,
-                type: 'POST',
+                type: 'PUT',
                 data: {
                     image: '',
                     number: $('#number').val(),
@@ -44,5 +44,5 @@ $(document).ready(function() {
                 }
             });
         }
-	});
+    });
 });

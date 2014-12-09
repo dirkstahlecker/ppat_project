@@ -307,16 +307,20 @@ router.post('/floorplan/:id', function (req, res) {
 
 	var floorplan = new Floorplan({
 		"number": req.body.number,
-		"description": description,
-		"image": {
-			data: req.body.image,
-			contentType: 'image/jpeg'
-		}
+		"description": description
 	});
+
+    if (req.body.image != '') {
+        floorplan.image = {
+            data: req.body.image,
+            contentType: 'image/jpeg'
+        }
+    }
 
 	floorplan.save(function (err, doc) {
 		if (err) {
 			console.log('error saving');
+            console.log(err);
 			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
 		}
 		Building.findOneAndUpdate({"_id": req.params.id}, {
@@ -326,9 +330,10 @@ router.post('/floorplan/:id', function (req, res) {
 		}, function (error, building) {
 			if (error) {
 				console.log('some other error');
+                console.log(err);
 				res.render('main.ejs', {error: 'An unknown error occurred'});
 			} else {
-				console.log('redirecting to /');
+				console.log('rendering main.ejs');
 				return res.render('main.ejs', {error: null});
 
 			}
@@ -406,7 +411,7 @@ router.post('/delete/:id', function (req, res) {
 });
 
 //edit a floor
-router.post('/floorplan/edit/:id', function (req, res) {
+router.put('/floorplan/:id', function (req, res) {
 	var name = req.body.name;
 	var description = '';
 	var image = req.body.image;
@@ -435,7 +440,6 @@ router.post('/floorplan/edit/:id', function (req, res) {
 		catch (err) {
 			floorplan.image = {};
 			error = "Invalid image path";
-			//TODO: alert the user somehow 
 		}
 
 		floorplan.save(function (err) {
