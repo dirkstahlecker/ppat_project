@@ -12,7 +12,7 @@ var async = require('async');
 
 //add java-like strip and lstrip functionality
 if (typeof(String.prototype.strip) === "undefined") {
-    String.prototype.strip = function() {
+    String.prototype.strip = function() {a
         return String(this).replace(/\s+$/g, '');
     };
 }
@@ -293,8 +293,6 @@ router.post('/form', function(req,res) {
   	- error: error code 500
 */
 router.post('/floorplan/:id', function (req, res) {
-	console.log('in POST /buildings/floorplan/:id');
-
 	var dscr = req.body.description;
 
 	var re = new RegExp('\/\/');
@@ -306,52 +304,36 @@ router.post('/floorplan/:id', function (req, res) {
 		description += segments[i];
 		description += '</li>'
 	}
-	console.log('fixed description:');
-	console.log(description);
 
 	var floorplan = new Floorplan({
 		"number": req.body.number,
 		"description": description,
-		"url": req.body.url
+		"image": {
+			data: req.body.image,
+			contentType: 'image/jpeg'
+		}
 	});
 
-	var error = null;
-	/*
-	try {
-		if (req.body.image != "") {
-			floorplan.image.data = fs.readFileSync(req.body.image);
-			floorplan.image.contentType = 'image/jpeg';	
+	floorplan.save(function (err, doc) {
+		if (err) {
+			console.log('error saving');
+			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
 		}
-
-	}
-	catch (err) {
-		floorplan.image = {};
-		error = "Invalid image path";
-		//TODO: alert the user somehow 
-	}
-	*/
-
-	if (error != null) {
-		res.render('main.ejs', {error: error});
-	}
-	else {
-		floorplan.save(function (err, doc) {
-			if (err) {
-				utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+		Building.findOneAndUpdate({"_id": req.params.id}, {
+			$push: {
+				floorplans: doc._id
 			}
-			Building.findOneAndUpdate({"_id": req.params.id}, {
-				$push: {
-					floorplans: doc._id
-				}
-			}, function (error, building) {
-				if (error) {
-					res.render('main.ejs', {error: 'An unknown error occurred'});
-				} else {
-					res.redirect('/');
-				}
-			});
-		});		
-	}
+		}, function (error, building) {
+			if (error) {
+				console.log('some other error');
+				res.render('main.ejs', {error: 'An unknown error occurred'});
+			} else {
+				console.log('redirecting to /');
+				return res.render('main.ejs', {error: null});
+
+			}
+		});
+	});	
 });
 
 /* Edit an existing building
@@ -478,20 +460,25 @@ router.post('/floorplan/delete/:id', function (req, res) {
 	});
 });
 
+/*
 router.post('/floorplan/image/:id/:floorNum', function (req, res) {
+	console.log('Adding image to floorplan');
 	var floorplanToUpdate;
 	Building.findOne({_id: req.params.id}, function (err, building) {
 		async.each(building.floorplans, 
 			function (floorplan, callback) {
 				if (floorplan.number == Number(req.params.floorNum)) {
 					floorplanToUpdate = floorplan;
+					console.log('floorplanToUpdate found');
 				}
 			},
 			function (err) { //callback, executed after iterating through the claims
 				floorplanToUpdate.image.data = req.body.image;
+				console.log(req.body.image);
 				floorplanToUpdate.image.contentType = 'image/jpeg';
 				floorplanToUpdate.save(function (err) {
 					if (err) {
+						console.log('error');
 						res.render('main.ejs', {error: 'unknown error saving image'});
 					}
 					res.render('main.ejs', {error: null});
@@ -500,6 +487,7 @@ router.post('/floorplan/image/:id/:floorNum', function (req, res) {
 		);
 	});
 });
+*/
 
 
 router.delete('/:id', function (req, res) {

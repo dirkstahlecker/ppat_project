@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	$(document).on('click', '#formSubmit', function (event) {
 		var buildingID = $('#building_id_holder').html();
-		var floorNum = $('#number').val();
 
 	    var files = $('#image')[0].files;
 	    console.log('files:');
@@ -9,13 +8,17 @@ $(document).ready(function() {
 
 		var reader = new FileReader();
 		reader.onload = function(event) {
-		    var contents = event.target.result;
+		    var contents = event.target.result; //reader.result;
+            //console.log(event.target);
+		    console.log(contents);
 			
 			$.ajax({
-				url: '/building/floorplan/image/' + buildingID + '/' + floorNum,
+				url: '/buildings/floorplan/' + buildingID,
 				type: 'POST',
 				data: {
-					image: contents
+					image: contents,
+					number: $('#number').val(),
+					description: $('#description').val()
 				},
 				success: function () {
 					console.log('successful upload')
@@ -27,7 +30,7 @@ $(document).ready(function() {
 		    console.error("File could not be read. Error code " + event.target.error.code);
 		};
 
-		reader.readAsText(files[0]);
+		reader.readAsDataURL(files[0]);
 
 	});
 });

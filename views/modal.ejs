@@ -13,7 +13,6 @@
 
 
 
-
     <table class="table">
         <tbody>
           <tr>
@@ -35,7 +34,8 @@
             	<% for (var i = 0; i < building.floorplans.length; i++) { %>
             		<% var num = building.floorplans[i].number %>
             		<span id="floorImage_floor<%= building._id %><%= num %>" class="<% if (num == 0) { %>show <% } else { %>hidden <% } %>">
-            			<img src="/image/floorplan/<%= building.floorplans[i]._id %>" width="400px" height="300px" onerror="<%= building.floorplans[i].url %>" /><!-- old onerror: "this.onerror=null; this.src='/img/placeholder.jpg';" -->
+            			<!--<img src="/image/floorplan/<%= building.floorplans[i]._id %>" width="400px" height="300px" /><!-- old onerror: "this.onerror=null; this.src='/img/placeholder.jpg';" -->
+                        <img src="data:image/jpeg;<%= building.floorplans[i].image.data %>" width="400px" height="300px" /><!-- data:image/jpg;base64, -->
             		</span>
             	<% } %>
             </td>

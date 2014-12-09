@@ -17,25 +17,25 @@ var utils = require('../utils/utils');
     - err: an error message
 */
 router.get('/floorplan/:id', function (req,res) {
-	console.log('in GET /floorplan/:id');
 	var id = req.params.id;
 
 	Floorplan.findOne({_id: id}, 'image', function(err, floorplan) {
+        if (err) {
+            console.log('cannot locate floorplan');
+            return res.sendErrResponse(res, 500, 'Error: cannot locate floorplan');
+        }
+        console.log('floorplan:');
+        console.log(floorplan);
 		var buf = floorplan.image.data;
 
-		console.log('buf: ');
-		console.log(buf);
-
 		if (buf == null || buf == undefined || buf == "") {
+            console.log('no image buffer available');
 			utils.sendErrResponse(res, 500, 'Error: no image available');
 		}
 		else {
-			/* console.log('finding floorplan image:');
-			console.log(floorplan);
-			console.log(buf); */
-
-			res.writeHead(200, {'Content-Type': 'image/jpg' });
-			res.end(buf, 'binary'); //TODO: change to base64 if possible
+            console.log('sending image');
+			res.writeHead(200, {'Content-Type': floorplan.image.contentType }); //floorplan.image.contentType
+			res.end(buf, 'base64'); //TODO: change to base64 if possible
 		}
 	});
 });

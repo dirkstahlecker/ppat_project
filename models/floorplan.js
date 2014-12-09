@@ -9,8 +9,7 @@ var floorplanSchema = mongoose.Schema({
 	image: { 
 		data: Buffer, 
 		contentType: String 
-	},
-	url: String //for storing images hosted online
+	}
 });
 
 module.exports = mongoose.model('Floorplan', floorplanSchema);
