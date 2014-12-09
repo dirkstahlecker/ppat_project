@@ -20,9 +20,6 @@
 
 
 function showFloor(buildingID, updateFloor, numFloors){
-	//newImageSource = "../userinterface/img/fultonhall/" + updateFloor +".jpg";
-	//document.getElementById("floorImage").src = newImageSource;
-
 	//hide all text
 	hideAllText(numFloors, buildingID);
 
@@ -30,15 +27,20 @@ function showFloor(buildingID, updateFloor, numFloors){
 	newTextID = "#floorText_floor" + buildingID + updateFloor;
 	newPicID = "#floorImage_floor" + buildingID + updateFloor;
 	$(newTextID).removeClass('hidden');
-	$(newPicID).removeClass('hidden');
+    $(newPicID).removeClass('hidden');
 	$(newTextID).addClass('show');
 	$(newPicID).addClass('show');
 }
 
 function hideAllText(numFloors, buildingID){
-	for (i = 0; i < numFloors; i++) {
+    console.log('hiding all');
+	for (i = 0; i < 1000; i++) { //TODO: Problem here: numbers aren't sequential - need to pass in array of numbers we care about
 		var newID = "#floorText_floor" + buildingID + String(i);
 		var newPicID = "#floorImage_floor" + buildingID + String(i);
+
+        console.log('show: ' + $(newID).hasClass('show'));
+        console.log('hidden: ' + $(newID).hasClass('hidden'));
+
 		$(newID).removeClass('show');
 		$(newID).addClass('hidden');
 		$(newPicID).removeClass('show');
