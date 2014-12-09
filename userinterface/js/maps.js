@@ -26,11 +26,14 @@ function showFloor(buildingID, updateFloor){
         url: '/buildings/' + buildingID,
         type: 'GET',
         success: function (building) {
+            var building = building.documents;
+            console.log(building);
             var floorNums = [];
             for (var i = 0; i < building.floorplans.length; i++) {
                 var floorplan = building.floorplans[i];
                 floorNums.push(floorplan.number);
             }
+            console.log(floorNums);
 
             //hide all text
             hideAllText(floorNums, buildingID);
