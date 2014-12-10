@@ -307,41 +307,40 @@ router.post('/form', function(req,res) {
   	- error: error code 500
 */
 router.post('/floorplan/:id', function (req, res) {
+    var description = '';
 	var dscr = req.body.description;
 
-	var re = new RegExp('\/\/');
-	var segments = dscr.split(re);
+    if (dscr != '' ) {
+        var re = new RegExp('\/\/');
+        var segments = dscr.split(re);
 
-	var description = "";
-	for (var i = 0; i < segments.length; i++) {
-		description += '<li>'
-		description += segments[i];
-		description += '</li>'
-	}
+        for (var i = 0; i < segments.length; i++) {
+            description += '<li>'
+            description += segments[i];
+            description += '</li>'
+        }
+    }
 
 	var floorplan = new Floorplan({
 		"number": req.body.number,
 		"description": description
 	});
-
+    
     if (req.body.image != '') {
         floorplan.image = {
             data: req.body.image,
             contentType: 'image/jpeg'
         }
     }
-
+    
     //check if floor number is unique
     Building.findOne({ _id: req.params.id }).populate('floorplans', 'number').exec(function (err, building) {
         var floorNums = [];
         for (var i = 0; i < building.floorplans.length; i++) {
             floorNums.push(building.floorplans[i].number);
         }
-        console.log(floorNums);
-        console.log(req.body.number);
 
         var index = floorNums.indexOf(Number(req.body.number));
-        console.log(index);
         if (index > -1) {
             res.render('main.ejs', {error: 'Error: Floor number already exists'});
         }
