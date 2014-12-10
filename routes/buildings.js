@@ -174,9 +174,6 @@ function addBuilding(body) {
 		image = "";
 	}
 
-	//console.log('body.floorplans:');
-	//console.log(body.floorplans);
-
 	var building = new Building({
 		"name": body.name,
 		"latitude": body.latitude,
@@ -228,6 +225,7 @@ router.post('/', function (req, res) {
 
 //add a new building from the add.html form
 router.post('/form', function(req,res) {
+    console.log('in post form route');
 	var body = {};
 
 	var coords;
@@ -240,8 +238,28 @@ router.post('/form', function(req,res) {
 	}
 
 	try {
-		body.latitude = Number(coords[0].strip().lstrip());
-		body.longitude = Number(coords[1].strip().lstrip());
+        var lat = coords[0];//.strip().lstrip();
+        var lng = coords[1];//.strip().lstrip();
+        console.log(coords);
+
+        if (lat.charAt(0) == '-') {
+            lat = Number(lat.slice(1));
+        }
+        else {
+            lat = Number(lat);
+        }
+        if (lng.charAt(0) == '-') {
+            lng = Number(lng.slice(1));
+        }
+        else {
+            lng = Number(lng);
+        }
+
+        console.log(lat);
+        console.log(lng);
+
+		body.latitude = lat;
+		body.longitude = lng;
 	}
 	catch (err) {
 		console.log('ERROR in getting latitude and longitude');
@@ -251,7 +269,6 @@ router.post('/form', function(req,res) {
 
 	body.name = req.body.buildingname;
 	body.floorplans = '';
-	body.image = req.body.image;
 
 	var points = req.body.points.split(',');
 	if (points.length > 1) {
@@ -260,7 +277,7 @@ router.post('/form', function(req,res) {
 	else {
 		try {
 			var radius = Number(req.body.points);
-			radius /= 5000000; //TODO: kind of a hack (get an actual conversation factor)
+			radius /= 1000000; //TODO: kind of a hack (get an actual conversation factor)
 			if (radius == NaN) {
 				res.render('main.ejs', {error: "Error: Coordinates must only contain numbers and commas"});
 			}

@@ -130,8 +130,14 @@
                         </div>
                     </fieldset>
                 </form>                            	
-                <form method="post" action="/buildings/floorplan/delete/<%= floorplan._id %>/<%= building._id %>">
-                	<button type="submit" id="delete" class="btn btn-lg btn-danger">Delete Floor</button>
+                <form class="form-horizontal" method="post" action="/buildings/floorplan/delete/<%= floorplan._id %>/<%= building._id %>">
+                	
+                    <div class="form-group">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" id="delete" class="btn btn-lg btn-danger">Delete Floor</button>
+                        </div>
+                    </div>
+                    
                 </form> 
             </div>
         </div>
