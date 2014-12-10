@@ -1,10 +1,17 @@
 <div id="content">
-	<div id="siteNotice"></div>
-	<h4 id="firstHeading" class="firstHeading"><%= data.title %></h4>
-	<div id="bodyContent">
+    <div id="siteNotice"></div>
+    <h4 id="firstHeading" class="firstHeading"><%= data.title %></h4>
 
-			<p><strong><img src="data:image/jpeg;<%= data.image %>" onerror="this.style.visibility='hidden'" height="100" width="100" /></strong>
-
-		<%- data.description %><br /><button class="remove">Remove</button>
-	</div>
+    <div id="bodyContent">
+        <table>
+        <col width="100">
+        <col width="120">
+        <tr>
+            <td><strong><img src="data:image/jpeg;<%= data.image %>" onerror="this.style.visibility='hidden'" height="100" width="100" /></strong></td>
+            <td><%- data.description %></td>
+        </tr>
+        </table>
+    </br>
+            <button class="remove">Remove</button>
+    </div>
 </div>
