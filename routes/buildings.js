@@ -337,8 +337,11 @@ router.post('/floorplan/:id', function (req, res) {
         for (var i = 0; i < building.floorplans.length; i++) {
             floorNums.push(building.floorplans[i].number);
         }
+        console.log(floorNums);
+        console.log(req.body.number);
 
-        var index = building.floorplans.indexOf(req.body.number);
+        var index = floorNums.indexOf(Number(req.body.number));
+        console.log(index);
         if (index > -1) {
             res.render('main.ejs', {error: 'Error: Floor number already exists'});
         }
