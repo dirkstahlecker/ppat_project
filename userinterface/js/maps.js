@@ -19,15 +19,12 @@
 
 
 
-
-
 function showFloor(buildingID, updateFloor){
     $.ajax({
-        url: '/buildings/' + buildingID,
+        url: '/buildings/populate/' + buildingID,
         type: 'GET',
         success: function (building) {
             var building = building.documents;
-            console.log(building);
             var floorNums = [];
             for (var i = 0; i < building.floorplans.length; i++) {
                 var floorplan = building.floorplans[i];
@@ -51,14 +48,10 @@ function showFloor(buildingID, updateFloor){
 
 function hideAllText(floorNums, buildingID){
     //floorNums is an array of all the floor numbers present
-    console.log('hiding all');
 	for (i = 0; i < floorNums.length; i++) { //TODO: Problem here: numbers aren't sequential - need to pass in array of numbers we care about
         var num = String(floorNums[i]);
 		var newID = "#floorText_floor" + buildingID + num;
 		var newPicID = "#floorImage_floor" + buildingID + num;
-
-        console.log('show: ' + $(newID).hasClass('show'));
-        console.log('hidden: ' + $(newID).hasClass('hidden'));
 
 		$(newID).removeClass('show');
 		$(newID).addClass('hidden');
@@ -68,13 +61,9 @@ function hideAllText(floorNums, buildingID){
 }
 
 
-
-
 function addFlag(map, flag) {
 	//TEST:
-	console.log("addFLAG");
 	if (flag == null) {
-		console.log("WHEN CHRISTMAS COMES");
 		return;
 	}
 	var loc = new google.maps.LatLng(flag.latitude, flag.longitude);
@@ -90,7 +79,6 @@ function addFlag(map, flag) {
 		draggable: false
 	});
 
-
 	$.ajax({
 		url: '/templates/render',
 		type: 'POST',
@@ -105,8 +93,6 @@ function addFlag(map, flag) {
 			var content = html.html;
 			var flagWindow = new google.maps.InfoWindow({
 				content: content
-
-
 			});
 
 
@@ -128,28 +114,21 @@ function addFlag(map, flag) {
 
 			//PHOEBE: waits for infowindow to load before setting event listener for remove button click
 			google.maps.event.addListener(flagWindow, 'domready', function() {
-			  var removePin = $(content).contents().find('button.remove')[0];
-			  console.log('remove Pin: ' + $('.remove'));
-			  $('.remove').off('click').on('click', function(event){
-			    //PHOEBE: This prints okay
-			        console.log("why is it not gone");
-			        // marker.setMap(null);
-			        console.log("should be deleted now..");
-			        removeMarker(marker, loc);
-			        
-			  });
-			    
+                var removePin = $(content).contents().find('button.remove')[0];
+                console.log('remove Pin: ' + $('.remove'));
+                $('.remove').off('click').on('click', function(event){
+                //PHOEBE: This prints okay
+                    // marker.setMap(null);
+                    console.log("should be deleted now..");
+                    removeMarker(marker, loc);
+                });
 			});
-
-
 		}
 	});
-
 }
 
 
 function addAlerts(map) {
-	console.log(addAlerts);
 	var bounds = map.getBounds();
 	sw = bounds.getSouthWest();
 	ne = bounds.getNorthEast();
@@ -160,15 +139,15 @@ function addAlerts(map) {
 	var NElng = ne.lng();
 
 	$.ajax({
-	url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
-	method: 'GET',
-	data: {},
-	success: function(flags) {
-		for (var i = 0; i < flags.documents.length; i++) {
-			var flag = flags.documents[i];
-			addFlag(map, flag);
-		}
-	}
+        url: '/flags/' + NElat + '/' + SWlat + '/' + SWlng + '/' + NElng,
+        method: 'GET',
+        data: {},
+        success: function(flags) {
+            for (var i = 0; i < flags.documents.length; i++) {
+                var flag = flags.documents[i];
+                addFlag(map, flag);
+            }
+        }
 	});
 }
 
@@ -182,12 +161,11 @@ function addAlerts(map) {
  * Returns an array of google maps LatLng objects
  */
 function makePaths(points) {
-	console.log("makePaths");
-  var paths = [];
-  for (var i = 0; i < points.length; i = i + 2) {
-    paths.push(new google.maps.LatLng(points[i], points[i+1]));
-  }
-  return paths;
+    var paths = [];
+    for (var i = 0; i < points.length; i = i + 2) {
+        paths.push(new google.maps.LatLng(points[i], points[i+1]));
+    }
+    return paths;
 }
 
 
@@ -200,64 +178,63 @@ function makePaths(points) {
  * No return
  */
 function addBuilding(building, map) {
-	console.log("addBuilding");
-  //var lat = building.latitude;
-  //var lon = building.longitude;
-  //var coords = new google.maps.LatLng(lat, lon);
+    //var lat = building.latitude;
+    //var lon = building.longitude;
+    //var coords = new google.maps.LatLng(lat, lon);
 
-  var paths = makePaths(building.points);
+    var paths = makePaths(building.points);
 
-  //building shape
-  var buildingShape = new google.maps.Polygon({
-    map: map,
-    paths: paths,
-    strokeColor: '#ff0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillOpacity: 0
-  });
-
-  //color changes when mousing over the building
-  google.maps.event.addListener(buildingShape, 'mouseover', function (event){
-    this.setOptions({
-      strokeColor: '#ff0000', //TODO: make these into variables too
-      fillColor: '#ff0000',
-      fillOpacity: 0.5
+    //building shape
+    var buildingShape = new google.maps.Polygon({
+        map: map,
+        paths: paths,
+        strokeColor: '#ff0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillOpacity: 0
     });
-  });
 
-  //removes color when mouse out of the building
-  google.maps.event.addListener(buildingShape, 'mouseout', function (event){
-    this.setOptions({
-      strokeColor: '#ff0000',
-      fillOpacity: 0
+    //color changes when mousing over the building
+    google.maps.event.addListener(buildingShape, 'mouseover', function (event){
+        this.setOptions({
+            strokeColor: '#ff0000', //TODO: make these into variables too
+            fillColor: '#ff0000',
+            fillOpacity: 0.5
+        });
     });
-  });
 
-  var buildingID = building._id; //used to create unique id in DOM for building modal
+    //removes color when mouse out of the building
+    google.maps.event.addListener(buildingShape, 'mouseout', function (event){
+        this.setOptions({
+            strokeColor: '#ff0000',
+            fillOpacity: 0
+        });
+    });
 
-  $.ajax({
-    url: '/templates/renderbuilding',
-    type: 'POST',
-    contentType: "application/json",
-    data: JSON.stringify({
-		id: buildingID,
-		url: '/views/modal.ejs',
-    }),
-    success: function(html) {
-		var modalArea = $('#modals_area');
-		old_html = modalArea.html();
-		modalArea.html(old_html + html.html);
+    var buildingID = building._id; //used to create unique id in DOM for building modal
 
-		//create anonymous function to be the event listener
-		google.maps.event.addListener(buildingShape, 'click', function (event) { 
-            $('#' + buildingID).modal('toggle');
-		});
-	},
-	error: function(err) {
-		console.log('ERROR in rendering EJS template');
-	}
-  });
+    $.ajax({
+        url: '/templates/renderbuilding',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({
+        	id: buildingID,
+        	url: '/views/modal.ejs',
+        }),
+        success: function(html) {
+        	var modalArea = $('#modals_area');
+        	old_html = modalArea.html();
+        	modalArea.html(old_html + html.html);
+
+        	//create anonymous function to be the event listener
+        	google.maps.event.addListener(buildingShape, 'click', function (event) { 
+                $('#' + buildingID).modal('toggle');
+        	});
+        },
+        error: function(err) {
+        	console.log('ERROR in rendering EJS template');
+        }
+    });
 }
 
 
@@ -265,9 +242,6 @@ function addBuilding(building, map) {
 //manages the creation of all buildings on the gui
 //called when the gui is loaded
 function buildGUI() {
-	console.log("buildGUI");
-	//populateDatabase();
-
 	var zoom = 19;
 	var mapCanvas = document.getElementById('map_canvas');
 
@@ -301,7 +275,7 @@ function buildGUI() {
             //PHOEBE: once it's loaded, the flags don't go away. 
             //choices: delete from database every time zoom changes (no)
             //figure out clustering of markers as described in Maps developer article(time)
-            console.log("NO FLAGS HERE PLEASE");
+            //console.log("NO FLAGS HERE PLEASE");
         }
      });
       //END PHOEBE EDIT
@@ -323,7 +297,6 @@ function buildGUI() {
 
 
 function makeKey(map) {
-	console.log("makeKey");
 	//MADE A KEY
 	var key = $('#key');
 	map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('key'));
@@ -405,7 +378,6 @@ function makeKey(map) {
 
 
 function saveMarker(Pin, replace, type, coords, files) {
-	console.log("saveMarker");
 	var date = new Date();
 	var month = date.getMonth() + 1;
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
@@ -486,7 +458,6 @@ function saveMarker(Pin, replace, type, coords, files) {
 
 function removeMarker(Pin, coords)
 {
-	console.log("removeMarker");
 	$.ajax({
 		url: '/flags/' + coords.k + '/' + coords.B,
 		type: 'GET',
@@ -520,7 +491,7 @@ function removeMarker(Pin, coords)
 
 
 
-
+/*
 var fultonPoints = [
   42.334553,-71.170432,
   42.334319,-71.170346,
@@ -579,7 +550,7 @@ function populateDatabase() {
       console.log(err);
     }
   });
-}
+}*/
 
 
 google.maps.event.addDomListener(window, 'load', buildGUI);

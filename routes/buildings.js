@@ -98,6 +98,28 @@ router.get('/:id', function (req, res) {
 });
 
 /*
+  Gets a particular building by id and populates
+  GET /buildings/:id
+  Request body:
+    - No body
+  Response:
+    - success: building listings
+    - err: on error, an error message
+*/
+router.get('/populate/:id', function (req, res) {
+    //console.log('id: ' + req.params.id);
+    Building.findOne({ _id: req.params.id })
+        .populate('floorplans', 'number').exec(function (err, building) {
+            if (err) {
+                utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+            } else {
+                res.send({ documents: building });
+            }
+        });
+
+});
+
+/*
   Gets all particular floors of a building.
 
   GET /buildings/:id/:floor
@@ -109,8 +131,6 @@ router.get('/:id', function (req, res) {
 */
 router.get('/:id/:floor', function (req, res) {
     var buildingsQuery = Building.find({"_id": req.params.id}).populate({path: 'floors', match: {number: req.floor}});
-    //console.log('buildingsQuery: ');
-    //console.log(buildingsQuery);
 
     buildingsQuery.exec(function (err, docs) {
         if (err) {
@@ -222,8 +242,6 @@ router.post('/form', function(req,res) {
 	try {
 		body.latitude = Number(coords[0].strip().lstrip());
 		body.longitude = Number(coords[1].strip().lstrip());
-		console.log('latitude:' + body.latitude);
-		console.log('longitude:' + body.longitude);	
 	}
 	catch (err) {
 		console.log('ERROR in getting latitude and longitude');
@@ -234,8 +252,6 @@ router.post('/form', function(req,res) {
 	body.name = req.body.buildingname;
 	body.floorplans = '';
 	body.image = req.body.image;
-	console.log('image path in buildings/form: ');
-	console.log(body.image); 
 
 	var points = req.body.points.split(',');
 	if (points.length > 1) {
@@ -262,11 +278,7 @@ router.post('/form', function(req,res) {
 		}
 	}
 
-	console.log('body.points:');
-	console.log(body.points);
 	var building = addBuilding(body,res,true);
-	console.log('returned building in form:');
-	console.log(building);
 
 	building.save(function (err, docs) {
 		if (err) {
@@ -284,6 +296,8 @@ router.post('/form', function(req,res) {
 /* Add floorplan to existing building
   
   POST /buildings/floorplan/:id
+  Parameters:
+    - id: id of building to add floor to
   Request:
   	- number: floor number
   	- description
@@ -317,28 +331,42 @@ router.post('/floorplan/:id', function (req, res) {
         }
     }
 
-	floorplan.save(function (err, doc) {
-		if (err) {
-			console.log('error saving');
-            console.log(err);
-			utils.sendErrResponse(res, 500, 'An unknown error occurred.');
-		}
-		Building.findOneAndUpdate({"_id": req.params.id}, {
-			$push: {
-				floorplans: doc._id
-			}
-		}, function (error, building) {
-			if (error) {
-				console.log('some other error');
-                console.log(err);
-				res.render('main.ejs', {error: 'An unknown error occurred'});
-			} else {
-				console.log('rendering main.ejs');
-				return res.render('main.ejs', {error: null});
+    //check if floor number is unique
+    Building.findOne({ _id: req.params.id }).populate('floorplans', 'number').exec(function (err, building) {
+        var floorNums = [];
+        for (var i = 0; i < building.floorplans.length; i++) {
+            floorNums.push(building.floorplans[i].number);
+        }
 
-			}
-		});
-	});	
+        var index = building.floorplans.indexOf(req.body.number);
+        if (index > -1) {
+            res.render('main.ejs', {error: 'Error: Floor number already exists'});
+        }
+        else {
+            floorplan.save(function (err, doc) {
+                if (err) {
+                    console.log('error saving');
+                    console.log(err);
+                    utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+                }
+                Building.findOneAndUpdate({'_id': req.params.id}, {
+                    $push: {
+                        floorplans: doc._id
+                    }
+                }, function (error, building) {
+                    if (error) {
+                        console.log('some other error');
+                        console.log(err);
+                        res.render('main.ejs', {error: 'An unknown error occurred'});
+                    } else {
+                        console.log('rendering main.ejs');
+                        return res.render('main.ejs', {error: null});
+
+                    }
+                });
+            }); 
+        }
+    });
 });
 
 /* Edit an existing building
@@ -372,9 +400,6 @@ router.post('/edit/:id', function (req,res) {
 	}
 
 	var points = req.body.outline;
-
-	console.log('latitude:' + latitude);
-	console.log('longitude:' + longitude);
 
 	Building.findOne({_id: id}, function (err, building) {
 		if (name != '') { building.name = name }
