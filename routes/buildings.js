@@ -362,11 +362,13 @@ router.post('/floorplan/:id', function (req, res) {
             res.render('main.ejs', {error: 'Error: Floor number already exists'});
         }
         else {
+            console.log(floorplan);
             floorplan.save(function (err, doc) {
                 if (err) {
                     console.log('error saving');
                     console.log(err);
-                    utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+                    //utils.sendErrResponse(res, 500, 'An unknown error occurred.');
+                    return res.render('main.ejs', {error: 'ERROR: unknown error occurred in saving floorplan'});
                 }
                 Building.findOneAndUpdate({'_id': req.params.id}, {
                     $push: {
@@ -456,12 +458,23 @@ router.post('/delete/:id', function (req, res) {
 
 //edit a floor
 router.put('/floorplan/:id', function (req, res) {
+    console.log('req.body in put floorplan:');
+    console.log(req.body);
 	var name = req.body.name;
 	var description = '';
 	var image = req.body.image;
+    console.log('ID: ' + req.params.id);
 
+    
+    
 	Floorplan.findOne({_id: req.params.id}, function (err, floorplan) {
-		if (name != '') { floorplan.name = name }
+        console.log(floorplan);
+        if (err) {
+            res.render('main.ejs', {error: 'unknown error in editing floor'});
+        }
+		if (name != '' && name != undefined && name != null) { 
+            floorplan.name = name;
+        }
 		if (req.body.description != '') { 
 			var dscr = req.body.description;
 
@@ -485,7 +498,7 @@ router.put('/floorplan/:id', function (req, res) {
 			floorplan.image = {};
 			error = "Invalid image path";
 		}
-
+        //TODO: add duplicate floor logic here as well
 		floorplan.save(function (err) {
 			var error = undefined;
 			if (err) {

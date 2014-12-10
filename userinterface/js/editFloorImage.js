@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $(document).on('click', '#formSubmit', function (event) {
-        var buildingID = $('#building_id_holder').html();
+        var buildingID = $('#floorplan_id_holder').html();
         var files = $('#image')[0].files;
 
         if (files.length > 0) {

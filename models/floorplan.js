@@ -1,7 +1,10 @@
 var mongoose = require('mongoose');
 
 var floorplanSchema = mongoose.Schema({
-	number: Number,
+	number: { 
+        type: Number,
+        unique: false
+    },
 	description: String,
 	image: { 
 		data: Buffer, 
