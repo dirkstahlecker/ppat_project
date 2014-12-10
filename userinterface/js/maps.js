@@ -308,6 +308,7 @@ function makeKey(map) {
 	key.append('<img src= "/images/caution.png" height="30" width="30"> Caution<br />');
 	key.append('<img src= "/images/wheelchair.jpg" height="30" width="30"> Accessible Entrance<br />');
 	key.append('<img src= "/images/elevatorIcon.png" height="30" width="30"> Elevator<br />');
+	key.append('<img src= "/images/star.png" height="30" width="30"> Tip<br />');
 	key.append('</div>');
 	
 	//on double click, creates a marker
@@ -330,7 +331,8 @@ function makeKey(map) {
 			'<option value="door">Accessible Door</option>'+
 			'<option value="pothole">Pothole</option>'+
 			'<option value="obstacle">Obstacle</option>' +
-			'<option value="elevator">Elevator</option></select></label>' +
+			'<option value="elevator">Elevator</option>'+
+			'<option value="tip">Tip</option></select></label>' +
 			'</form><br />' +
 			'<button name="save" class="save">Save Flag</button>' +
 			'<button class="remove" title= "Remove">Remove</button></div>');
@@ -397,6 +399,10 @@ function saveMarker(Pin, replace, type, coords, files) {
 		icon = '/images/caution.png';
 		title = "Obstacle";
 	}
+	else if(type == "tip"){
+		icon = '/images/star.png';
+		title = "Tip";
+	}
 	else {
 		icon = '/images/elevatorIcon.png';
 		title = "Elevator";
@@ -433,7 +439,6 @@ function saveMarker(Pin, replace, type, coords, files) {
     }
     else {
         console.log('no image');
-        //HOW TO KEEP THE REMOVE BUTTON IN THE INFOWINDOW AFTER SAVE?
         $.ajax({
             type: "POST",
             url: '/flags',
