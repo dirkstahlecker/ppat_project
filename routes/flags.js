@@ -30,6 +30,7 @@ router.get('/:latr/:latl/:longb/:longt', function (req, res) {
     });
 });
 
+//get a single flag
 router.get('/:lat/:lng', function (req,res) {
 	console.log(req.params.lat);
 	console.log(req.params.lng);

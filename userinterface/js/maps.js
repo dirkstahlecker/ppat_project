@@ -381,11 +381,12 @@ function saveMarker(Pin, replace, type, coords, files) {
 	var date = new Date();
 	var month = date.getMonth() + 1;
 	var timeStamp = month.toString() + '-' + date.getDate().toString() + '-'+date.getFullYear().toString();
-	replace = replace + "<p> <br />"+ timeStamp;
+	replace = replace + "<p> <br />" + timeStamp;
 
 	var coords = coords; //get marker position
 	// console.log(coords.B);   //k = long, B = lat
-	var flagData = {description: replace, latitude:coords.k, longitude: coords.B}; //post variables
+	var flagData = {description: replace, latitude:coords.k, longitude: coords.D}; //post variables
+
 	var icon, title;
 	if (type == "door") {
 		icon = '/images/wheelchair.jpg';
@@ -459,7 +460,7 @@ function saveMarker(Pin, replace, type, coords, files) {
 function removeMarker(Pin, coords)
 {
 	$.ajax({
-		url: '/flags/' + coords.k + '/' + coords.B,
+		url: '/flags/' + coords.k + '/' + coords.D,
 		type: 'GET',
 		success: function(flag) {
 			//if pin is not in database yet, just remove from UI
